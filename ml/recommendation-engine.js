@@ -409,7 +409,7 @@ function evaluateRecommendationMetrics(k = 5) {
   for (const u of users) {
     const purchases = db.prepare(`
       SELECT DISTINCT product_id FROM user_interactions 
-      WHERE user_id = ? AND action = "purchase"
+      WHERE user_id = ? AND action = 'purchase'
     `).all(u.user_id).map(p => p.product_id);
 
     if (purchases.length < 4) continue;
