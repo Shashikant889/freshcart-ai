@@ -1,0 +1,18 @@
+{
+  "name": "freshcart-ai-grocery",
+  "version": "2.0.0",
+  "description": "AI-Powered Intelligent Grocery E-Commerce & Recommendation System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db/seed.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "sql.js": "^1.12.0",
+    "uuid": "^9.0.0"
+  }
+}

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshCart AI — Intelligent Grocery E-Commerce & Recommendations</title>
+  <meta name="description" content="AI-Powered Grocery Shopping with Personalized Recommendations, Demand Forecasting, and NLP Smart Search.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="header">
+    <div class="header-container">
+      <a href="/" class="logo">
+        <span class="logo-icon">🌿</span>
+        <div class="logo-text">
+          <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
+          <span class="logo-subtitle">Intelligent Grocery</span>
+        </div>
+      </a>
+
+      <!-- Smart NLP Search Bar -->
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search groceries, e.g. 'organic apples', 'dahi', 'seb', 'snack'..." autocomplete="off">
+        <button id="visual-search-btn" class="visual-search-btn" title="Search by Image / Camera">📷</button>
+        <button id="search-clear" class="search-clear-btn" style="display:none;">✕</button>
+        <div id="smart-search-dropdown" class="search-dropdown" style="display:none;"></div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="nav-actions">
+        <!-- Auth Button / User Profile -->
+        <div id="auth-section">
+          <button class="nav-btn" id="login-modal-btn">
+            <span class="btn-icon">👤</span>
+            <span id="auth-btn-text">Sign In</span>
+          </button>
+        </div>
+
+        <button class="nav-btn" id="orders-btn">
+          <span class="btn-icon">📦</span>
+          <span>Orders</span>
+        </button>
+
+        <a href="/admin" class="nav-btn admin-nav-btn" id="admin-link">
+          <span class="btn-icon">⚡</span>
+          <span>Admin & AI</span>
+        </a>
+
+        <button class="nav-btn cart-nav-btn" id="cart-btn">
+          <span class="btn-icon">🛒</span>
+          <span>Cart</span>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="ai-pill">✨ Powered by Collaborative & Content-Based ML</div>
+        <h1 class="hero-title">Fresh Groceries,<br><span class="gradient-text">Smart Recommendations.</span></h1>
+        <p class="hero-desc">
+          Experience AI-tailored grocery shopping in Indian Rupees (₹). Smart search, personalized item ranking, and automated stock freshness.
+        </p>
+        
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span class="stat-val">₹500+</span>
+            <span class="stat-lbl">Free Delivery</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val">30 Min</span>
+            <span class="stat-lbl">Fast Delivery</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val">98.4%</span>
+            <span class="stat-lbl">ML Match Score</span>
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <button class="btn-primary" id="hero-shop-btn">Explore Products ↓</button>
+          <button class="btn-secondary" id="demo-login-btn">Quick Demo Login (Customer)</button>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="floating-card c1">
+          <span class="emoji">🍎</span>
+          <div>
+            <strong>Organic Apples</strong>
+            <small>₹249/kg • 99% AI Match</small>
+          </div>
+        </div>
+        <div class="floating-card c2">
+          <span class="emoji">🥛</span>
+          <div>
+            <strong>Fresh Whole Milk</strong>
+            <small>₹69/L • Frequently Bought</small>
+          </div>
+        </div>
+        <div class="floating-card c3">
+          <span class="emoji">🥑</span>
+          <div>
+            <strong>Avocado & Veggies</strong>
+            <small>Demand Trending 🔥</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Recommendations Section -->
+  <section class="section recs-section" id="ai-recs-section">
+    <div class="section-container">
+      <div class="section-header">
+        <div>
+          <div class="section-badge">🤖 Machine Learning Engine</div>
+          <h2 class="section-title">Recommended Just For You</h2>
+          <p class="section-subtitle" id="rec-subtitle">Personalized based on hybrid collaborative filtering & your shopping patterns</p>
+        </div>
+        <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
+      </div>
+
+      <div class="product-grid" id="ai-recs-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Category & Main Product Catalog Section -->
+  <section class="section" id="catalog-section">
+    <div class="section-container">
+      <div class="catalog-controls">
+        <div class="category-pills" id="category-pills">
+          <button class="cat-pill active" data-category="all">🛒 All Items</button>
+          <button class="cat-pill" data-category="fruits">🍎 Fruits</button>
+          <button class="cat-pill" data-category="vegetables">🥦 Vegetables</button>
+          <button class="cat-pill" data-category="dairy">🥛 Dairy & Eggs</button>
+          <button class="cat-pill" data-category="bakery">🍞 Bakery</button>
+          <button class="cat-pill" data-category="beverages">🧃 Beverages</button>
+          <button class="cat-pill" data-category="snacks">🥜 Snacks</button>
+        </div>
+
+        <div class="sort-wrapper">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="rating">⭐ Highest Rated</option>
+            <option value="price-asc">₹ Price: Low to High</option>
+            <option value="price-desc">₹ Price: High to Low</option>
+            <option value="name">🔤 Name (A-Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Main Product Grid -->
+      <div class="product-grid" id="products-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Sidebar Drawer -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <div class="cart-title-wrapper">
+        <span class="cart-icon">🛍️</span>
+        <h3>Your Shopping Cart</h3>
+      </div>
+      <button class="close-btn" id="cart-close">✕</button>
+    </div>
+
+    <!-- Free Delivery Banner -->
+    <div class="delivery-progress-card" id="delivery-banner">
+      <div class="delivery-text" id="delivery-text">Add ₹500 for Free Delivery!</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="delivery-progress" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <div class="cart-items-container" id="cart-items">
+      <!-- Loaded dynamically -->
+    </div>
+
+    <!-- Smart Cart AI Suggestions -->
+    <div class="smart-cart-addons" id="smart-cart-addons" style="display:none;">
+      <div class="addon-title">✨ AI Complementary Add-ons</div>
+      <div class="addon-items" id="addon-items"></div>
+    </div>
+
+    <!-- Smart Basket Nutrition & Macro Profile -->
+    <div class="cart-nutrition-card" id="cart-nutrition-card" style="display:none;">
+      <div class="nutrition-header">
+        <span>🥗 Cart Nutrition Profile</span>
+        <span class="health-grade" id="nutrition-grade">Grade A+</span>
+      </div>
+      <div class="nutrition-grid">
+        <div class="macro-box">
+          <small>Protein</small>
+          <strong id="macro-protein">0g</strong>
+        </div>
+        <div class="macro-box">
+          <small>Fiber</small>
+          <strong id="macro-fiber">0g</strong>
+        </div>
+        <div class="macro-box">
+          <small>Est. Calories</small>
+          <strong id="macro-calories">0 kcal</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer" id="cart-footer">
+      <div class="bill-details">
+        <div class="bill-row"><span>Item Subtotal</span><span id="cart-subtotal">₹0.00</span></div>
+        <div class="bill-row"><span>Delivery Fee</span><span id="cart-delivery">₹49.00</span></div>
+        <div class="bill-row"><span>Taxes & GST (8%)</span><span id="cart-tax">₹0.00</span></div>
+        <div class="bill-row total"><span>Total Amount</span><span id="cart-total">₹0.00</span></div>
+      </div>
+
+      <button class="btn-checkout" id="checkout-btn">Proceed to Checkout →</button>
+      <button class="btn-clear-cart" id="clear-cart-btn">Clear Cart</button>
+    </div>
+  </aside>
+
+  <!-- Floating FreshBot AI Assistant Widget -->
+  <div class="freshbot-floating-container">
+    <button class="freshbot-toggle-btn" id="freshbot-toggle" title="Open AI Recipe & Meal Assistant">
+      <span class="bot-icon">🤖</span>
+      <span class="bot-label">Ask FreshBot AI</span>
+    </button>
+
+    <div class="freshbot-panel" id="freshbot-panel" style="display:none;">
+      <div class="freshbot-header">
+        <div class="bot-header-left">
+          <span class="bot-avatar">🤖</span>
+          <div>
+            <strong>FreshBot AI</strong>
+            <small>Recipe-to-Cart & Meal Planner</small>
+          </div>
+        </div>
+        <button class="close-btn" id="freshbot-close">✕</button>
+      </div>
+
+      <div class="freshbot-quick-chips">
+        <button class="quick-chip" data-query="Mango Lassi">🥭 Mango Lassi</button>
+        <button class="quick-chip" data-query="Fruit Salad Bowl">🥗 Fruit Salad</button>
+        <button class="quick-chip" data-query="High Protein Breakfast">💪 Protein Breakfast</button>
+        <button class="quick-chip" data-query="Healthy basket under 500">💰 Under ₹500 Basket</button>
+      </div>
+
+      <div class="freshbot-messages" id="freshbot-messages">
+        <div class="bot-msg">
+          <div class="msg-bubble bot">
+            👋 Hi there! I'm <strong>FreshBot</strong>. Ask me to plan any recipe, diet, or budget basket, and I'll match fresh ingredients into your cart!
+          </div>
+        </div>
+      </div>
+
+      <form id="freshbot-form" class="freshbot-input-bar">
+        <input type="text" id="freshbot-input" placeholder="e.g. 'Mango lassi', 'High protein breakfast'..." autocomplete="off">
+        <button type="submit" class="bot-send-btn">➤</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Visual Search Modal -->
+  <div class="modal-overlay" id="visual-modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">Computer Vision AI</span>
+          <h3>📷 Visual Product Search</h3>
+        </div>
+        <button class="close-btn" id="visual-close">✕</button>
+      </div>
+
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:14px;">
+        Upload a photo or choose a sample grocery image to extract color histogram embeddings:
+      </p>
+
+      <div class="visual-sample-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:16px;">
+        <button class="visual-sample-card" data-hint="red apple fruit">🍎 Red Apple</button>
+        <button class="visual-sample-card" data-hint="yellow banana">🍌 Banana</button>
+        <button class="visual-sample-card" data-hint="green broccoli">🥦 Broccoli</button>
+        <button class="visual-sample-card" data-hint="white dairy milk">🥛 Whole Milk</button>
+        <button class="visual-sample-card" data-hint="orange carrot">🥕 Fresh Carrots</button>
+        <button class="visual-sample-card" data-hint="dark chocolate brown">🍫 Dark Chocolate</button>
+      </div>
+
+      <div id="visual-results-box" style="display:none; border-top:1px solid var(--border-subtle); padding-top:14px;">
+        <div style="font-weight:700; font-size:0.85rem; color:var(--green-400); margin-bottom:8px;">✨ Top Visual Matches:</div>
+        <div id="visual-matches-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frequently Bought Together Modal -->
+  <div class="modal-overlay" id="fbt-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">Apriori Association Mining</span>
+          <h3>Frequently Bought Together</h3>
+        </div>
+        <button class="close-btn" id="fbt-close">✕</button>
+      </div>
+      <div class="fbt-content" id="fbt-content"></div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkout-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🛍️ Order Checkout</h3>
+        <button class="close-btn" id="checkout-close">✕</button>
+      </div>
+      <form id="checkout-form" class="checkout-form">
+        <div class="form-group">
+          <label>Customer Full Name *</label>
+          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required>
+        </div>
+        <div class="form-group">
+          <label>Delivery Address *</label>
+          <input type="text" id="cust-address" placeholder="Flat / Building, Street, Area, City" required>
+        </div>
+        <div class="form-group">
+          <label>Contact Phone (+91) *</label>
+          <input type="tel" id="cust-phone" placeholder="9876543210" required>
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <select id="cust-payment" class="sort-select">
+            <option value="upi">⚡ UPI / QR Code</option>
+            <option value="card">💳 Credit / Debit Card</option>
+            <option value="cash">💵 Cash on Delivery (COD)</option>
+          </select>
+        </div>
+
+        <div class="checkout-summary-box">
+          <span>Amount Payable (incl. taxes)</span>
+          <strong id="checkout-total-val">₹0.00</strong>
+        </div>
+
+        <button type="submit" class="btn-checkout" id="place-order-btn">Confirm & Place Order (₹)</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div class="modal-overlay" id="confirmation-overlay" style="display:none;">
+    <div class="modal-card text-center">
+      <div class="success-icon">🎉</div>
+      <h2 style="color:var(--green-400); margin-bottom:8px;">Order Placed Successfully!</h2>
+      <p style="color:var(--text-muted);">Thank you for shopping with FreshCart AI.</p>
+      
+      <div class="order-id-badge" id="confirmed-order-id">ORD-XXXX</div>
+
+      <div class="confirmed-details" id="confirmed-items-list"></div>
+
+      <button class="btn-primary" id="continue-shopping-btn" style="margin-top:20px; width:100%;">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- Orders History Modal -->
+  <div class="modal-overlay" id="orders-overlay" style="display:none;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <h3>📦 Your Past Orders</h3>
+        <button class="close-btn" id="orders-close">✕</button>
+      </div>
+      <div class="orders-list" id="orders-list">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal (Sign In / Register) -->
+  <div class="modal-overlay" id="auth-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login">Sign In</button>
+          <button class="auth-tab" id="tab-register">Register</button>
+        </div>
+        <button class="close-btn" id="auth-close">✕</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="checkout-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="customer@freshcart.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-checkout">Sign In</button>
+
+        <div class="demo-creds-hint">
+          <small>🔑 Demo accounts for viva testing:</small>
+          <code>customer@freshcart.com / customer123</code><br>
+          <code>admin@freshcart.com / admin123</code>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="checkout-form" style="display:none;">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Aarav Sharma" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="aarav@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password (min 6 characters)</label>
+          <input type="password" id="reg-password" placeholder="••••••••" minlength="6" required>
+        </div>
+        <button type="submit" class="btn-checkout">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>© 2026 FreshCart AI — Intelligent Grocery E-Commerce & Recommendation System</p>
+      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • 5-Student Team System Architecture</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

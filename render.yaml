@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: freshcart-ai
+    env: node
+    plan: free
+    buildCommand: npm install && node db/seed.js
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000

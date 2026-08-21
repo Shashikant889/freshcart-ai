@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshCart AI — Admin & Machine Learning Analytics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <!-- Chart.js CDN for ML & Analytics Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="/" class="admin-logo">
+          <span class="logo-emoji">🌿</span>
+          <div>
+            <div class="logo-brand">FreshCart <span class="badge-ai">AI Admin</span></div>
+            <small>CSE-AIML E-Commerce</small>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">📊 Overview & Sales</button>
+        <button class="nav-item" data-tab="forecasting">📈 AI Demand Forecasting</button>
+        <button class="nav-item" data-tab="pricing-simulator">📉 Dynamic Pricing & Elasticity</button>
+        <button class="nav-item" data-tab="dispatch-routes">🚚 Delivery Route Optimizer (VRP)</button>
+        <button class="nav-item" data-tab="segmentation">👥 AI Customer Segments</button>
+        <button class="nav-item" data-tab="stock-alerts">🚨 Inventory & Stock Alerts</button>
+        <button class="nav-item" data-tab="ml-metrics">🧠 ML Model Evaluation</button>
+        <button class="nav-item" data-tab="products-crud">📦 Products Management</button>
+        <button class="nav-item" data-tab="orders-feed">🛒 Orders Feed</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" class="btn-back-store">← Back to Customer Store</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div>
+          <h1 id="page-title">Executive Overview & Analytics</h1>
+          <p class="subtitle">AI models trained on 12 months synthetic history & 83,000+ interactions</p>
+        </div>
+        <div class="user-pill">
+          <span class="avatar">👨‍💼</span>
+          <div>
+            <strong>Admin Portal</strong>
+            <small>admin@freshcart.com</small>
+          </div>
+        </div>
+      </header>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-revenue">₹</div>
+          <div>
+            <div class="kpi-label">Total Store Revenue</div>
+            <div class="kpi-value" id="kpi-revenue">₹0.00</div>
+            <small class="kpi-sub">Across 4,200+ historical orders</small>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-orders">📦</div>
+          <div>
+            <div class="kpi-label">Total Orders Placed</div>
+            <div class="kpi-value" id="kpi-orders">0</div>
+            <small class="kpi-sub" id="kpi-aov">Avg Order: ₹0.00</small>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-users">👥</div>
+          <div>
+            <div class="kpi-label">Registered Customers</div>
+            <div class="kpi-value" id="kpi-users">52</div>
+            <small class="kpi-sub">Segmented via K-Means</small>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-ai">🎯</div>
+          <div>
+            <div class="kpi-label">Recommendation Precision@5</div>
+            <div class="kpi-value" id="kpi-precision">78.4%</div>
+            <small class="kpi-sub">Hybrid Collaborative Model</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 1: Overview & Sales -->
+      <section class="tab-pane active" id="tab-overview">
+        <div class="chart-grid">
+          <div class="chart-card chart-wide">
+            <div class="chart-header">
+              <h3>📈 30-Day Daily Sales & Revenue Trend</h3>
+              <span class="badge-tag">Time Series</span>
+            </div>
+            <canvas id="salesTrendChart" height="90"></canvas>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🍩 Revenue Share by Category</h3>
+              <span class="badge-tag">Distribution</span>
+            </div>
+            <canvas id="categoryRevenueChart"></canvas>
+          </div>
+
+          <div class="chart-card chart-wide">
+            <div class="chart-header">
+              <h3>🏆 Top 5 Revenue Generating Products</h3>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table" id="top-products-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Units Sold</th>
+                    <th>Total Revenue</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: AI Demand Forecasting -->
+      <section class="tab-pane" id="tab-forecasting">
+        <div class="section-banner">
+          <div class="banner-left">
+            <h2>📈 Time-Series Demand Forecasting</h2>
+            <p>Predicts next 7 to 30 days quantity demand using Ordinary Least Squares Linear Regression, Moving Averages, and Day-of-Week Seasonality.</p>
+          </div>
+          <div class="forecast-selector">
+            <label>Select Product to Forecast:</label>
+            <select id="forecast-product-select" class="admin-select"></select>
+          </div>
+        </div>
+
+        <!-- Product Forecast Stats -->
+        <div class="forecast-metrics-grid" id="forecast-metrics-cards">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="chart-card" style="margin-top:20px;">
+          <div class="chart-header">
+            <h3 id="forecast-chart-title">Demand Forecast Analysis</h3>
+            <span class="badge-tag">Hybrid Regression + 7-Day SMA</span>
+          </div>
+          <canvas id="demandForecastChart" height="85"></canvas>
+        </div>
+      </section>
+
+      <!-- Tab: Dynamic Pricing & Price Elasticity Simulator -->
+      <section class="tab-pane" id="tab-pricing-simulator">
+        <div class="section-banner">
+          <div class="banner-left">
+            <h2>📉 Dynamic Pricing & Price Elasticity Simulator</h2>
+            <p>Simulate the microeconomic revenue and demand impact of price changes using category elasticity coefficients ($E_d = \frac{\% \Delta Q}{\% \Delta P}$).</p>
+          </div>
+          <div class="forecast-selector">
+            <label>Select Product to Simulate:</label>
+            <select id="pricing-product-select" class="admin-select"></select>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🎛️ Interactive Price Adjustment Slider</h3>
+              <span class="badge-tag" id="pricing-elasticity-badge">Elasticity: -1.25</span>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:700;">
+                <span>Adjust Proposed Price (₹):</span>
+                <span id="slider-price-val" style="color:var(--green-400); font-size:1.3rem;">₹249</span>
+              </div>
+              <input type="range" id="pricing-slider" min="20" max="800" step="5" value="249" style="width:100%; cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">
+                <span>-50% Markdown</span>
+                <span id="orig-price-marker">Original: ₹249</span>
+                <span>+50% Markup</span>
+              </div>
+            </div>
+
+            <div class="forecast-metrics-grid" id="pricing-sim-results" style="grid-template-columns: 1fr 1fr;">
+              <!-- Populated by JS -->
+            </div>
+
+            <div id="pricing-recommendation-box" style="margin-top:16px; padding:14px; background:rgba(16,185,129,0.08); border:1px solid var(--border-active); border-radius:var(--radius-sm); font-size:0.88rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>📊 Category Price Elasticity Reference</h3>
+            </div>
+            <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.6;">
+              <p><strong>🥛 Dairy & Staples ($E_d \approx -0.58$):</strong> Inelastic. Demand remains steady even if price increases.</p>
+              <p style="margin-top:8px;"><strong>🥦 Vegetables ($E_d \approx -0.82$):</strong> Moderate elasticity.</p>
+              <p style="margin-top:8px;"><strong>🍎 Fruits & Bakery ($E_d \approx -1.25$):</strong> Elastic. Customers are sensitive to markups; discounts drive significant volume.</p>
+              <p style="margin-top:8px;"><strong>🥜 Snacks ($E_d \approx -1.35$):</strong> Highly elastic discretionary item.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Delivery Dispatch Route Optimizer (VRP) -->
+      <section class="tab-pane" id="tab-dispatch-routes">
+        <div class="section-banner">
+          <div class="banner-left">
+            <h2>🚚 AI Delivery Dispatch Route Optimizer (VRP / TSP)</h2>
+            <p>Solves the Vehicle Routing Problem using Haversine distance, Nearest Neighbor initialization, and 2-Opt local search heuristics to minimize delivery transit time and fuel consumption.</p>
+          </div>
+          <button class="btn-action" id="btn-reoptimize-routes">⚡ Re-calculate Route (2-Opt)</button>
+        </div>
+
+        <div class="forecast-metrics-grid" id="dispatch-metrics-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="chart-grid" style="margin-top:20px;">
+          <!-- Interactive Route Canvas -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🗺️ Optimized Multi-Stop GPS Dispatch Map</h3>
+              <span class="badge-tag">2-Opt Heuristic Topology</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.3); border-radius:var(--radius-sm); padding:10px; display:flex; justify-content:center;">
+              <canvas id="routeCanvas" width="480" height="320" style="width:100%; max-width:480px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Turn-by-Turn Stop Sequence -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>📋 Turn-by-Turn Delivery Itinerary</h3>
+            </div>
+            <div class="table-wrapper" style="max-height:330px; overflow-y:auto;">
+              <table class="data-table" id="dispatch-itinerary-table">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Destination</th>
+                    <th>Area</th>
+                    <th>Leg (km)</th>
+                    <th>Total (km)</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: AI Customer Segmentation (K-Means + RFM) -->
+      <section class="tab-pane" id="tab-segmentation">
+        <div class="section-banner">
+          <div class="banner-left">
+            <h2>👥 Customer Segmentation Engine (K-Means Clustering)</h2>
+            <p>Clusters customers based on <strong>Recency (days)</strong>, <strong>Frequency (orders)</strong>, and <strong>Monetary (spend in ₹)</strong> with Min-Max feature normalization.</p>
+          </div>
+          <button class="btn-action" id="btn-recluster">⚡ Re-run K-Means (k=4)</button>
+        </div>
+
+        <!-- Personas Grid -->
+        <div class="persona-grid" id="persona-cards-container">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Elbow Curve Chart -->
+        <div class="chart-card" style="margin-top:24px;">
+          <div class="chart-header">
+            <h3>📉 WCSS Elbow Curve (Optimal Cluster Selection)</h3>
+            <span class="badge-tag">Within-Cluster Sum of Squares</span>
+          </div>
+          <canvas id="elbowCurveChart" height="70"></canvas>
+        </div>
+      </section>
+
+      <!-- Tab 4: Inventory & Stock Alerts -->
+      <section class="tab-pane" id="tab-stock-alerts">
+        <div class="section-banner">
+          <div>
+            <h2>🚨 Automated Inventory & Stock Risk Alerts</h2>
+            <p>AI compares current warehouse stock against 7-day predicted demand run-rates to identify imminent stockouts and overstocked inventory.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper" style="margin-top:16px;">
+          <table class="data-table" id="stock-alerts-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Predicted 7-Day Demand</th>
+                <th>Stock Run-Rate</th>
+                <th>Risk Level</th>
+                <th>AI Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 5: ML Model Evaluation -->
+      <section class="tab-pane" id="tab-ml-metrics">
+        <div class="section-banner">
+          <div>
+            <h2>🧠 Machine Learning Model Evaluation & Viva Reference</h2>
+            <p>Mathematical formulations, validation metrics, baseline benchmarks, and evaluation datasets for CSE-AIML project defense.</p>
+          </div>
+        </div>
+
+        <div class="metrics-summary-container" id="ml-evaluation-content">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Tab 6: Products CRUD -->
+      <section class="tab-pane" id="tab-products-crud">
+        <div class="section-banner">
+          <div>
+            <h2>📦 Product Catalog & Warehouse Inventory Management</h2>
+            <p>Adjust live stock levels and prices in Indian Rupees (₹).</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper" style="margin-top:16px;">
+          <table class="data-table" id="crud-products-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Category</th>
+                <th>Unit</th>
+                <th>Price (₹)</th>
+                <th>Current Stock</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 7: Orders Feed -->
+      <section class="tab-pane" id="tab-orders-feed">
+        <div class="section-banner">
+          <div>
+            <h2>🛒 Live Customer Orders Feed & AI Fraud Detection</h2>
+            <p>Real-time order statuses, customer addresses, and Z-Score ML Fraud Risk Scoring.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper" style="margin-top:16px;">
+          <table class="data-table" id="orders-feed-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Phone & Address</th>
+                <th>Items Ordered</th>
+                <th>Total (₹)</th>
+                <th>Fraud Risk Assessment</th>
+                <th>Status</th>
+                <th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="admin-toast-container"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
