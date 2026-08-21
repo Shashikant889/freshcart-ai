@@ -3,30 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreshCart AI — Intelligent Grocery E-Commerce & Recommendations</title>
-  <meta name="description" content="AI-Powered Grocery Shopping with Personalized Recommendations, Demand Forecasting, and NLP Smart Search.">
+  <title>FreshCart AI — Intelligent Grocery E-Commerce & 10-Min Quick Delivery</title>
+  <meta name="description" content="AI-Powered 10-Minute Grocery Delivery with Multimodal Search, Voice AI, Live Delivery Tracking, and Demand Forecasting.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Header / Navigation -->
+  <!-- Top Quick-Commerce Notification & Location Sub-Bar -->
+  <div class="qc-sub-bar">
+    <div class="qc-sub-container">
+      <div class="qc-left-items">
+        <div class="location-badge" id="location-picker-btn" title="Change Delivery Dark Store">
+          <span class="pulse-dot"></span>
+          <span id="current-location-text">📍 Indiranagar Hub #04 • <strong>⚡ 11 Mins ETA</strong></span>
+          <small style="color:var(--text-dim);">▼</small>
+        </div>
+        <span style="color:var(--text-dim); font-size:0.75rem;">|</span>
+        <span style="color:var(--green-400); font-weight:600;" id="top-free-del-text">🎁 Free Delivery unlocked on orders > ₹500</span>
+      </div>
+
+      <div class="qc-right-items">
+        <button class="qc-pill-btn coins-badge" id="coins-btn" title="View FreshCoins Balance">
+          <span>🪙</span>
+          <span id="header-coins-val">250 Coins</span>
+        </button>
+
+        <button class="qc-pill-btn" id="lucky-spin-btn" title="Spin the Lucky Wheel for Coupons">
+          <span>🎰</span>
+          <span>Lucky Spin</span>
+        </button>
+
+        <button class="qc-pill-btn" id="pantry-sub-btn" title="Manage Daily Milk & Pantry Subscriptions">
+          <span>🥛</span>
+          <span>Subscriptions</span>
+        </button>
+
+        <button class="qc-pill-btn" id="lang-toggle-btn" title="Switch Language (Hindi / English)">
+          <span>🌐</span>
+          <span id="lang-label">हिन्दी</span>
+        </button>
+
+        <button class="qc-pill-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Main Navigation -->
   <header class="header">
     <div class="header-container">
       <a href="/" class="logo">
         <span class="logo-icon">🌿</span>
         <div class="logo-text">
           <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
-          <span class="logo-subtitle">Intelligent Grocery</span>
+          <span class="logo-subtitle">10-Min Quick Grocery</span>
         </div>
       </a>
 
-      <!-- Smart NLP Search Bar -->
+      <!-- Smart NLP Search Bar with Voice & Visual Search -->
       <div class="search-container">
         <span class="search-icon">🔍</span>
         <input type="text" id="search-input" placeholder="Search groceries, e.g. 'organic apples', 'dahi', 'seb', 'snack'..." autocomplete="off">
-        <button id="visual-search-btn" class="visual-search-btn" title="Search by Image / Camera">📷</button>
+        
+        <!-- Live Speech Recognition Button -->
+        <button id="voice-search-btn" class="voice-search-btn" title="Voice Search (Speak in English/Hindi)">🎙️</button>
+        
+        <!-- Multimodal Vision Button -->
+        <button id="visual-search-btn" class="visual-search-btn" title="Search by Photo / Handwritten List">📷</button>
         <button id="search-clear" class="search-clear-btn" style="display:none;">✕</button>
         <div id="smart-search-dropdown" class="search-dropdown" style="display:none;"></div>
       </div>
@@ -65,9 +111,9 @@
     <div class="hero-container">
       <div class="hero-content">
         <div class="ai-pill">✨ Powered by Collaborative & Content-Based ML</div>
-        <h1 class="hero-title">Fresh Groceries,<br><span class="gradient-text">Smart Recommendations.</span></h1>
+        <h1 class="hero-title">Fresh Groceries,<br><span class="gradient-text">Delivered in 10 Minutes.</span></h1>
         <p class="hero-desc">
-          Experience AI-tailored grocery shopping in Indian Rupees (₹). Smart search, personalized item ranking, and automated stock freshness.
+          Hyper-local quick commerce powered by real-time OLS demand forecasting, 2-Opt fleet dispatch, and AI recipe-to-cart solver.
         </p>
         
         <div class="hero-stats">
@@ -76,8 +122,8 @@
             <span class="stat-lbl">Free Delivery</span>
           </div>
           <div class="stat-box">
-            <span class="stat-val">30 Min</span>
-            <span class="stat-lbl">Fast Delivery</span>
+            <span class="stat-val">10 Min</span>
+            <span class="stat-lbl">Express Delivery</span>
           </div>
           <div class="stat-box">
             <span class="stat-val">98.4%</span>
@@ -117,6 +163,45 @@
     </div>
   </section>
 
+  <!-- Flash Deals & Midnight Steals Ticker (Instamart / Zepto Style) -->
+  <section class="section" style="padding-top:0;">
+    <div class="section-container">
+      <div class="flash-deals-banner">
+        <div class="flash-header">
+          <div class="flash-title-wrap">
+            <span class="flash-title">⚡ Flash Deals & Fresh Steals</span>
+            <span style="font-size:0.8rem; color:rgba(255,255,255,0.8);">Up to 40% Off on Selected Farm Produce</span>
+          </div>
+          <div class="countdown-box">
+            <span>⏳ Ends in:</span>
+            <span id="flash-countdown">02:44:18</span>
+          </div>
+        </div>
+
+        <div class="flash-grid" id="flash-deals-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1-Click Curated Value Combos Section -->
+  <section class="section combos-section">
+    <div class="section-container">
+      <div class="section-header">
+        <div>
+          <div class="section-badge">🍳 1-Click Meal Kits</div>
+          <h2 class="section-title">Curated Smart Combos</h2>
+          <p class="section-subtitle">Pre-bundled ingredient kits curated by AI with bundled savings</p>
+        </div>
+      </div>
+
+      <div class="combo-grid" id="combo-packs-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
   <!-- AI Recommendations Section -->
   <section class="section recs-section" id="ai-recs-section">
     <div class="section-container">
@@ -138,6 +223,16 @@
   <!-- Category & Main Product Catalog Section -->
   <section class="section" id="catalog-section">
     <div class="section-container">
+      <!-- Dietary & Health Specialty Filters -->
+      <div class="diet-filter-wrapper">
+        <button class="diet-pill active" data-diet="all">🌟 All Categories</button>
+        <button class="diet-pill" data-diet="organic">🌱 100% Organic</button>
+        <button class="diet-pill" data-diet="protein">💪 High Protein</button>
+        <button class="diet-pill" data-diet="keto">🥑 Keto Friendly</button>
+        <button class="diet-pill" data-diet="gluten-free">🌾 Gluten-Free</button>
+        <button class="diet-pill" data-diet="diabetic">🩺 Diabetic Safe</button>
+      </div>
+
       <div class="catalog-controls">
         <div class="category-pills" id="category-pills">
           <button class="cat-pill active" data-category="all">🛒 All Items</button>
@@ -221,6 +316,10 @@
     <div class="cart-footer" id="cart-footer">
       <div class="bill-details">
         <div class="bill-row"><span>Item Subtotal</span><span id="cart-subtotal">₹0.00</span></div>
+        <div class="bill-row" id="coupon-discount-row" style="display:none; color:var(--green-400);">
+          <span>Coupon Discount (<span id="applied-coupon-name"></span>)</span>
+          <span id="cart-discount">-₹0.00</span>
+        </div>
         <div class="bill-row"><span>Delivery Fee</span><span id="cart-delivery">₹49.00</span></div>
         <div class="bill-row"><span>Taxes & GST (8%)</span><span id="cart-tax">₹0.00</span></div>
         <div class="bill-row total"><span>Total Amount</span><span id="cart-total">₹0.00</span></div>
@@ -272,21 +371,30 @@
     </div>
   </div>
 
-  <!-- Visual Search Modal -->
+  <!-- Multimodal Visual Search Modal -->
   <div class="modal-overlay" id="visual-modal-overlay" style="display:none;">
     <div class="modal-card">
       <div class="modal-header">
         <div>
           <span class="ai-pill">Computer Vision AI</span>
-          <h3>📷 Visual Product Search</h3>
+          <h3>📷 Visual & Handwritten List Scanner</h3>
         </div>
         <button class="close-btn" id="visual-close">✕</button>
       </div>
 
       <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:14px;">
-        Upload a photo or choose a sample grocery image to extract color histogram embeddings:
+        Upload a photo of your fridge, pantry, or handwritten grocery note to extract items:
       </p>
 
+      <!-- Simulated File Upload -->
+      <div style="border: 2px dashed var(--border-active); border-radius: var(--radius-md); padding: 16px; text-align:center; margin-bottom:16px; background:rgba(16,185,129,0.03);">
+        <span style="font-size:2rem; display:block; margin-bottom:6px;">📸</span>
+        <label for="camera-upload-input" style="font-weight:700; color:var(--green-400); cursor:pointer;">Click to Upload Image or Grocery Note</label>
+        <input type="file" id="camera-upload-input" accept="image/*" style="display:none;">
+        <small style="display:block; color:var(--text-dim); margin-top:4px;">Supports JPG, PNG, WebP</small>
+      </div>
+
+      <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Or choose a quick demo signature:</div>
       <div class="visual-sample-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:16px;">
         <button class="visual-sample-card" data-hint="red apple fruit">🍎 Red Apple</button>
         <button class="visual-sample-card" data-hint="yellow banana">🍌 Banana</button>
@@ -297,7 +405,7 @@
       </div>
 
       <div id="visual-results-box" style="display:none; border-top:1px solid var(--border-subtle); padding-top:14px;">
-        <div style="font-weight:700; font-size:0.85rem; color:var(--green-400); margin-bottom:8px;">✨ Top Visual Matches:</div>
+        <div style="font-weight:700; font-size:0.85rem; color:var(--green-400); margin-bottom:8px;">✨ Identified Matches:</div>
         <div id="visual-matches-list" style="display:flex; flex-direction:column; gap:8px;"></div>
       </div>
     </div>
@@ -317,57 +425,339 @@
     </div>
   </div>
 
-  <!-- Checkout Modal -->
+  <!-- Enhanced Checkout Modal (Swiggy / Zomato Style) -->
   <div class="modal-overlay" id="checkout-overlay" style="display:none;">
-    <div class="modal-card">
+    <div class="modal-card modal-wide">
       <div class="modal-header">
-        <h3>🛍️ Order Checkout</h3>
+        <h3>🛍️ Express Checkout & Delivery Details</h3>
         <button class="close-btn" id="checkout-close">✕</button>
       </div>
       <form id="checkout-form" class="checkout-form">
-        <div class="form-group">
-          <label>Customer Full Name *</label>
-          <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>Customer Full Name *</label>
+            <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Phone (+91) *</label>
+            <input type="tel" id="cust-phone" placeholder="9876543210" required>
+          </div>
         </div>
+
         <div class="form-group">
           <label>Delivery Address *</label>
-          <input type="text" id="cust-address" placeholder="Flat / Building, Street, Area, City" required>
+          <input type="text" id="cust-address" placeholder="Flat 402, Sunshine Residency, Indiranagar, Bengaluru" required>
         </div>
-        <div class="form-group">
-          <label>Contact Phone (+91) *</label>
-          <input type="tel" id="cust-phone" placeholder="9876543210" required>
+
+        <!-- Delivery Instructions Matrix -->
+        <div class="checkout-sub-section">
+          <div class="checkout-sub-title">📝 Delivery Instructions for Rider</div>
+          <div class="instruction-grid">
+            <label class="instr-checkbox-label">
+              <input type="checkbox" name="instr" value="no-bell">
+              <span>🔕 Don't ring bell</span>
+            </label>
+            <label class="instr-checkbox-label">
+              <input type="checkbox" name="instr" value="leave-door">
+              <span>🚪 Leave at door</span>
+            </label>
+            <label class="instr-checkbox-label">
+              <input type="checkbox" name="instr" value="call-arrival">
+              <span>📞 Call on arrival</span>
+            </label>
+            <label class="instr-checkbox-label">
+              <input type="checkbox" name="instr" value="leave-guard">
+              <span>🛡️ Leave with security</span>
+            </label>
+          </div>
         </div>
+
+        <!-- Rider Tip Selector -->
+        <div class="checkout-sub-section">
+          <div class="checkout-sub-title">
+            <span>🛵 Tip your delivery partner</span>
+            <small style="color:var(--text-dim); font-weight:400;">(100% tip goes to rider)</small>
+          </div>
+          <div class="chip-select-grid" id="tip-chips">
+            <button type="button" class="chip-btn" data-tip="0">None</button>
+            <button type="button" class="chip-btn active" data-tip="20">₹20</button>
+            <button type="button" class="chip-btn" data-tip="30">₹30</button>
+            <button type="button" class="chip-btn" data-tip="50">₹50</button>
+            <button type="button" class="chip-btn" data-tip="100">₹100</button>
+          </div>
+        </div>
+
+        <!-- Eco Bag & Green Delivery Toggle -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.06); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); margin-bottom:12px;">
+          <div>
+            <strong style="font-size:0.82rem; color:var(--green-400);">🛍️ Add Reusable Organic Cotton Bag</strong>
+            <small style="display:block; color:var(--text-dim); font-size:0.72rem;">Say no to single-use plastics (+₹15)</small>
+          </div>
+          <input type="checkbox" id="eco-bag-toggle" checked style="width:18px; height:18px; accent-color:var(--green-500);">
+        </div>
+
+        <!-- Coupon / Voucher Code Input -->
+        <div class="checkout-sub-section">
+          <div class="checkout-sub-title">🏷️ Apply Promo Code / FreshCoins</div>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="coupon-code-input" placeholder="e.g. INSTA50, FRESHFREE" style="text-transform:uppercase; font-family:monospace; font-weight:700;">
+            <button type="button" class="btn-secondary" id="apply-coupon-btn" style="padding:0 16px; white-space:nowrap;">Apply</button>
+          </div>
+          <div id="coupon-msg" style="font-size:0.75rem; margin-top:4px; font-weight:600;"></div>
+        </div>
+
         <div class="form-group">
           <label>Payment Method</label>
           <select id="cust-payment" class="sort-select">
-            <option value="upi">⚡ UPI / QR Code</option>
+            <option value="upi">⚡ Instant UPI / QR Code</option>
             <option value="card">💳 Credit / Debit Card</option>
             <option value="cash">💵 Cash on Delivery (COD)</option>
           </select>
         </div>
 
         <div class="checkout-summary-box">
-          <span>Amount Payable (incl. taxes)</span>
+          <span>Amount Payable (incl. tip & taxes)</span>
           <strong id="checkout-total-val">₹0.00</strong>
         </div>
 
-        <button type="submit" class="btn-checkout" id="place-order-btn">Confirm & Place Order (₹)</button>
+        <button type="submit" class="btn-checkout" id="place-order-btn">Pay & Place Order (₹)</button>
       </form>
     </div>
   </div>
 
-  <!-- Order Confirmation Modal -->
+  <!-- Order Confirmation & Quick-Actions Modal -->
   <div class="modal-overlay" id="confirmation-overlay" style="display:none;">
-    <div class="modal-card text-center">
+    <div class="modal-card text-center modal-wide">
       <div class="success-icon">🎉</div>
-      <h2 style="color:var(--green-400); margin-bottom:8px;">Order Placed Successfully!</h2>
-      <p style="color:var(--text-muted);">Thank you for shopping with FreshCart AI.</p>
+      <h2 style="color:var(--green-400); margin-bottom:4px;">Order Placed Successfully!</h2>
+      <p style="color:var(--text-muted); font-size:0.88rem;">Packed and arriving in <strong>10 minutes</strong> from Dark Store Hub #04.</p>
       
       <div class="order-id-badge" id="confirmed-order-id">ORD-XXXX</div>
 
-      <div class="confirmed-details" id="confirmed-items-list"></div>
+      <!-- Quick Action Buttons -->
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin: 16px 0;">
+        <button class="btn-primary" id="open-tracking-modal-btn" style="font-size:0.82rem; padding:10px 8px;">
+          🛵 Track Live Order
+        </button>
+        <button class="btn-secondary" id="open-scratch-modal-btn" style="font-size:0.82rem; padding:10px 8px; border-color:#fbbf24; color:#fbbf24;">
+          🎟️ Scratch & Win
+        </button>
+        <button class="btn-secondary" id="open-invoice-modal-btn" style="font-size:0.82rem; padding:10px 8px;">
+          📄 Tax Invoice
+        </button>
+      </div>
 
-      <button class="btn-primary" id="continue-shopping-btn" style="margin-top:20px; width:100%;">Continue Shopping</button>
+      <div class="confirmed-details" id="confirmed-items-list" style="text-align:left;"></div>
+
+      <button class="btn-secondary" id="continue-shopping-btn" style="margin-top:16px; width:100%;">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- Live Order Tracking & Simulated Moving Courier Map Modal -->
+  <div class="modal-overlay" id="tracking-modal-overlay" style="display:none;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">Real-Time VRP Telemetry</span>
+          <h3>🛵 Live Order & Rider Tracking</h3>
+        </div>
+        <button class="close-btn" id="tracking-close">✕</button>
+      </div>
+
+      <!-- 4-Stage Stepper -->
+      <div class="tracking-stepper">
+        <div class="track-step active" id="step-1">
+          <div class="step-icon">✓</div>
+          <span class="step-label">Confirmed</span>
+        </div>
+        <div class="track-step active" id="step-2">
+          <div class="step-icon">📦</div>
+          <span class="step-label">Packed</span>
+        </div>
+        <div class="track-step active" id="step-3">
+          <div class="step-icon">🛵</div>
+          <span class="step-label">On Way</span>
+        </div>
+        <div class="track-step" id="step-4">
+          <div class="step-icon">🏠</div>
+          <span class="step-label">Delivered</span>
+        </div>
+      </div>
+
+      <!-- Live Moving Map Canvas -->
+      <div class="live-map-box">
+        <canvas id="live-map-canvas" width="600" height="220" style="width:100%; height:100%;"></canvas>
+      </div>
+
+      <!-- Rider Profile Card -->
+      <div class="rider-card">
+        <div class="rider-info">
+          <div class="rider-avatar">🛵</div>
+          <div>
+            <strong>Ramesh Kumar</strong> <span style="color:#fbbf24; font-weight:700;">★ 4.9</span>
+            <small style="display:block; color:var(--text-dim);">Ather EV Scooter (KA-03-EK-4921) • Mask Verified ✅</small>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="qc-pill-btn" onclick="alert('Calling rider Ramesh Kumar at +91-98765-XXXXX... 📞')">📞 Call</button>
+          <button class="qc-pill-btn" onclick="alert('Safety verified: Temperature 98.4°F, Sanitized bag ✅')">🛡️ Safety</button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); padding:10px 14px; border-radius:var(--radius-sm);">
+        <span>Estimated Delivery Window:</span>
+        <strong style="color:var(--green-400); font-size:1.1rem;" id="live-eta-timer">8 Mins (10:15 PM)</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucky Spin Wheel Modal (Gamification) -->
+  <div class="modal-overlay" id="wheel-modal-overlay" style="display:none;">
+    <div class="modal-card text-center">
+      <div class="modal-header">
+        <h3>🎰 Daily FreshSpin & Win Coupons</h3>
+        <button class="close-btn" id="wheel-close">✕</button>
+      </div>
+
+      <div class="wheel-container">
+        <div class="wheel-canvas-wrapper">
+          <div class="wheel-pointer"></div>
+          <canvas id="wheel-canvas" width="280" height="280"></canvas>
+        </div>
+
+        <button class="btn-primary" id="spin-action-btn" style="width:100%; font-size:1rem; font-weight:800;">
+          🎡 SPIN THE WHEEL!
+        </button>
+
+        <div id="wheel-result-msg" style="font-weight:700; color:var(--green-400); font-size:0.95rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post-Order Scratch Card Modal (Gamification) -->
+  <div class="modal-overlay" id="scratch-modal-overlay" style="display:none;">
+    <div class="modal-card text-center">
+      <div class="modal-header">
+        <h3>🎟️ Lucky Cashback Scratch Card</h3>
+        <button class="close-btn" id="scratch-close">✕</button>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Scratch the silver foil with your mouse or finger to reveal surprise rewards!</p>
+
+      <div class="scratch-box">
+        <div class="scratch-prize" id="scratch-prize-text">
+          <span style="font-size:1.5rem;">🎉</span>
+          <span>₹50 CASHBACK WON!</span>
+          <small>Use code <strong>CASH50</strong> on next order</small>
+        </div>
+        <canvas id="scratch-canvas" width="280" height="140"></canvas>
+      </div>
+
+      <button class="btn-secondary" id="claim-scratch-btn" style="width:100%;">Claim Cashback Reward</button>
+    </div>
+  </div>
+
+  <!-- Daily Milk & Pantry Subscription Modal -->
+  <div class="modal-overlay" id="pantry-modal-overlay" style="display:none;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">Smart Recurring Grocery</span>
+          <h3>🥛 Daily Subscriptions & Pantry Tracker</h3>
+        </div>
+        <button class="close-btn" id="pantry-close">✕</button>
+      </div>
+
+      <p style="color:var(--text-muted); font-size:0.85rem;">
+        Automate your daily 7:00 AM essentials or monitor pantry burn-rates to avoid running out:
+      </p>
+
+      <div class="pantry-grid" id="pantry-items-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Official GST Tax Invoice Modal (Printable) -->
+  <div class="modal-overlay" id="invoice-modal-overlay" style="display:none;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <h3>📄 Tax Invoice & Payment Receipt</h3>
+        <button class="close-btn" id="invoice-close">✕</button>
+      </div>
+
+      <div class="invoice-container" id="printable-invoice">
+        <div class="invoice-header-row">
+          <div>
+            <h3 style="color:#059669; font-weight:800;">🌿 FreshCart AI Private Ltd</h3>
+            <small style="color:#64748b;">GSTIN: 29AABCF1234F1Z5 • FSSAI: 11223344556677</small><br>
+            <small style="color:#64748b;">Dark Store #04, Indiranagar, Bengaluru, KA 560038</small>
+          </div>
+          <div style="text-align:right;">
+            <strong id="inv-order-id">ORD-XXXX</strong><br>
+            <small id="inv-date">Date: 21 Aug 2026</small>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <small style="color:#64748b;">Billed To:</small><br>
+          <strong id="inv-cust-name">Rahul Sharma</strong> (<span id="inv-cust-phone">+91-9876543210</span>)<br>
+          <span id="inv-cust-address" style="font-size:0.8rem; color:#475569;">Indiranagar, Bengaluru</span>
+        </div>
+
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="inv-items-body"></tbody>
+        </table>
+
+        <div style="text-align:right; margin-top:10px;">
+          <div>Item Subtotal: <strong id="inv-subtotal">₹0.00</strong></div>
+          <div>Delivery Fee: <strong id="inv-delivery">₹0.00</strong></div>
+          <div>Rider Tip: <strong id="inv-tip">₹20.00</strong></div>
+          <div>CGST (4%) + SGST (4%): <strong id="inv-tax">₹0.00</strong></div>
+          <div style="font-size:1.1rem; font-weight:800; color:#059669; margin-top:4px;">Grand Total: <span id="inv-total">₹0.00</span></div>
+        </div>
+
+        <div class="qr-code-box">
+          <canvas id="invoice-qr-canvas" width="100" height="100"></canvas>
+          <small style="color:#64748b; margin-top:4px;">Cryptographically Verified Invoice • Scan to Authenticate</small>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="window.print()" style="margin-top:16px; width:100%;">🖨️ Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- Location Picker Modal -->
+  <div class="modal-overlay" id="location-modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📍 Select Delivery Hub</h3>
+        <button class="close-btn" id="location-close">✕</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn-secondary" onclick="app.setHub('Indiranagar Hub #04', '11 Mins')">📍 Bengaluru: Indiranagar Hub #04 (11 Mins ETA) ⚡</button>
+        <button class="btn-secondary" onclick="app.setHub('Koramangala Hub #02', '14 Mins')">📍 Bengaluru: Koramangala Hub #02 (14 Mins ETA)</button>
+        <button class="btn-secondary" onclick="app.setHub('Bandra West Hub #01', '12 Mins')">📍 Mumbai: Bandra West Hub #01 (12 Mins ETA)</button>
+        <button class="btn-secondary" onclick="app.setHub('Connaught Hub #03', '10 Mins')">📍 Delhi: Connaught Place Hub #03 (10 Mins ETA)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Detail & Customer Reviews Modal -->
+  <div class="modal-overlay" id="product-detail-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="detail-prod-name">Product Details</h3>
+        <button class="close-btn" id="product-detail-close">✕</button>
+      </div>
+      <div id="product-detail-content"></div>
     </div>
   </div>
 
@@ -439,8 +829,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
-      <p>© 2026 FreshCart AI — Intelligent Grocery E-Commerce & Recommendation System</p>
-      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • 5-Student Team System Architecture</p>
+      <p>© 2026 FreshCart AI — Intelligent Grocery E-Commerce & 10-Min Delivery Network</p>
+      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • Full-Stack AI Quick Commerce</p>
     </div>
   </footer>
 
