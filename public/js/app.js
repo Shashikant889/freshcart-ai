@@ -884,6 +884,8 @@
     $('#macro-protein').textContent = protein + 'g';
     $('#macro-fiber').textContent = fiber + 'g';
     $('#macro-calories').textContent = calories + ' kcal';
+    card.style.display = 'block';
+  }
 
   // Expose methods to global app namespace for inline onclick handlers
   window.app = {
