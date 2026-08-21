@@ -1,11 +1,19 @@
 # 🌿 FreshCart AI — Intelligent Grocery E-Commerce & Recommendation System
 > **A Full-Stack, AI-Native Grocery E-Commerce Platform for B.Tech CSE-AIML Final Year Major Project**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-freshcart--ai.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://freshcart-ai.onrender.com/)
+
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Backend-Express.js-blue.svg)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20WASM-orange.svg)](https://sql.js.org/)
 [![Machine Learning](https://img.shields.io/badge/ML%20Models-7%20Engines%20from%20Scratch-purple.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)]()
+
+---
+
+### 🌐 Live Production URL
+- **Storefront**: [https://freshcart-ai.onrender.com/](https://freshcart-ai.onrender.com/)
+- **Admin & AI Dashboard**: [https://freshcart-ai.onrender.com/admin](https://freshcart-ai.onrender.com/admin)
 
 ---
 
