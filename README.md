@@ -2,6 +2,8 @@
 > **A Full-Stack, AI-Native Grocery E-Commerce Platform for B.Tech CSE-AIML Final Year Major Project**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-freshcart--ai.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://freshcart-ai.onrender.com/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shashikant%20Shukla-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shashikant-shukla-935688331/)
+[![GitHub](https://img.shields.io/badge/GitHub-Shashikant889-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shashikant889)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Backend-Express.js-blue.svg)](https://expressjs.com/)
@@ -166,6 +168,13 @@ docker run -p 3000:3000 freshcart-ai
 - 📄 **[IEEE Project Report](docs/IEEE_Project_Report.md)**: Full IEEE-style research paper.
 - 🎓 **[Viva Defense Questions & Answers](docs/Viva_Defense_Questions_Answers.md)**: Top 30 examiner questions with mathematical derivations.
 - 📊 **[15-Slide Presentation Deck](docs/Presentation_Slide_Deck.md)**: Slide outline and speaking notes for all 5 students.
+
+---
+
+## 👨‍💻 Author & Connect
+**Shashikant Shukla**
+- 💼 **LinkedIn**: [linkedin.com/in/shashikant-shukla-935688331](https://www.linkedin.com/in/shashikant-shukla-935688331/)
+- 🐙 **GitHub**: [@Shashikant889](https://github.com/Shashikant889)
 
 ---
 
