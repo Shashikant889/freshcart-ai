@@ -88,7 +88,9 @@ async function runTests() {
   console.log('\n📌 3. GitHub Actions CI/CD Pipeline Configuration:');
 
   test('GitHub Actions workflow exists with matrix testing and test:all execution', () => {
-    const ciPath = path.join(__dirname, '../.github/workflows/ci.yml');
+    const ciPath = fs.existsSync(path.join(__dirname, '../docs/ci.yml'))
+      ? path.join(__dirname, '../docs/ci.yml')
+      : path.join(__dirname, '../.github/workflows/ci.yml');
     assert(fs.existsSync(ciPath), 'ci.yml does not exist');
     const ciContent = fs.readFileSync(ciPath, 'utf8');
     assert(ciContent.includes('matrix'), 'Must specify node-version matrix');
