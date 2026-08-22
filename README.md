@@ -11,14 +11,16 @@
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20WASM-orange.svg)](https://sql.js.org/)
 [![PWA](https://img.shields.io/badge/PWA-Installable%20Offline%20Ready-blueviolet.svg)]()
 [![Machine Learning](https://img.shields.io/badge/ML%20Models-12%20Engines%20from%20Scratch-purple.svg)]()
-[![Tests](https://img.shields.io/badge/Multi--Tier%20Tests-82%2F82%20Passing%20(100%25)-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Multi--Tier%20Tests-85%2F85%20Passing%20(100%25)-brightgreen.svg)](https://github.com/Shashikant889/freshcart-ai)
 [![Security](https://img.shields.io/badge/Security-OWASP%20Audited%20%26%20Verified-blue.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)]()
 
 ---
 
-### 🌐 Live Production URL
-- **Storefront**: [https://freshcart-ai.onrender.com/](https://freshcart-ai.onrender.com/)
+### 🌐 Live Production & Deployment
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shashikant889/freshcart-ai)
+
+- **Live Storefront**: [https://freshcart-ai.onrender.com/](https://freshcart-ai.onrender.com/)
 - **Admin & AI Dashboard**: [https://freshcart-ai.onrender.com/admin](https://freshcart-ai.onrender.com/admin)
 - **GitHub Repository**: [https://github.com/Shashikant889/freshcart-ai](https://github.com/Shashikant889/freshcart-ai)
 
