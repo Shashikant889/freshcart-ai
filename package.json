@@ -7,7 +7,11 @@
     "start": "node server.js",
     "seed": "node db/seed.js",
     "dev": "nodemon server.js",
-    "test": "node test/deep-verify.js"
+    "test": "node test/deep-verify.js",
+    "test:security": "node test/security-safety-test.js",
+    "test:alpha-beta": "node test/alpha-beta-backend.js",
+    "test:frontend": "node test/synthetic-frontend-test.js",
+    "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

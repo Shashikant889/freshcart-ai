@@ -74,15 +74,14 @@ router.put('/products/:id', (req, res) => {
   const db = getDb();
   const { stock, price } = req.body;
   try {
-    const info = db.prepare(`
-      UPDATE products 
-      SET stock = COALESCE(?, stock), price = COALESCE(?, price)
-      WHERE id = ?
-    `).run(stock, price, req.params.id);
-
-    if (info.changes === 0) {
+    const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
+    if (!existing) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
+    const finalStock = (stock !== undefined && stock !== null) ? Number(stock) : existing.stock;
+    const finalPrice = (price !== undefined && price !== null) ? Number(price) : existing.price;
+
+    db.prepare('UPDATE products SET stock = ?, price = ? WHERE id = ?').run(finalStock, finalPrice, req.params.id);
     const updated = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
     res.json({ success: true, data: updated });
   } catch (err) {
