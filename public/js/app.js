@@ -1783,9 +1783,12 @@
   }
 
   // ----------------------------------------------------
-  // Interactive Razorpay & UPI Payment Gateway
+  // Interactive Razorpay & UPI Payment Gateway Engine
   // ----------------------------------------------------
   let pendingOrderPayload = null;
+  let pgBaseTotal = 0;
+  let pgTimerInterval = null;
+  let pgWalletAvail = 150.00;
 
   function setupPaymentGateway() {
     const pgModal = $('#payment-gateway-overlay');
@@ -1794,12 +1797,18 @@
     const tabCard = $('#pg-tab-card');
     const tabApps = $('#pg-tab-apps');
     const submitBtn = $('#pg-submit-pay-btn');
+    const walletToggle = $('#pg-wallet-toggle');
+    const cardNumberInput = $('#pg-card-number');
+    const cardExpiryInput = $('#pg-card-expiry');
 
     if (!pgModal) return;
 
-    pgClose.onclick = () => { pgModal.style.display = 'none'; };
+    pgClose.onclick = () => {
+      clearInterval(pgTimerInterval);
+      pgModal.style.display = 'none';
+    };
 
-    // Tabs Switcher
+    // Tab Switcher
     const tabs = [
       { btn: tabUpi, content: $('#pg-content-upi') },
       { btn: tabCard, content: $('#pg-content-card') },
@@ -1819,6 +1828,43 @@
       }
     });
 
+    // Dynamic Wallet Split Toggle
+    if (walletToggle) {
+      walletToggle.onchange = () => {
+        recalculatePaymentGateway();
+      };
+    }
+
+    // Card Number Formatting & Network Detection
+    if (cardNumberInput) {
+      cardNumberInput.oninput = (e) => {
+        let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+        let formatted = val.match(/.{1,4}/g)?.join('  ') || val;
+        e.target.value = formatted;
+
+        const badge = $('#card-network-badge');
+        if (badge) {
+          if (val.startsWith('4')) badge.textContent = '💳 Visa Verified';
+          else if (val.startsWith('5')) badge.textContent = '💳 Mastercard';
+          else if (val.startsWith('6')) badge.textContent = '🇮🇳 RuPay Card';
+          else if (val.startsWith('3')) badge.textContent = '💳 Amex Express';
+          else badge.textContent = '💳 Debit/Credit Card';
+        }
+      };
+    }
+
+    // Card Expiry Formatting
+    if (cardExpiryInput) {
+      cardExpiryInput.oninput = (e) => {
+        let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+        if (val.length >= 3) {
+          e.target.value = val.substring(0, 2) + '/' + val.substring(2);
+        } else {
+          e.target.value = val;
+        }
+      };
+    }
+
     if (submitBtn) {
       submitBtn.onclick = async () => {
         await executeGatewayPayment();
@@ -1828,13 +1874,83 @@
 
   function openPaymentGateway(orderPayload, finalAmount) {
     pendingOrderPayload = orderPayload;
+    pgBaseTotal = Math.max(0, finalAmount);
     const pgModal = $('#payment-gateway-overlay');
-    $('#pg-payable-total').textContent = `₹${finalAmount.toFixed(2)}`;
-    $('#pg-btn-amount').textContent = `${finalAmount.toFixed(2)}`;
+
+    // Fetch current wallet balance
+    api('/api/wallet/balance').then(res => {
+      if (res && res.data) {
+        pgWalletAvail = res.data.balance || 0;
+        const availText = $('#pg-wallet-avail-text');
+        if (availText) availText.textContent = `Available: ₹${pgWalletAvail.toFixed(2)}`;
+      }
+      recalculatePaymentGateway();
+    }).catch(() => {
+      recalculatePaymentGateway();
+    });
+
     $('#pg-order-ref').textContent = 'ORD-' + Math.random().toString(36).substring(2, 7).toUpperCase();
 
-    drawUPIQRCode(finalAmount);
+    // Start 5-Minute Session Timer
+    startPaymentTimer(300);
+
     pgModal.style.display = 'flex';
+  }
+
+  function recalculatePaymentGateway() {
+    const walletToggle = $('#pg-wallet-toggle');
+    const isWalletActive = walletToggle ? walletToggle.checked : false;
+
+    let walletDeduction = 0;
+    if (isWalletActive && pgWalletAvail > 0) {
+      walletDeduction = Math.min(pgWalletAvail, pgBaseTotal);
+    }
+
+    const netPayable = Math.max(0, pgBaseTotal - walletDeduction);
+
+    $('#pg-payable-total').textContent = `₹${netPayable.toFixed(2)}`;
+    const subtext = $('#pg-breakdown-subtext');
+    if (subtext) {
+      if (walletDeduction > 0) {
+        subtext.innerHTML = `Base: ₹${pgBaseTotal.toFixed(2)} • <span style="color:var(--green-400);">FreshWallet: -₹${walletDeduction.toFixed(2)}</span>`;
+      } else {
+        subtext.textContent = 'Includes taxes, tip & delivery fee';
+      }
+    }
+
+    const btnLabel = $('#pg-submit-btn-label');
+    if (btnLabel) {
+      if (netPayable === 0 && walletDeduction > 0) {
+        btnLabel.textContent = `⚡ 1-Click Pay ₹${pgBaseTotal.toFixed(2)} with FreshWallet`;
+      } else if (walletDeduction > 0) {
+        btnLabel.textContent = `Authorize & Pay ₹${netPayable.toFixed(2)} (+ ₹${walletDeduction.toFixed(2)} Wallet)`;
+      } else {
+        btnLabel.textContent = `Authorize & Complete Payment (₹${netPayable.toFixed(2)})`;
+      }
+    }
+
+    drawUPIQRCode(netPayable > 0 ? netPayable : pgBaseTotal);
+  }
+
+  function startPaymentTimer(seconds) {
+    clearInterval(pgTimerInterval);
+    let remaining = seconds;
+    const badge = $('#pg-timer-badge');
+
+    function update() {
+      const mins = Math.floor(remaining / 60).toString().padStart(2, '0');
+      const secs = (remaining % 60).toString().padStart(2, '0');
+      if (badge) badge.textContent = `⏳ ${mins}:${secs}`;
+      if (remaining <= 0) {
+        clearInterval(pgTimerInterval);
+        showToast('QR Code refreshed for security.');
+        startPaymentTimer(300);
+      }
+      remaining--;
+    }
+
+    update();
+    pgTimerInterval = setInterval(update, 1000);
   }
 
   function drawUPIQRCode(amount) {
@@ -1843,32 +1959,31 @@
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#0f172a';
+    // High contrast dark matrix on canvas
+    ctx.fillStyle = '#090d16';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw stylized QR matrix pattern
-    ctx.fillStyle = '#10b981';
-    // Corner Position Detectors
-    function drawQRMarker(x, y) {
+    function drawEye(x, y) {
       ctx.fillStyle = '#10b981';
-      ctx.fillRect(x, y, 36, 36);
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x + 6, y + 6, 24, 24);
+      ctx.fillRect(x, y, 40, 40);
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(x + 6, y + 6, 28, 28);
       ctx.fillStyle = '#10b981';
-      ctx.fillRect(x + 10, y + 10, 16, 16);
+      ctx.fillRect(x + 12, y + 12, 16, 16);
     }
 
-    drawQRMarker(12, 12);
-    drawQRMarker(canvas.width - 48, 12);
-    drawQRMarker(12, canvas.height - 48);
+    drawEye(10, 10);
+    drawEye(canvas.width - 50, 10);
+    drawEye(10, canvas.height - 50);
 
-    // Dynamic pseudorandom bits based on amount
-    const seed = Math.round(amount * 100);
-    for (let i = 0; i < 14; i++) {
-      for (let j = 0; j < 14; j++) {
-        if ((i < 4 && j < 4) || (i > 9 && j < 4) || (i < 4 && j > 9)) continue;
-        if ((i * 7 + j * 13 + seed) % 3 === 0) {
-          ctx.fillRect(16 + i * 9, 16 + j * 9, 7, 7);
+    // Deterministic pseudorandom QR bits
+    ctx.fillStyle = '#34d399';
+    const seed = Math.round(amount * 100) + 42;
+    for (let i = 0; i < 16; i++) {
+      for (let j = 0; j < 16; j++) {
+        if ((i < 5 && j < 5) || (i > 10 && j < 5) || (i < 5 && j > 10)) continue;
+        if ((i * 9 + j * 17 + seed) % 2 === 0) {
+          ctx.fillRect(12 + i * 10, 12 + j * 10, 8, 8);
         }
       }
     }
@@ -1876,10 +1991,22 @@
 
   async function executeGatewayPayment() {
     const submitBtn = $('#pg-submit-pay-btn');
+    const indicator = $('#pg-processing-indicator');
+    const procTitle = $('#pg-processing-title');
+    const procDesc = $('#pg-processing-desc');
+
     if (!submitBtn || !pendingOrderPayload) return;
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '🔒 Verifying 256-Bit SSL Bank Token...';
+    if (indicator) indicator.style.display = 'block';
+
+    if (procTitle) procTitle.textContent = '🔒 Contacting Bank / NPCI Network...';
+    if (procDesc) procDesc.textContent = 'Verifying 256-Bit SSL token & encrypted UPI mandate';
+
+    setTimeout(() => {
+      if (procTitle) procTitle.textContent = '⚡ Authorizing Payment Gateway...';
+      if (procDesc) procDesc.textContent = 'Debiting account & triggering automatic 5% FreshWallet cashback';
+    }, 400);
 
     setTimeout(async () => {
       try {
@@ -1888,23 +2015,25 @@
           body: JSON.stringify(pendingOrderPayload)
         });
 
+        clearInterval(pgTimerInterval);
         $('#payment-gateway-overlay').style.display = 'none';
+        if (indicator) indicator.style.display = 'none';
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '🔒 Authorize & Complete Payment';
 
         state.lastPlacedOrder = res.data;
         state.coins += 50;
         if ($('#header-coins-val')) $('#header-coins-val').textContent = `${state.coins} Coins`;
 
-        showToast('🎉 Payment Authorized! Order placed successfully.');
+        showToast('🎉 Payment Verified! 5% Cashback added to your FreshWallet.');
         showOrderConfirmation(res.data);
         loadCart();
         refreshWalletUI();
       } catch (err) {
+        if (indicator) indicator.style.display = 'none';
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '🔒 Authorize & Complete Payment';
+        showToast('Payment could not be completed: ' + (err.message || 'Network error'), 'error');
       }
-    }, 700);
+    }, 900);
   }
 
   // Expose global methods

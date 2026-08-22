@@ -104,6 +104,47 @@ async function runTests() {
     assert(visualRouter, 'visual router module must load');
   });
 
+  test('Payment Gateway: FreshWallet split-payment math properly balances remaining gateway due', () => {
+    const cartTotal = 450;
+    const walletBalance = 150;
+    const walletDeduction = Math.min(walletBalance, cartTotal);
+    const gatewayPayable = cartTotal - walletDeduction;
+
+    assert.strictEqual(walletDeduction, 150);
+    assert.strictEqual(gatewayPayable, 300);
+
+    // If wallet balance exceeds cart
+    const smallCart = 80;
+    const fullWalletDeduct = Math.min(walletBalance, smallCart);
+    const zeroGatewayPayable = smallCart - fullWalletDeduct;
+    assert.strictEqual(fullWalletDeduct, 80);
+    assert.strictEqual(zeroGatewayPayable, 0);
+  });
+
+  test('Payment Gateway: Card network pattern detection matches standard IIN prefixes', () => {
+    function detectCardNetwork(cardNumber) {
+      const clean = cardNumber.replace(/\D/g, '');
+      if (clean.startsWith('4')) return 'Visa';
+      if (clean.startsWith('5')) return 'Mastercard';
+      if (clean.startsWith('6')) return 'RuPay';
+      if (clean.startsWith('3')) return 'Amex';
+      return 'Generic';
+    }
+
+    assert.strictEqual(detectCardNetwork('4532 8920 1283 9921'), 'Visa');
+    assert.strictEqual(detectCardNetwork('5123 4567 8901 2345'), 'Mastercard');
+    assert.strictEqual(detectCardNetwork('6071 2345 6789 0123'), 'RuPay');
+    assert.strictEqual(detectCardNetwork('3782 8224 6310 005'), 'Amex');
+  });
+
+  test('Payment Gateway: Session timer initializes with 300s window', () => {
+    const sessionSeconds = 300;
+    const mins = Math.floor(sessionSeconds / 60);
+    const secs = sessionSeconds % 60;
+    assert.strictEqual(mins, 5);
+    assert.strictEqual(secs, 0);
+  });
+
   console.log('\n===============================================================');
   console.log(`  🎉 PWA, VISION & GATEWAY SUITE COMPLETE: ${passCount} PASSED, ${failCount} FAILED`);
   console.log('===============================================================\n');

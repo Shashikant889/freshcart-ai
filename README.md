@@ -92,8 +92,8 @@ npm run test:pwa-vision    # 6. Progressive Web App, Fridge Vision AI & Payment 
 | **3. Backend Alpha/Beta Suite** | `npm run test:alpha-beta` | `test/alpha-beta-backend.js` | 14 | ✅ **14 / 14 PASS** |
 | **4. Frontend Synthetic Suite** | `npm run test:frontend` | `test/synthetic-frontend-test.js` | 10 | ✅ **10 / 10 PASS** |
 | **5. Enterprise Mega-Pack** | `npm run test:enterprise` | `test/enterprise-features-test.js` | 14 | ✅ **14 / 14 PASS** |
-| **6. PWA & Vision AI Suite** | `npm run test:pwa-vision` | `test/pwa-vision-payment-test.js` | 8 | ✅ **8 / 8 PASS** |
-| **Total Automated Coverage** | `npm run test:all` | *All 6 Suites* | **82** | ✅ **82 / 82 (100%)** |
+| **6. PWA, Vision AI & Payment Gateway** | `npm run test:pwa-vision` | `test/pwa-vision-payment-test.js` | 11 | ✅ **11 / 11 PASS** |
+| **Total Automated Coverage** | `npm run test:all` | *All 6 Suites* | **85** | ✅ **85 / 85 (100%)** |
 
 ---
 
