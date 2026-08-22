@@ -11,7 +11,8 @@
     "test:security": "node test/security-safety-test.js",
     "test:alpha-beta": "node test/alpha-beta-backend.js",
     "test:frontend": "node test/synthetic-frontend-test.js",
-    "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js"
+    "test:enterprise": "node test/enterprise-features-test.js",
+    "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js && node test/enterprise-features-test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

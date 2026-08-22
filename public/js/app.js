@@ -1456,6 +1456,180 @@
     });
   }
 
+  // ----------------------------------------------------
+  // FreshWallet Fintech Integration
+  // ----------------------------------------------------
+  function setupWallet() {
+    const walletBtn = $('#wallet-btn');
+    const walletModal = $('#wallet-modal-overlay');
+    const walletClose = $('#wallet-close');
+    const topupBtn = $('#topup-action-btn');
+    const topupInput = $('#topup-amount-input');
+
+    if (!walletBtn) return;
+
+    walletBtn.onclick = async () => {
+      await refreshWalletUI();
+      walletModal.style.display = 'flex';
+    };
+
+    walletClose.onclick = () => { walletModal.style.display = 'none'; };
+
+    topupBtn.onclick = async () => {
+      const amount = parseFloat(topupInput.value);
+      if (!amount || amount <= 0) return showToast('Enter valid amount to top up', 'error');
+      try {
+        const res = await api('/api/wallet/topup', {
+          method: 'POST',
+          body: JSON.stringify({ amount })
+        });
+        showToast(res.message);
+        topupInput.value = '';
+        await refreshWalletUI();
+      } catch (e) {}
+    };
+  }
+
+  async function refreshWalletUI() {
+    try {
+      const res = await api('/api/wallet/balance');
+      const data = res.data;
+      if ($('#header-wallet-val')) $('#header-wallet-val').textContent = `₹${Math.round(data.balance)} Wallet`;
+      if ($('#wallet-modal-balance')) $('#wallet-modal-balance').textContent = `₹${data.balance.toFixed(2)}`;
+      
+      const txList = $('#wallet-tx-list');
+      if (txList && data.transactions) {
+        txList.innerHTML = data.transactions.map(t => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:var(--radius-sm); font-size:0.8rem;">
+            <div>
+              <strong>${t.desc}</strong>
+              <small style="display:block; color:var(--text-dim);">${new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+            </div>
+            <strong style="color:${t.type === 'credit' ? 'var(--green-400)' : '#ef4444'};">${t.type === 'credit' ? '+' : '-'}₹${t.amount.toFixed(2)}</strong>
+          </div>
+        `).join('');
+      }
+    } catch (e) {}
+  }
+
+  // ----------------------------------------------------
+  // Nutrition & Allergen Advisor
+  // ----------------------------------------------------
+  function setupNutritionAdvisor() {
+    const nutriBtn = $('#nutrition-btn');
+    const nutriModal = $('#nutrition-modal-overlay');
+    const nutriClose = $('#nutrition-close');
+
+    if (!nutriBtn) return;
+
+    nutriBtn.onclick = async () => {
+      nutriModal.style.display = 'flex';
+      const items = state.cart.items.length > 0 ? state.cart.items : state.products.slice(0, 3).map(p => ({ productId: p.id, quantity: 1 }));
+      try {
+        const res = await api('/api/nutrition/analyze', {
+          method: 'POST',
+          body: JSON.stringify({ items, allergies: ['lactose'] })
+        });
+        const data = res.data;
+
+        $('#nutri-grade-val').textContent = data.nutriScore;
+        $('#nutri-grade-val').style.color = data.badgeColor;
+        $('#nutri-rating-val').textContent = `Health Score: ${data.healthRating}/100`;
+
+        $('#nutri-cal-val').textContent = `${data.totals.calories} kcal`;
+        $('#nutri-prot-val').textContent = `${data.totals.protein}g`;
+        $('#nutri-fib-val').textContent = `${data.totals.fiber}g`;
+        $('#nutri-carb-val').textContent = `${data.totals.carbs}g`;
+
+        const alertsBox = $('#allergen-alerts-box');
+        if (data.allergenWarnings && data.allergenWarnings.length > 0) {
+          alertsBox.innerHTML = `
+            <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:10px; border-radius:var(--radius-sm); font-size:0.82rem; color:#f87171;">
+              ${data.allergenWarnings.map(w => `<div>${w}</div>`).join('')}
+            </div>
+          `;
+        } else {
+          alertsBox.innerHTML = '<div style="color:var(--green-400); font-size:0.82rem;">✅ Zero Allergen Conflicts Detected in Current Basket</div>';
+        }
+
+        const subsBox = $('#smart-subs-box');
+        if (data.smartSubstitutions && data.smartSubstitutions.length > 0) {
+          subsBox.innerHTML = `
+            <small style="color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">✨ AI Healthier Substitutions:</small>
+            ${data.smartSubstitutions.map(s => `
+              <div style="background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:var(--radius-sm); margin-bottom:6px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong>${s.suggested.name}</strong> (for ${s.forProduct})
+                  <small style="display:block; color:var(--text-dim);">${s.suggested.reason}</small>
+                </div>
+                <span class="ai-pill" style="font-size:0.68rem;">Health Swap</span>
+              </div>
+            `).join('')}
+          `;
+        }
+      } catch (e) {}
+    };
+
+    nutriClose.onclick = () => { nutriModal.style.display = 'none'; };
+  }
+
+  // ----------------------------------------------------
+  // Neighborhood Group Buying
+  // ----------------------------------------------------
+  function setupGroupOrders() {
+    const groupBtn = $('#group-buy-btn');
+    const groupModal = $('#group-modal-overlay');
+    const groupClose = $('#group-close');
+    const createBtn = $('#create-group-btn');
+    const groupNameInput = $('#new-group-name');
+
+    if (!groupBtn) return;
+
+    groupBtn.onclick = async () => {
+      await refreshGroupLobbiesUI();
+      groupModal.style.display = 'flex';
+    };
+
+    groupClose.onclick = () => { groupModal.style.display = 'none'; };
+
+    createBtn.onclick = async () => {
+      const communityName = groupNameInput.value.trim();
+      if (!communityName) return showToast('Enter apartment or society name', 'error');
+      try {
+        const res = await api('/api/group-orders/create', {
+          method: 'POST',
+          body: JSON.stringify({ communityName, hostName: state.user ? state.user.name : 'You' })
+        });
+        showToast(res.message);
+        groupNameInput.value = '';
+        await refreshGroupLobbiesUI();
+      } catch (e) {}
+    };
+  }
+
+  async function refreshGroupLobbiesUI() {
+    try {
+      const res = await api('/api/group-orders/lobbies');
+      const container = $('#group-lobbies-list');
+      if (container && res.data) {
+        container.innerHTML = res.data.map(l => `
+          <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:12px 16px; border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:0.95rem; color:var(--text-main);">${l.communityName}</div>
+              <small style="color:var(--text-dim); display:block;">Host: ${l.hostName} • ${l.members.length} Neighbors Joined</small>
+              <span class="ai-pill" style="margin-top:4px; font-size:0.7rem; color:var(--green-400); background:rgba(16,185,129,0.12);">
+                🎁 ${l.currentDiscountPercent}% Community Discount Active
+              </span>
+            </div>
+            <button class="btn-secondary" style="font-size:0.8rem; padding:6px 14px;" onclick="app.joinGroup('${l.groupId}')">
+              Join Lobby ➔
+            </button>
+          </div>
+        `).join('');
+      }
+    } catch (e) {}
+  }
+
   // Expose global methods
   window.app = {
     addToCart,
@@ -1463,6 +1637,16 @@
     selectSearchResult,
     addBundleToCart,
     openProductDetail,
+    joinGroup: async (groupId) => {
+      try {
+        const res = await api(`/api/group-orders/${groupId}/join`, {
+          method: 'POST',
+          body: JSON.stringify({ memberName: state.user ? state.user.name : 'You', itemsCount: state.cart.itemCount || 2, subtotal: state.cart.subtotal || 350 })
+        });
+        showToast(res.message);
+        await refreshGroupLobbiesUI();
+      } catch (e) {}
+    },
     setHub: (hub, eta) => {
       state.currentHub = hub;
       state.hubEta = eta;
@@ -1478,7 +1662,7 @@
     },
     openFBTModal: async (productId) => {
       try {
-        const res = await api(`/api/recommendations/frequently-bought-together/${productId}`);
+        const res = await api(`/api/recommendations/frequently-bought/${productId}`);
         const p = state.products.find(x => x.id === productId);
         const modal = $('#fbt-overlay');
         const content = $('#fbt-content');
@@ -1513,11 +1697,15 @@
     setupSpinWheel();
     setupScratchCard();
     setupFreshBot();
+    setupWallet();
+    setupNutritionAdvisor();
+    setupGroupOrders();
     await checkAuth();
     await Promise.all([
       loadProducts(),
       loadRecommendations(),
-      loadCart()
+      loadCart(),
+      refreshWalletUI()
     ]);
   }
 

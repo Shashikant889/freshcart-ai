@@ -22,6 +22,10 @@ app.use('/api/assistant', require('./routes/assistant'));
 app.use('/api/pricing', require('./routes/pricing'));
 app.use('/api/dispatch', require('./routes/dispatch'));
 app.use('/api/visual', require('./routes/visual'));
+app.use('/api/nutrition', require('./routes/nutrition'));
+app.use('/api/wallet', require('./routes/wallet'));
+app.use('/api/group-orders', require('./routes/group-orders'));
+app.use('/api/supplier', require('./routes/supplier'));
 
 // Serve Admin Dashboard page
 app.get('/admin', (req, res) => {
