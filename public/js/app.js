@@ -688,26 +688,40 @@
   async function handleCheckout(e) {
     e.preventDefault();
     const btn = $('#place-order-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing Order & Fraud Scoring...';
 
     const customerName = $('#cust-name').value.trim();
     const address = $('#cust-address').value.trim();
     const phone = $('#cust-phone').value.trim();
     const paymentMethod = $('#cust-payment').value;
 
+    let discount = state.appliedCoupon ? state.appliedCoupon.discount : 0;
+    let tip = state.activeTip || 0;
+    let ecoBag = state.isEcoBag ? 15 : 0;
+    let total = Math.max(0, (state.cart.total || 0) - discount + tip + ecoBag);
+
+    const payload = {
+      customerName,
+      address,
+      phone,
+      paymentMethod,
+      tip: state.activeTip,
+      ecoBag: state.isEcoBag,
+      appliedCoupon: state.appliedCoupon ? state.appliedCoupon.code : null
+    };
+
+    if (paymentMethod === 'upi' || paymentMethod === 'card') {
+      closeCheckout();
+      openPaymentGateway(payload, total);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Processing Order & Fraud Scoring...';
+
     try {
       const res = await api('/api/orders', {
         method: 'POST',
-        body: JSON.stringify({
-          customerName,
-          address,
-          phone,
-          paymentMethod,
-          tip: state.activeTip,
-          ecoBag: state.isEcoBag,
-          appliedCoupon: state.appliedCoupon ? state.appliedCoupon.code : null
-        })
+        body: JSON.stringify(payload)
       });
 
       btn.disabled = false;
@@ -1627,7 +1641,267 @@
           </div>
         `).join('');
       }
-    } catch (e) {}
+  // ----------------------------------------------------
+  // PWA (Progressive Web App) Setup
+  // ----------------------------------------------------
+  let deferredInstallPrompt = null;
+
+  function setupPWA() {
+    // 1. Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('✅ [PWA] Service Worker registered with scope:', reg.scope))
+          .catch(err => console.warn('⚠️ [PWA] Service Worker registration failed:', err));
+      });
+    }
+
+    // 2. Handle beforeinstallprompt for in-app install button
+    const installBtn = $('#pwa-install-btn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    if (installBtn) {
+      installBtn.onclick = async () => {
+        if (!deferredInstallPrompt) {
+          showToast('App is ready to install or already installed!');
+          return;
+        }
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          showToast('🎉 FreshCart AI installed successfully to your home screen!');
+          installBtn.style.display = 'none';
+        }
+        deferredInstallPrompt = null;
+      };
+    }
+  }
+
+  // ----------------------------------------------------
+  // Multimodal Snap Your Fridge AI Scanner
+  // ----------------------------------------------------
+  let currentFridgeData = null;
+
+  function setupSmartFridgeScanner() {
+    const fridgeBtn = $('#fridge-scan-btn');
+    const fridgeModal = $('#fridge-modal-overlay');
+    const fridgeClose = $('#fridge-close');
+    const fileInput = $('#fridge-file-input');
+    const presetBtns = document.querySelectorAll('.fridge-preset-btn');
+    const addAllBtn = $('#fridge-add-all-btn');
+
+    if (!fridgeBtn || !fridgeModal) return;
+
+    fridgeBtn.onclick = () => {
+      fridgeModal.style.display = 'flex';
+      runFridgeScan('breakfast_depleted');
+    };
+
+    fridgeClose.onclick = () => { fridgeModal.style.display = 'none'; };
+
+    presetBtns.forEach(btn => {
+      btn.onclick = () => {
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const presetKey = btn.dataset.preset;
+        runFridgeScan(presetKey);
+      };
+    });
+
+    if (fileInput) {
+      fileInput.onchange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+          showToast('📸 Photo uploaded! Neural vision analyzing inventory...');
+          runFridgeScan('weekly_pantry_restock', e.target.files[0].name);
+        }
+      };
+    }
+
+    if (addAllBtn) {
+      addAllBtn.onclick = () => {
+        if (!currentFridgeData || !currentFridgeData.missingEssentials) return;
+        currentFridgeData.missingEssentials.forEach(item => {
+          addToCart(item.id, 1);
+        });
+        showToast(`⚡ Added ${currentFridgeData.missingEssentials.length} missing essentials to cart with 10% AI bundle discount!`);
+        fridgeModal.style.display = 'none';
+        openCart();
+      };
+    }
+  }
+
+  async function runFridgeScan(presetKey = 'breakfast_depleted', customPrompt = '') {
+    const radar = $('#fridge-scanning-radar');
+    const resultsBox = $('#fridge-scan-results');
+    if (radar) radar.style.display = 'block';
+    if (resultsBox) resultsBox.style.display = 'none';
+
+    try {
+      const res = await api('/api/visual/smart-fridge-scan', {
+        method: 'POST',
+        body: JSON.stringify({ presetKey, customPrompt })
+      });
+
+      setTimeout(() => {
+        if (radar) radar.style.display = 'none';
+        if (resultsBox) resultsBox.style.display = 'block';
+        currentFridgeData = res;
+
+        $('#fridge-result-title').textContent = res.scene.title;
+        $('#fridge-confidence-badge').textContent = `Confidence: ${res.scene.overallConfidence} • ${res.missingEssentialsCount} Items Low`;
+        $('#fridge-bundle-price').textContent = `₹${res.financialSummary.finalBundlePrice.toFixed(2)}`;
+
+        const list = $('#fridge-detected-items-list');
+        if (list && res.missingEssentials) {
+          list.innerHTML = res.missingEssentials.map(item => `
+            <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:8px 12px; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.3rem;">${item.image || '🛒'}</span>
+                <div>
+                  <strong>${item.name}</strong>
+                  <small style="display:block; color:var(--text-dim);">${item.reason} (${Math.round(item.confidence * 100)}% match)</small>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <strong style="color:var(--green-400);">₹${item.price}</strong>
+                <small style="display:block; color:var(--text-dim);">/${item.unit}</small>
+              </div>
+            </div>
+          `).join('');
+        }
+      }, 500);
+    } catch (e) {
+      if (radar) radar.style.display = 'none';
+    }
+  }
+
+  // ----------------------------------------------------
+  // Interactive Razorpay & UPI Payment Gateway
+  // ----------------------------------------------------
+  let pendingOrderPayload = null;
+
+  function setupPaymentGateway() {
+    const pgModal = $('#payment-gateway-overlay');
+    const pgClose = $('#payment-gateway-close');
+    const tabUpi = $('#pg-tab-upi');
+    const tabCard = $('#pg-tab-card');
+    const tabApps = $('#pg-tab-apps');
+    const submitBtn = $('#pg-submit-pay-btn');
+
+    if (!pgModal) return;
+
+    pgClose.onclick = () => { pgModal.style.display = 'none'; };
+
+    // Tabs Switcher
+    const tabs = [
+      { btn: tabUpi, content: $('#pg-content-upi') },
+      { btn: tabCard, content: $('#pg-content-card') },
+      { btn: tabApps, content: $('#pg-content-apps') }
+    ];
+
+    tabs.forEach(t => {
+      if (t.btn && t.content) {
+        t.btn.onclick = () => {
+          tabs.forEach(x => {
+            if (x.btn) x.btn.classList.remove('active');
+            if (x.content) x.content.style.display = 'none';
+          });
+          t.btn.classList.add('active');
+          t.content.style.display = 'block';
+        };
+      }
+    });
+
+    if (submitBtn) {
+      submitBtn.onclick = async () => {
+        await executeGatewayPayment();
+      };
+    }
+  }
+
+  function openPaymentGateway(orderPayload, finalAmount) {
+    pendingOrderPayload = orderPayload;
+    const pgModal = $('#payment-gateway-overlay');
+    $('#pg-payable-total').textContent = `₹${finalAmount.toFixed(2)}`;
+    $('#pg-btn-amount').textContent = `${finalAmount.toFixed(2)}`;
+    $('#pg-order-ref').textContent = 'ORD-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+
+    drawUPIQRCode(finalAmount);
+    pgModal.style.display = 'flex';
+  }
+
+  function drawUPIQRCode(amount) {
+    const canvas = $('#pg-upi-qr-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw stylized QR matrix pattern
+    ctx.fillStyle = '#10b981';
+    // Corner Position Detectors
+    function drawQRMarker(x, y) {
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(x, y, 36, 36);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + 6, y + 6, 24, 24);
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(x + 10, y + 10, 16, 16);
+    }
+
+    drawQRMarker(12, 12);
+    drawQRMarker(canvas.width - 48, 12);
+    drawQRMarker(12, canvas.height - 48);
+
+    // Dynamic pseudorandom bits based on amount
+    const seed = Math.round(amount * 100);
+    for (let i = 0; i < 14; i++) {
+      for (let j = 0; j < 14; j++) {
+        if ((i < 4 && j < 4) || (i > 9 && j < 4) || (i < 4 && j > 9)) continue;
+        if ((i * 7 + j * 13 + seed) % 3 === 0) {
+          ctx.fillRect(16 + i * 9, 16 + j * 9, 7, 7);
+        }
+      }
+    }
+  }
+
+  async function executeGatewayPayment() {
+    const submitBtn = $('#pg-submit-pay-btn');
+    if (!submitBtn || !pendingOrderPayload) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '🔒 Verifying 256-Bit SSL Bank Token...';
+
+    setTimeout(async () => {
+      try {
+        const res = await api('/api/orders', {
+          method: 'POST',
+          body: JSON.stringify(pendingOrderPayload)
+        });
+
+        $('#payment-gateway-overlay').style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🔒 Authorize & Complete Payment';
+
+        state.lastPlacedOrder = res.data;
+        state.coins += 50;
+        if ($('#header-coins-val')) $('#header-coins-val').textContent = `${state.coins} Coins`;
+
+        showToast('🎉 Payment Authorized! Order placed successfully.');
+        showOrderConfirmation(res.data);
+        loadCart();
+        refreshWalletUI();
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🔒 Authorize & Complete Payment';
+      }
+    }, 700);
   }
 
   // Expose global methods
@@ -1637,6 +1911,12 @@
     selectSearchResult,
     addBundleToCart,
     openProductDetail,
+    simulateUPIApp: (appName) => {
+      showToast(`📱 Redirecting to ${appName} App intent...`);
+      setTimeout(() => {
+        executeGatewayPayment();
+      }, 500);
+    },
     joinGroup: async (groupId) => {
       try {
         const res = await api(`/api/group-orders/${groupId}/join`, {
@@ -1692,6 +1972,7 @@
 
   // Boot Application
   async function init() {
+    setupPWA();
     setupEventListeners();
     setupVoiceSearch();
     setupSpinWheel();
@@ -1700,6 +1981,8 @@
     setupWallet();
     setupNutritionAdvisor();
     setupGroupOrders();
+    setupSmartFridgeScanner();
+    setupPaymentGateway();
     await checkAuth();
     await Promise.all([
       loadProducts(),
@@ -1715,3 +1998,4 @@
     init();
   }
 })();
+

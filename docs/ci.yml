@@ -1,0 +1,50 @@
+name: FreshCart AI Continuous Integration & Quality Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Multi-Tier Verification & Security Tests (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Seed Database & Synthetics
+        run: npm run seed
+
+      - name: Run 10-Agent ML Multi-Tier Verification Suite
+        run: npm test
+
+      - name: Run OWASP Security & SQLi Immunity Suite
+        run: npm run test:security
+
+      - name: Run Backend Alpha/Beta Concurrency Stress Suite
+        run: npm run test:alpha-beta
+
+      - name: Run Synthetic Frontend & DOM Parity Suite
+        run: npm run test:frontend
+
+      - name: Run Enterprise AI Features Suite
+        run: npm run test:enterprise
+
+      - name: Run Complete 100% Test Suite
+        run: npm run test:all

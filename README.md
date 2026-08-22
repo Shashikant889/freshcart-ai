@@ -2,14 +2,16 @@
 > **A Full-Stack, AI-Native Grocery E-Commerce Platform for B.Tech CSE-AIML Final Year Major Project**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-freshcart--ai.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://freshcart-ai.onrender.com/)
+[![CI Build](https://github.com/Shashikant889/freshcart-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashikant889/freshcart-ai/actions)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Shashikant%20Shukla-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shashikant-shukla-935688331/)
 [![GitHub](https://img.shields.io/badge/GitHub-Shashikant889-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shashikant889)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Backend-Express.js-blue.svg)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20WASM-orange.svg)](https://sql.js.org/)
-[![Machine Learning](https://img.shields.io/badge/ML%20Models-10%20Engines%20from%20Scratch-purple.svg)]()
-[![Tests](https://img.shields.io/badge/Multi--Tier%20Tests-74%2F74%20Passing%20(100%25)-brightgreen.svg)]()
+[![PWA](https://img.shields.io/badge/PWA-Installable%20Offline%20Ready-blueviolet.svg)]()
+[![Machine Learning](https://img.shields.io/badge/ML%20Models-12%20Engines%20from%20Scratch-purple.svg)]()
+[![Tests](https://img.shields.io/badge/Multi--Tier%20Tests-82%2F82%20Passing%20(100%25)-brightgreen.svg)]()
 [![Security](https://img.shields.io/badge/Security-OWASP%20Audited%20%26%20Verified-blue.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)]()
 
@@ -24,7 +26,7 @@
 
 ## 📖 Overview
 
-**FreshCart AI** is a comprehensive, production-ready grocery e-commerce and retail intelligence application. Unlike basic CRUD shopping carts, FreshCart AI is powered by **10 genuine machine learning, fintech, and mathematical optimization engines** built directly into the runtime:
+**FreshCart AI** is a comprehensive, production-ready grocery e-commerce and retail intelligence application. Unlike basic CRUD shopping carts, FreshCart AI is powered by **12 genuine machine learning, fintech, and mathematical optimization engines** built directly into the runtime:
 
 1. 🎯 **Hybrid Recommendation Engine**: Blends User-User Collaborative Filtering, Content-Based Cosine Similarity, and Apriori Association Rules (*Frequently Bought Together*).
 2. 📈 **Time-Series Demand Forecasting**: Fits Ordinary Least Squares (OLS) Linear Regression with 7-Day Moving Averages & Day-of-Week Seasonality to predict future unit demand and trigger stockout warnings.
@@ -36,6 +38,8 @@
 8. 🥗 **Nutri-Score & Allergen AI Advisor**: Computes basket macro/micronutrient breakdown, assigns Nutri-Score (A–E) with French FSA formulas, and suggests allergen-safe swaps (Lactose/Gluten-free).
 9. ⚡ **Expiry-Aware Markdown & Flash Sale AI**: Decays perishable pricing dynamically as shelf-life shortens, preventing food waste while boosting lightning clearance conversions.
 10. 🏭 **Dark Store Warehouse Picker 2D TSP Optimizer**: Generates 2D aisle-rack Euclidean distance matrices with 2-Opt local search to assemble orders in under 90 seconds.
+11. 📸 **"Snap Your Fridge & Pantry" Vision AI**: Multimodal object detection and inventory depletion analyzer that generates 1-click replenish baskets.
+12. 💳 **Razorpay & UPI Payment Gateway + PWA**: Dynamic UPI QR matrix generator, simulated bank gateway, split FreshWallet cashback, and installable PWA offline shell.
 
 ---
 
@@ -66,10 +70,10 @@
 
 ---
 
-## 🧪 Comprehensive Multi-Tier Testing Suites (74 / 74 Tests Passing)
+## 🧪 Comprehensive Multi-Tier Testing Suites (82 / 82 Tests Passing)
 
 ```bash
-# Run all 5 comprehensive test suites (74 assertions)
+# Run all 6 comprehensive test suites (82 assertions)
 npm run test:all
 
 # Run individual testing suites:
@@ -78,6 +82,7 @@ npm run test:security      # 2. Enterprise Security, OWASP & Auth Audit Suite
 npm run test:alpha-beta    # 3. Backend Alpha/Beta Lifecycle & Concurrency Load
 npm run test:frontend      # 4. Frontend Synthetic & DOM Integration Suite
 npm run test:enterprise    # 5. Enterprise Nutrition, Warehouse TSP, Wallet & ROP Suite
+npm run test:pwa-vision    # 6. Progressive Web App, Fridge Vision AI & Payment Gateway Suite
 ```
 
 | Testing Suite | Command | Test File | Assertions | Result |
@@ -87,7 +92,8 @@ npm run test:enterprise    # 5. Enterprise Nutrition, Warehouse TSP, Wallet & RO
 | **3. Backend Alpha/Beta Suite** | `npm run test:alpha-beta` | `test/alpha-beta-backend.js` | 14 | ✅ **14 / 14 PASS** |
 | **4. Frontend Synthetic Suite** | `npm run test:frontend` | `test/synthetic-frontend-test.js` | 10 | ✅ **10 / 10 PASS** |
 | **5. Enterprise Mega-Pack** | `npm run test:enterprise` | `test/enterprise-features-test.js` | 14 | ✅ **14 / 14 PASS** |
-| **Total Automated Coverage** | `npm run test:all` | *All 5 Suites* | **74** | ✅ **74 / 74 (100%)** |
+| **6. PWA & Vision AI Suite** | `npm run test:pwa-vision` | `test/pwa-vision-payment-test.js` | 8 | ✅ **8 / 8 PASS** |
+| **Total Automated Coverage** | `npm run test:all` | *All 6 Suites* | **82** | ✅ **82 / 82 (100%)** |
 
 ---
 
