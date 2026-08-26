@@ -1,0 +1,53 @@
+{
+  "num_batches_evaluated": 50,
+  "overall_summary": {
+    "total_baseline_distance_km": 14502.6965502475,
+    "total_optimized_distance_km": 5566.281133889479,
+    "distance_reduction_pct": 61.61899192606022,
+    "total_baseline_vehicles": 229,
+    "total_optimized_vehicles": 225,
+    "total_time_saved_hours": 406.20070074354646,
+    "mean_baseline_utilization_pct": 82.25324365079365,
+    "mean_optimized_utilization_pct": 82.93312857142857,
+    "mean_batch_savings_pct": 59.578632762204876,
+    "median_batch_savings_pct": 60.50692340419634,
+    "std_batch_savings_pct": 6.683391680463211,
+    "best_case_savings_pct": 69.3346993009375,
+    "worst_case_savings_pct": 34.47652059306143
+  },
+  "density_tier_breakdown": {
+    "High-Density Cluster (35-50 stops)": {
+      "batches": 14,
+      "mean_stops": 41.42857142857143,
+      "base_dist": 441.37946777933047,
+      "opt_dist": 153.38918921692624,
+      "savings_pct": 64.79120436788645,
+      "base_vehicles": 6.928571428571429,
+      "opt_vehicles": 6.714285714285714,
+      "base_util": 86.92374433106576,
+      "opt_util": 89.40284013605442
+    },
+    "Light Dispatch (12-18 stops)": {
+      "batches": 13,
+      "mean_stops": 14.23076923076923,
+      "base_dist": 157.6058227342439,
+      "opt_dist": 72.79319347577062,
+      "savings_pct": 52.92285988115273,
+      "base_vehicles": 2.3076923076923075,
+      "opt_vehicles": 2.3846153846153846,
+      "base_util": 78.82051282051283,
+      "opt_util": 76.31282051282052
+    },
+    "Medium Dispatch (20-30 stops)": {
+      "batches": 23,
+      "mean_stops": 24.782608695652176,
+      "base_dist": 272.8047089474653,
+      "opt_dist": 107.50091172467363,
+      "savings_pct": 60.16772167412382,
+      "base_vehicles": 4.434782608695652,
+      "opt_vehicles": 4.3478260869565215,
+      "base_util": 81.35056935817805,
+      "opt_util": 82.73695652173913
+    }
+  }
+}

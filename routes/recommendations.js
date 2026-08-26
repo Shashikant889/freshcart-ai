@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { getDb } = require('../db/database');
 const { optionalAuth } = require('../middleware/auth');
+const aiClient = require('../services/ai-client');
 const {
   getHybridRecommendations,
   getSimilarProductsContentBased,
@@ -11,16 +13,57 @@ const {
 } = require('../ml/recommendation-engine');
 
 // GET /api/recommendations/personal - Personalized recommendations for user
-router.get('/personal', optionalAuth, (req, res) => {
+router.get('/personal', optionalAuth, async (req, res) => {
   const userId = req.user ? req.user.id : null;
   const limit = parseInt(req.query.limit) || 6;
-  const recommendations = getHybridRecommendations(userId, limit);
-  res.json({
-    success: true,
-    algorithm: userId ? 'Hybrid (Collaborative + Content-Based)' : 'Trending Popularity (Guest Mode)',
-    count: recommendations.length,
-    data: recommendations
-  });
+  
+  try {
+    const aiRes = await aiClient.getRecommendations({ userId, topK: limit });
+    const db = getDb();
+    
+    // Map recommended product IDs to complete database product records
+    const productIds = aiRes.recommendations.map(r => r.product_id);
+    let dbProducts = [];
+    if (productIds.length > 0) {
+      const placeholders = productIds.map(() => '?').join(',');
+      dbProducts = db.prepare(`SELECT * FROM products WHERE id IN (${placeholders})`).all(...productIds);
+    }
+    const dbMap = new Map(dbProducts.map(p => [p.id, p]));
+    
+    const enriched = aiRes.recommendations.map((r, idx) => {
+      const p = dbMap.get(r.product_id) || {};
+      const score = r.score !== undefined ? r.score : Math.round((1.0 - (idx * 0.05)) * 100) / 100;
+      return {
+        ...p,
+        id: r.product_id,
+        name: p.name || r.name,
+        price: p.price !== undefined ? p.price : r.price,
+        category: p.category || r.category,
+        score: score,
+        matchScore: Math.round(score * 100),
+        reason: r.reason || 'Recommended by FreshCart AI'
+      };
+    });
+
+    res.json({
+      success: true,
+      algorithm: aiRes.modelUsed || (userId ? 'Hybrid (Collaborative + Content-Based)' : 'Trending Popularity (Guest Mode)'),
+      engine: aiRes.engine,
+      isFallback: aiRes.isFallback,
+      count: enriched.length,
+      data: enriched
+    });
+  } catch (err) {
+    const recommendations = getHybridRecommendations(userId, limit);
+    res.json({
+      success: true,
+      algorithm: userId ? 'Hybrid (Collaborative + Content-Based)' : 'Trending Popularity (Guest Mode)',
+      engine: 'node_fallback',
+      isFallback: true,
+      count: recommendations.length,
+      data: recommendations
+    });
+  }
 });
 
 // GET /api/recommendations/similar/:productId - Content-Based Similar Products

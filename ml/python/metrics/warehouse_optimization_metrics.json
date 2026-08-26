@@ -1,0 +1,418 @@
+{
+  "num_orders_evaluated": 100,
+  "overall_summary": {
+    "total_naive_distance_m": 9685.428890681458,
+    "total_nn_distance_m": 6582.721335766763,
+    "total_opt_distance_m": 6055.253835052318,
+    "distance_reduction_pct": 37.4807878577458,
+    "total_time_saved_sec": 3025.145879690952,
+    "time_savings_pct": 25.54764926555078,
+    "mean_order_savings_pct": 30.070919858206686,
+    "median_order_savings_pct": 31.840022492496338,
+    "std_order_savings_pct": 17.64927838211121,
+    "best_case_savings_pct": 62.45306240819129,
+    "worst_case_savings_pct": -0.6385740107351416
+  },
+  "basket_tier_breakdown": {
+    "Large (11-18 items)": {
+      "count": 15,
+      "mean_items": 14.933333333333334,
+      "naive_dist": 185.6568297457471,
+      "opt_dist": 82.14882326037745,
+      "reduction_pct": 55.05090381994808,
+      "naive_time": 229.3806914547893,
+      "opt_time": 143.1240193836479
+    },
+    "Medium (6-10 items)": {
+      "count": 42,
+      "mean_items": 8.380952380952381,
+      "naive_dist": 102.11297522843576,
+      "opt_dist": 63.44491539612435,
+      "reduction_pct": 36.232412651201194,
+      "naive_time": 126.99890792845838,
+      "opt_time": 94.77552473486553
+    },
+    "Small (3-5 items)": {
+      "count": 43,
+      "mean_items": 4.1395348837209305,
+      "naive_dist": 60.74026709071976,
+      "opt_dist": 50.19383812812637,
+      "reduction_pct": 15.338769701651115,
+      "naive_time": 71.31456366087112,
+      "opt_time": 62.525872858709974
+    }
+  },
+  "exact_solver_benchmark": [
+    {
+      "order_id": "ORDER_001",
+      "num_items": 3,
+      "opt_distance_m": 44.76183046148987,
+      "exact_distance_m": 44.76183046148987,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_002",
+      "num_items": 4,
+      "opt_distance_m": 50.06051016305102,
+      "exact_distance_m": 50.060510163051006,
+      "optimality_gap_pct": 2.8387354960858643e-14
+    },
+    {
+      "order_id": "ORDER_003",
+      "num_items": 4,
+      "opt_distance_m": 50.95655888173199,
+      "exact_distance_m": 50.95655888173199,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_005",
+      "num_items": 3,
+      "opt_distance_m": 41.45420255159225,
+      "exact_distance_m": 41.45420255159225,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_006",
+      "num_items": 5,
+      "opt_distance_m": 56.79923386557433,
+      "exact_distance_m": 56.79923386557433,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_007",
+      "num_items": 3,
+      "opt_distance_m": 31.486775858564275,
+      "exact_distance_m": 31.486775858564275,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_009",
+      "num_items": 5,
+      "opt_distance_m": 69.56058118509644,
+      "exact_distance_m": 69.56058118509644,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_010",
+      "num_items": 4,
+      "opt_distance_m": 42.68103303560157,
+      "exact_distance_m": 42.68103303560157,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_011",
+      "num_items": 5,
+      "opt_distance_m": 51.23843088042529,
+      "exact_distance_m": 51.23843088042529,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_012",
+      "num_items": 3,
+      "opt_distance_m": 41.908904640367936,
+      "exact_distance_m": 41.908904640367936,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_014",
+      "num_items": 5,
+      "opt_distance_m": 58.07370529327334,
+      "exact_distance_m": 58.07370529327334,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_015",
+      "num_items": 4,
+      "opt_distance_m": 44.67833292026579,
+      "exact_distance_m": 44.67833292026579,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_016",
+      "num_items": 5,
+      "opt_distance_m": 50.25441562228478,
+      "exact_distance_m": 50.25441562228478,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_018",
+      "num_items": 5,
+      "opt_distance_m": 55.57090836590038,
+      "exact_distance_m": 55.57090836590038,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_023",
+      "num_items": 5,
+      "opt_distance_m": 61.91341754206445,
+      "exact_distance_m": 61.91341754206445,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_027",
+      "num_items": 3,
+      "opt_distance_m": 38.39010672716181,
+      "exact_distance_m": 38.39010672716181,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_030",
+      "num_items": 7,
+      "opt_distance_m": 61.00653630937351,
+      "exact_distance_m": 61.00653630937351,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_035",
+      "num_items": 5,
+      "opt_distance_m": 56.10081434783343,
+      "exact_distance_m": 56.10081434783343,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_036",
+      "num_items": 5,
+      "opt_distance_m": 53.56057928622043,
+      "exact_distance_m": 53.560579286220424,
+      "optimality_gap_pct": 1.326615106164287e-14
+    },
+    {
+      "order_id": "ORDER_037",
+      "num_items": 3,
+      "opt_distance_m": 44.39719762146778,
+      "exact_distance_m": 44.39719762146778,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_039",
+      "num_items": 7,
+      "opt_distance_m": 48.296621315999325,
+      "exact_distance_m": 48.296621315999325,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_040",
+      "num_items": 4,
+      "opt_distance_m": 42.373597285011954,
+      "exact_distance_m": 42.37359728501195,
+      "optimality_gap_pct": 1.6768525244171984e-14
+    },
+    {
+      "order_id": "ORDER_041",
+      "num_items": 7,
+      "opt_distance_m": 58.082355037195875,
+      "exact_distance_m": 58.082355037195875,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_042",
+      "num_items": 5,
+      "opt_distance_m": 59.97899175663789,
+      "exact_distance_m": 59.97899175663789,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_044",
+      "num_items": 4,
+      "opt_distance_m": 60.91880408884215,
+      "exact_distance_m": 60.91880408884215,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_045",
+      "num_items": 5,
+      "opt_distance_m": 51.23358212779219,
+      "exact_distance_m": 50.908493717654515,
+      "optimality_gap_pct": 0.6385740107351416
+    },
+    {
+      "order_id": "ORDER_046",
+      "num_items": 4,
+      "opt_distance_m": 54.557634179056485,
+      "exact_distance_m": 54.55763417905648,
+      "optimality_gap_pct": 1.3023708715596443e-14
+    },
+    {
+      "order_id": "ORDER_048",
+      "num_items": 3,
+      "opt_distance_m": 51.10161890394878,
+      "exact_distance_m": 51.10161890394878,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_049",
+      "num_items": 5,
+      "opt_distance_m": 50.5420208471009,
+      "exact_distance_m": 50.54202084710089,
+      "optimality_gap_pct": 1.4058455199281118e-14
+    },
+    {
+      "order_id": "ORDER_051",
+      "num_items": 6,
+      "opt_distance_m": 63.35622993992266,
+      "exact_distance_m": 63.35622993992266,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_053",
+      "num_items": 5,
+      "opt_distance_m": 51.06195412500705,
+      "exact_distance_m": 51.06195412500705,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_055",
+      "num_items": 7,
+      "opt_distance_m": 56.00356281505022,
+      "exact_distance_m": 56.00356281505022,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_056",
+      "num_items": 5,
+      "opt_distance_m": 63.409087077588666,
+      "exact_distance_m": 62.84719278380546,
+      "optimality_gap_pct": 0.8940642674623871
+    },
+    {
+      "order_id": "ORDER_057",
+      "num_items": 3,
+      "opt_distance_m": 48.80027744942216,
+      "exact_distance_m": 48.80027744942216,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_058",
+      "num_items": 5,
+      "opt_distance_m": 50.40616475561123,
+      "exact_distance_m": 50.40616475561123,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_059",
+      "num_items": 4,
+      "opt_distance_m": 49.21272162107039,
+      "exact_distance_m": 49.21272162107039,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_060",
+      "num_items": 5,
+      "opt_distance_m": 47.71885585664081,
+      "exact_distance_m": 47.7188558566408,
+      "optimality_gap_pct": 1.4890188019066207e-14
+    },
+    {
+      "order_id": "ORDER_061",
+      "num_items": 4,
+      "opt_distance_m": 59.423937829322384,
+      "exact_distance_m": 59.423937829322384,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_063",
+      "num_items": 4,
+      "opt_distance_m": 49.78659704075099,
+      "exact_distance_m": 49.78659704075099,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_066",
+      "num_items": 4,
+      "opt_distance_m": 56.109522652592915,
+      "exact_distance_m": 56.109522652592915,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_068",
+      "num_items": 7,
+      "opt_distance_m": 48.87816718126448,
+      "exact_distance_m": 48.87816718126448,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_071",
+      "num_items": 5,
+      "opt_distance_m": 60.30349680193426,
+      "exact_distance_m": 60.30349680193426,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_074",
+      "num_items": 4,
+      "opt_distance_m": 48.679422897018135,
+      "exact_distance_m": 48.679422897018135,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_077",
+      "num_items": 4,
+      "opt_distance_m": 45.0038520695833,
+      "exact_distance_m": 45.0038520695833,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_082",
+      "num_items": 3,
+      "opt_distance_m": 54.00901862621464,
+      "exact_distance_m": 54.00901862621463,
+      "optimality_gap_pct": 1.3156001605539643e-14
+    },
+    {
+      "order_id": "ORDER_083",
+      "num_items": 6,
+      "opt_distance_m": 62.737835727856464,
+      "exact_distance_m": 61.45420255159225,
+      "optimality_gap_pct": 2.088763864743945
+    },
+    {
+      "order_id": "ORDER_084",
+      "num_items": 3,
+      "opt_distance_m": 25.788589632303967,
+      "exact_distance_m": 25.788589632303967,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_087",
+      "num_items": 5,
+      "opt_distance_m": 57.83831060298769,
+      "exact_distance_m": 57.83831060298769,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_090",
+      "num_items": 7,
+      "opt_distance_m": 56.37561912871001,
+      "exact_distance_m": 56.37561912871001,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_091",
+      "num_items": 7,
+      "opt_distance_m": 55.90207752728621,
+      "exact_distance_m": 55.37873957030991,
+      "optimality_gap_pct": 0.9450160134321203
+    },
+    {
+      "order_id": "ORDER_095",
+      "num_items": 3,
+      "opt_distance_m": 31.5505951525461,
+      "exact_distance_m": 31.5505951525461,
+      "optimality_gap_pct": 0.0
+    },
+    {
+      "order_id": "ORDER_096",
+      "num_items": 6,
+      "opt_distance_m": 67.55289860300965,
+      "exact_distance_m": 67.55289860300964,
+      "optimality_gap_pct": 2.1036632045525398e-14
+    },
+    {
+      "order_id": "ORDER_097",
+      "num_items": 3,
+      "opt_distance_m": 44.67884688048191,
+      "exact_distance_m": 44.67884688048191,
+      "optimality_gap_pct": 0.0
+    }
+  ]
+}

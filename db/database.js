@@ -2,24 +2,46 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'freshcart.db');
+const DEFAULT_DB_PATH = path.join(__dirname, 'freshcart.db');
+let currentDbPath = DEFAULT_DB_PATH;
+let persistToFile = true;
 let dbInstance = null;
 let SQL = null;
 
-async function initDb() {
+async function initDb(options = {}) {
   if (!SQL) {
     SQL = await initSqlJs();
   }
 
+  const dbPath = options.dbPath || process.env.DB_PATH || DEFAULT_DB_PATH;
+  currentDbPath = dbPath;
+  
+  if (options.persist !== undefined) {
+    persistToFile = options.persist;
+  } else if (process.env.NODE_ENV === 'test') {
+    persistToFile = false;
+  } else {
+    persistToFile = true;
+  }
+
+  if (options.forceReinit && dbInstance) {
+    try {
+      dbInstance.close();
+    } catch (e) {}
+    dbInstance = null;
+  }
+
   if (!dbInstance) {
-    if (fs.existsSync(DB_PATH)) {
-      const fileBuffer = fs.readFileSync(DB_PATH);
+    if (fs.existsSync(dbPath)) {
+      const fileBuffer = fs.readFileSync(dbPath);
       dbInstance = new SQL.Database(fileBuffer);
     } else {
       dbInstance = new SQL.Database();
       const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
       dbInstance.run(schema);
-      saveDb();
+      if (persistToFile) {
+        saveDb();
+      }
     }
   }
 
@@ -27,10 +49,10 @@ async function initDb() {
 }
 
 function saveDb() {
-  if (dbInstance) {
+  if (dbInstance && persistToFile) {
     const data = dbInstance.export();
     const buffer = Buffer.from(data);
-    fs.writeFileSync(DB_PATH, buffer);
+    fs.writeFileSync(currentDbPath, buffer);
   }
 }
 
@@ -100,12 +122,16 @@ function getDbWrapper() {
   };
 }
 
-function closeDb() {
+function closeDb(options = {}) {
   if (dbInstance) {
-    saveDb();
-    dbInstance.close();
+    if (persistToFile && options.save !== false) {
+      saveDb();
+    }
+    try {
+      dbInstance.close();
+    } catch (e) {}
     dbInstance = null;
   }
 }
 
-module.exports = { initDb, getDb, saveDb, closeDb, DB_PATH };
+module.exports = { initDb, getDb, saveDb, closeDb, DB_PATH: DEFAULT_DB_PATH };

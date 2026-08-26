@@ -30,6 +30,7 @@
         <button class="nav-item" data-tab="forecasting">📈 AI Demand Forecasting</button>
         <button class="nav-item" data-tab="pricing-simulator">📉 Dynamic Pricing & Elasticity</button>
         <button class="nav-item" data-tab="dispatch-routes">🚚 Delivery Route Optimizer (VRP)</button>
+        <button class="nav-item" data-tab="warehouse-picker">🏭 Warehouse Picker Route (2D TSP)</button>
         <button class="nav-item" data-tab="segmentation">👥 AI Customer Segments</button>
         <button class="nav-item" data-tab="stock-alerts">🚨 Inventory & Stock Alerts</button>
         <button class="nav-item" data-tab="ml-metrics">🧠 ML Model Evaluation</button>
@@ -50,11 +51,20 @@
           <h1 id="page-title">Executive Overview & Analytics</h1>
           <p class="subtitle">AI models trained on 12 months synthetic history & 83,000+ interactions</p>
         </div>
-        <div class="user-pill">
-          <span class="avatar">👨‍💼</span>
-          <div>
-            <strong>Admin Portal</strong>
-            <small>admin@freshcart.com</small>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div class="user-pill" id="ai-service-badge" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+            <span class="avatar" id="ai-service-dot">🟢</span>
+            <div>
+              <strong id="ai-service-title" style="font-size:0.85rem;">Python AI Gateway</strong>
+              <small id="ai-service-status" style="color:var(--green-400); display:block;">Active (v2.0.0)</small>
+            </div>
+          </div>
+          <div class="user-pill">
+            <span class="avatar">👨‍💼</span>
+            <div>
+              <strong>Admin Portal</strong>
+              <small>admin@freshcart.com</small>
+            </div>
           </div>
         </div>
       </header>
@@ -266,6 +276,73 @@
                 <tbody></tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: Warehouse Picker Route Optimizer (2D TSP) -->
+      <section class="tab-pane" id="tab-warehouse-picker">
+        <div class="section-banner">
+          <div class="banner-left">
+            <h2>🏭 Dark Store Warehouse Picker Route Optimizer (2D TSP)</h2>
+            <p>Solves the Traveling Salesperson Problem (TSP) on the physical 2D micro-fulfillment grid using Euclidean metrics, Nearest Neighbor heuristic, and 2-Opt local search to minimize order assembly walking distance and assembly cycle time.</p>
+          </div>
+          <button class="btn-action" id="btn-reoptimize-warehouse">⚡ Re-calculate Pick Path (2-Opt TSP)</button>
+        </div>
+
+        <div class="forecast-metrics-grid" id="warehouse-metrics-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="chart-grid" style="margin-top:20px;">
+          <!-- Interactive Warehouse 2D Layout Canvas -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🗺️ Dark Store 2D Layout & Optimal Pick Path</h3>
+              <span class="badge-tag" id="warehouse-engine-badge">2-Opt TSP Solver</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.35); border-radius:var(--radius-sm); padding:12px; display:flex; justify-content:center;">
+              <canvas id="warehouseCanvas" width="540" height="340" style="width:100%; max-width:540px;"></canvas>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:8px;">
+              <span>🟡 Packing Station (0, 0)</span>
+              <span>🟢 Pick Target Nodes</span>
+              <span>🏷️ Aisles: A1 (Fruits), A2 (Veg), A3 (Dairy), A4 (Bakery), A5 (Snacks)</span>
+            </div>
+          </div>
+
+          <!-- Turn-by-Turn Picking Sequence Table -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>📋 Optimized Item Picking Sequence</h3>
+            </div>
+            <div class="table-wrapper" style="max-height:340px; overflow-y:auto;">
+              <table class="data-table" id="warehouse-sequence-table">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Product</th>
+                    <th>Zone</th>
+                    <th>Location</th>
+                    <th>Coords (X, Y)</th>
+                    <th>Leg (m)</th>
+                    <th>Total (m)</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aisle Transition Flow Badge Card -->
+        <div class="chart-card" style="margin-top:20px;">
+          <div class="chart-header">
+            <h3>🧭 Optimal Aisle & Rack Navigation Sequence</h3>
+            <span class="badge-tag">Sub-90s Assembly Target</span>
+          </div>
+          <div id="warehouse-transition-flow" style="font-size:0.92rem; color:var(--text-main); font-weight:600; padding:12px; background:rgba(16,185,129,0.08); border-radius:var(--radius-sm); border:1px solid var(--border-active);">
+            <!-- Populated by JS -->
           </div>
         </div>
       </section>

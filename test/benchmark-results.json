@@ -1,0 +1,126 @@
+{
+  "nodeEndpoints": {
+    "GET /api/products": {
+      "avg": 3.67,
+      "median": 3.43,
+      "p95": 6.42,
+      "min": 2.26,
+      "max": 6.42,
+      "samples": 20
+    },
+    "GET /api/recommendations/personal": {
+      "avg": 7.9,
+      "median": 7.85,
+      "p95": 9.37,
+      "min": 7.35,
+      "max": 9.37,
+      "samples": 20
+    },
+    "GET /api/analytics/demand-forecast/:id": {
+      "avg": 8.8,
+      "median": 8.83,
+      "p95": 9.41,
+      "min": 8.04,
+      "max": 9.41,
+      "samples": 20
+    },
+    "GET /api/pricing/simulate/:id": {
+      "avg": 9.87,
+      "median": 9.83,
+      "p95": 11.21,
+      "min": 8.74,
+      "max": 11.21,
+      "samples": 20
+    },
+    "GET /api/supplier/reorder-alerts": {
+      "avg": 2.26,
+      "median": 2.13,
+      "p95": 3.09,
+      "min": 1.97,
+      "max": 3.09,
+      "samples": 20
+    },
+    "POST /api/supplier/warehouse-picker-route": {
+      "avg": 4.4,
+      "median": 4.34,
+      "p95": 5.06,
+      "min": 3.84,
+      "max": 5.06,
+      "samples": 20
+    },
+    "GET /api/dispatch/optimize": {
+      "avg": 10.83,
+      "median": 10.76,
+      "p95": 12.19,
+      "min": 10.26,
+      "max": 12.19,
+      "samples": 20
+    }
+  },
+  "pythonEndpoints": {
+    "GET /health": {
+      "avg": 1.92,
+      "median": 1.87,
+      "p95": 2.23,
+      "min": 1.7,
+      "max": 2.23,
+      "samples": 20
+    },
+    "POST /predict/recommendations": {
+      "avg": 4.86,
+      "median": 4.83,
+      "p95": 5.61,
+      "min": 4.58,
+      "max": 5.61,
+      "samples": 20
+    },
+    "POST /predict/demand": {
+      "avg": 4.46,
+      "median": 4.44,
+      "p95": 4.84,
+      "min": 4.1,
+      "max": 4.84,
+      "samples": 20
+    },
+    "POST /predict/price": {
+      "avg": 2.56,
+      "median": 2.55,
+      "p95": 3.09,
+      "min": 2.17,
+      "max": 3.09,
+      "samples": 20
+    },
+    "POST /predict/fraud": {
+      "avg": 19.77,
+      "median": 19.63,
+      "p95": 21.96,
+      "min": 18.73,
+      "max": 21.96,
+      "samples": 20
+    },
+    "POST /optimize/inventory": {
+      "avg": 2.38,
+      "median": 2.38,
+      "p95": 2.57,
+      "min": 2.17,
+      "max": 2.57,
+      "samples": 20
+    },
+    "POST /optimize/warehouse": {
+      "avg": 2.34,
+      "median": 2.38,
+      "p95": 2.65,
+      "min": 2.16,
+      "max": 2.65,
+      "samples": 20
+    },
+    "POST /optimize/delivery": {
+      "avg": 2.31,
+      "median": 2.25,
+      "p95": 2.91,
+      "min": 2.01,
+      "max": 2.91,
+      "samples": 20
+    }
+  }
+}

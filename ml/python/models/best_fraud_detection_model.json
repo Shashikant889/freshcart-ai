@@ -1,0 +1,25 @@
+{
+  "model_name": "Random Forest Classifier",
+  "f1_score": 0.13654618473895583,
+  "roc_auc": 0.6086829836829837,
+  "metrics": {
+    "Precision": 0.08292682926829269,
+    "Recall": 0.38636363636363635,
+    "F1-Score": 0.13654618473895583,
+    "ROC-AUC": 0.6086829836829837
+  },
+  "feature_columns": [
+    "total",
+    "total_items",
+    "unique_skus",
+    "max_item_quantity",
+    "order_hour",
+    "order_dow",
+    "is_weekend",
+    "user_mean_spend",
+    "spend_to_user_mean_ratio",
+    "user_velocity_24h",
+    "delivery_distance_km"
+  ],
+  "scaler_used": false
+}

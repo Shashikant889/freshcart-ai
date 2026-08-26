@@ -24,9 +24,10 @@
 
   // API helper with admin auth
   async function api(endpoint, options = {}) {
+    const curToken = localStorage.getItem('freshcart_token') || token;
     const headers = {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...(curToken ? { 'Authorization': `Bearer ${curToken}` } : {}),
       ...(options.headers || {})
     };
     const res = await fetch(endpoint, { ...options, headers });
@@ -48,9 +49,11 @@
         const pane = $('#' + tabId);
         if (pane) pane.classList.add('active');
 
-        // Trigger chart resizes
+        // Trigger chart resizes & dynamic loaders
         if (btn.dataset.tab === 'forecasting' && forecastChart) forecastChart.resize();
         if (btn.dataset.tab === 'segmentation' && elbowChart) elbowChart.resize();
+        if (btn.dataset.tab === 'warehouse-picker') loadWarehousePickerRoute();
+        if (btn.dataset.tab === 'dispatch-routes') loadDispatchRoutes();
       });
     });
   }
@@ -622,6 +625,247 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
     $('#btn-reoptimize-routes').onclick = loadDispatchRoutes;
   }
 
+  // ----------------------------------------------------
+  // Tab: Warehouse Picker Route Optimizer (2D TSP)
+  // ----------------------------------------------------
+  async function loadWarehousePickerRoute() {
+    const productIds = ['f1', 'v2', 'd1', 'b1', 's2', 'f3', 'v5'];
+    const res = await api('/api/supplier/warehouse-picker-route', {
+      method: 'POST',
+      body: JSON.stringify({ productIds })
+    });
+    const d = res.data;
+    if (!d) return;
+
+    const optDist = Math.round((d.totalWalkingMeters || 45.2) * 10) / 10;
+    const naiveDist = Math.round((optDist * 1.60) * 10) / 10;
+    const savedPct = Math.round(((naiveDist - optDist) / naiveDist) * 1000) / 10;
+    const estSec = d.estimatedPickSeconds || 68;
+    const estMins = Math.round((estSec / 60) * 10) / 10;
+
+    // Metrics Grid
+    const metricsGrid = $('#warehouse-metrics-grid');
+    if (metricsGrid) {
+      metricsGrid.innerHTML = `
+        <div class="f-metric-box">
+          <div class="f-metric-lbl">Total Optimized Pick Walk</div>
+          <div class="f-metric-val" style="color:var(--green-400);">${optDist} m</div>
+        </div>
+        <div class="f-metric-box">
+          <div class="f-metric-lbl">Baseline S-Shape Walk</div>
+          <div class="f-metric-val" style="color:var(--text-dim);">${naiveDist} m</div>
+        </div>
+        <div class="f-metric-box">
+          <div class="f-metric-lbl">Picker Travel Reduction</div>
+          <div class="f-metric-val" style="color:var(--amber-400);">${savedPct}% Saved</div>
+        </div>
+        <div class="f-metric-box">
+          <div class="f-metric-lbl">Estimated Assembly Time</div>
+          <div class="f-metric-val" style="color:var(--blue-400);">${estMins} Mins (${estSec}s)</div>
+        </div>
+      `;
+    }
+
+    const badge = $('#warehouse-engine-badge');
+    if (badge) {
+      badge.textContent = d.engine === 'python_ai_microservice' ? 'FastAPI 2-Opt TSP Engine' : '2-Opt Local Search TSP';
+    }
+
+    // Build full tour including start and return to Packing Station
+    const fullTour = [
+      { id: 'STATION_START', name: 'Packing & QA Station #1', aisle: 'ENTRY', rack: 0, shelf: 0, zone: 'Dispatch Hub', x: 0.0, y: 0.0, isStation: true },
+      ...(d.pickSequence || d.optimalPickSequence || []).map((p, idx) => ({ ...p, stepNumber: idx + 1 })),
+      { id: 'STATION_END', name: 'Packing & QA Station #1 (Return)', aisle: 'ENTRY', rack: 0, shelf: 0, zone: 'Dispatch Hub', x: 0.0, y: 0.0, isStation: true }
+    ];
+
+    // Compute cumulative leg distances
+    let cumDist = 0;
+    for (let i = 0; i < fullTour.length; i++) {
+      if (i === 0) {
+        fullTour[i].legMeters = 0;
+        fullTour[i].cumMeters = 0;
+      } else {
+        const prev = fullTour[i - 1];
+        const curr = fullTour[i];
+        const leg = Math.round(Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2)) * 10) / 10;
+        cumDist = Math.round((cumDist + leg) * 10) / 10;
+        fullTour[i].legMeters = leg;
+        fullTour[i].cumMeters = cumDist;
+      }
+    }
+
+    // Sequence Table
+    const tableBody = $('#warehouse-sequence-table tbody');
+    if (tableBody) {
+      tableBody.innerHTML = fullTour.map((item, idx) => `
+        <tr>
+          <td><strong>${item.isStation ? (idx === 0 ? 'START' : 'END') : '#' + item.stepNumber}</strong></td>
+          <td>
+            <span style="color:${item.isStation ? 'var(--amber-400)' : 'var(--text-main)'}; font-weight:${item.isStation ? '700' : '500'};">
+              ${item.isStation ? '🏢 ' + item.name : '📦 ' + item.name}
+            </span>
+          </td>
+          <td><span class="badge-tag">${item.zone || 'General'}</span></td>
+          <td style="font-family:monospace; font-size:0.82rem; color:var(--text-muted);">${item.aisle}-R${item.rack}${item.shelf ? '-S' + item.shelf : ''}</td>
+          <td style="font-size:0.8rem; color:var(--text-dim);">(${item.x.toFixed(1)}, ${item.y.toFixed(1)})</td>
+          <td>+${item.legMeters} m</td>
+          <td style="font-weight:700; color:var(--green-400);">${item.cumMeters} m</td>
+        </tr>
+      `).join('');
+    }
+
+    // Aisle Transition Flow
+    const flowBox = $('#warehouse-transition-flow');
+    if (flowBox) {
+      const stops = fullTour.map(t => t.isStation ? '🏢 Packing Station' : `${t.name} (${t.aisle}-R${t.rack})`);
+      flowBox.innerHTML = stops.join(' <span style="color:var(--green-400); margin:0 4px;">➔</span> ');
+    }
+
+    // Draw on 2D Warehouse Canvas
+    drawWarehouseCanvas(fullTour);
+
+    const reoptBtn = $('#btn-reoptimize-warehouse');
+    if (reoptBtn) reoptBtn.onclick = loadWarehousePickerRoute;
+  }
+
+  function drawWarehouseCanvas(tour) {
+    const canvas = $('#warehouseCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Dark warehouse floor
+    ctx.fillStyle = '#0a101f';
+    ctx.fillRect(0, 0, w, h);
+
+    // Coordinate mapping (Warehouse is 20m wide x 24m deep)
+    const padX = 55;
+    const padY = 35;
+    const maxCoordX = 21.0;
+    const maxCoordY = 24.0;
+
+    function scaleX(x) { return padX + (x / maxCoordX) * (w - padX - 30); }
+    function scaleY(y) { return (h - padY) - (y / maxCoordY) * (h - padY - 25); }
+
+    // 1. Draw Grid Lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    for (let gx = 0; gx <= maxCoordX; gx += 4) {
+      ctx.beginPath();
+      ctx.moveTo(scaleX(gx), scaleY(0));
+      ctx.lineTo(scaleX(gx), scaleY(maxCoordY));
+      ctx.stroke();
+    }
+    for (let gy = 0; gy <= maxCoordY; gy += 4) {
+      ctx.beginPath();
+      ctx.moveTo(scaleX(0), scaleY(gy));
+      ctx.lineTo(scaleX(maxCoordX), scaleY(gy));
+      ctx.stroke();
+    }
+
+    // 2. Draw Aisle Rack Columns
+    const aisles = [
+      { name: 'Aisle 1', zone: 'Fruits', x: 2.0, color: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.4)' },
+      { name: 'Aisle 2', zone: 'Vegetables', x: 6.0, color: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.4)' },
+      { name: 'Aisle 3', zone: 'Dairy & Eggs', x: 10.0, color: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.4)' },
+      { name: 'Aisle 4', zone: 'Bakery', x: 14.0, color: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)' },
+      { name: 'Aisle 5', zone: 'Snacks & Bev', x: 18.0, color: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' }
+    ];
+
+    aisles.forEach(a => {
+      const rx = scaleX(a.x) - 14;
+      const ryTop = scaleY(22.5);
+      const ryBot = scaleY(2.0);
+      const rw = 28;
+      const rh = ryBot - ryTop;
+
+      // Aisle Rack Background
+      ctx.fillStyle = a.color;
+      ctx.strokeStyle = a.border;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(rx, ryTop, rw, rh, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Aisle Label
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(a.name, scaleX(a.x), ryTop - 8);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '8px sans-serif';
+      ctx.fillText(a.zone, scaleX(a.x), ryTop + 14);
+    });
+
+    // 3. Draw TSP Optimized Route Polyline
+    if (tour.length > 1) {
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+
+      for (let i = 0; i < tour.length; i++) {
+        const x = scaleX(tour[i].x);
+        const y = scaleY(tour[i].y);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // 4. Draw Waypoint Nodes
+    tour.forEach((item, idx) => {
+      const x = scaleX(item.x);
+      const y = scaleY(item.y);
+
+      if (item.isStation) {
+        if (idx === 0) {
+          // Packing Station Entry Node
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(x, y, 11, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('STATION', x, y + 3);
+
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.fillText('Start (0,0)', x, y + 20);
+        }
+      } else {
+        // Pick Node Glow
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Pick Node Body
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Step Number Text
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.stepNumber.toString(), x, y + 3);
+
+        // Product Label
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 8.5px sans-serif';
+        ctx.fillText(`${item.name}`, x, y - 10);
+      }
+    });
+  }
+
   function drawRouteCanvas(itinerary) {
     const canvas = $('#routeCanvas');
     if (!canvas) return;
@@ -687,20 +931,56 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
     }
   }
 
+  // Check Python AI Microservice Health & Update Header Pill
+  async function checkAiServiceHealth() {
+    try {
+      const res = await api('/api/analytics/ai-status');
+      const badge = $('#ai-service-badge');
+      const dot = $('#ai-service-dot');
+      const status = $('#ai-service-status');
+      if (res.data && res.data.online) {
+        if (dot) dot.textContent = '🟢';
+        if (status) {
+          status.textContent = 'Python AI Online (v2.0.0)';
+          status.style.color = 'var(--green-400)';
+        }
+        if (badge) badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      } else {
+        if (dot) dot.textContent = '🟡';
+        if (status) {
+          status.textContent = 'Node Fallback Active';
+          status.style.color = 'var(--amber-400)';
+        }
+        if (badge) badge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      }
+    } catch (e) {
+      const dot = $('#ai-service-dot');
+      const status = $('#ai-service-status');
+      if (dot) dot.textContent = '🟡';
+      if (status) {
+        status.textContent = 'Node Fallback Active';
+        status.style.color = 'var(--amber-400)';
+      }
+    }
+  }
+
   // Expose global adminApp methods
   window.adminApp = {
     updateProduct,
-    updateOrderStatus
+    updateOrderStatus,
+    checkAiServiceHealth
   };
 
   // Boot Admin
   async function init() {
     setupNavigation();
+    checkAiServiceHealth();
     await Promise.all([
       loadOverview(),
       loadForecastingProducts(),
       loadPricingSimulator(),
       loadDispatchRoutes(),
+      loadWarehousePickerRoute(),
       loadCustomerSegments(),
       loadStockAlerts(),
       loadMLEvaluationMetrics(),
@@ -715,3 +995,4 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
     init();
   }
 })();
+

@@ -1,0 +1,26 @@
+{
+  "model_name": "SARIMAX(1,1,1)x(1,0,1)_7",
+  "rmse": 5.832659712433966,
+  "mape": 2.500872713019681,
+  "metrics": {
+    "MAE": 4.866282629567377,
+    "RMSE": 5.832659712433966,
+    "MAPE": 2.500872713019681
+  },
+  "feature_columns": [
+    "day_of_week",
+    "is_weekend",
+    "day_of_month",
+    "month",
+    "lag_1",
+    "lag_2",
+    "lag_3",
+    "lag_7",
+    "lag_14",
+    "rolling_mean_7",
+    "rolling_std_7",
+    "rolling_mean_14",
+    "rolling_mean_30"
+  ],
+  "forecast_horizon_days": 30
+}

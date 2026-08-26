@@ -1,0 +1,32 @@
+{
+  "model_name": "Hybrid Ensemble (CF + CB)",
+  "f1_at_10": 0.5027320078276657,
+  "metrics": {
+    "P@5": 0.976,
+    "P@10": 0.9760000000000001,
+    "R@5": 0.17060195421353355,
+    "R@10": 0.34119970056859034,
+    "F1@5": 0.2892608470149038,
+    "F1@10": 0.5027320078276657,
+    "NDCG@5": 0.9806468774304278,
+    "NDCG@10": 0.9790160407179936,
+    "HitRate@5": 1.0,
+    "HitRate@10": 1.0,
+    "num_eval_users": 50
+  },
+  "algorithm_family": "Ensemble / Content / Collaborative",
+  "parameters": {
+    "k_values": [
+      5,
+      10
+    ],
+    "test_ratio": 0.2,
+    "min_interactions_per_user": 5,
+    "implicit_weights": {
+      "purchase": 5.0,
+      "cart": 3.0,
+      "view": 1.0,
+      "rating": 2.0
+    }
+  }
+}

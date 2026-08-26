@@ -2,9 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db/database');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
+const aiClient = require('../services/ai-client');
 
 // Apply admin auth to all admin routes
 router.use(requireAuth, requireAdmin);
+
+// GET /api/admin/ai-health - Check AI Service Connection
+router.get('/ai-health', async (req, res) => {
+  const status = await aiClient.checkHealth();
+  res.json({ success: true, data: status });
+});
 
 // GET /api/admin/dashboard - High level stats
 router.get('/dashboard', (req, res) => {
@@ -130,6 +137,27 @@ router.get('/orders', (req, res) => {
     res.json({ success: true, data: enriched });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/orders/:id/fraud-check - Deep ML Fraud Risk Inspection
+router.post('/orders/:id/fraud-check', async (req, res) => {
+  const db = getDb();
+  try {
+    const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+
+    const items = db.prepare('SELECT * FROM order_items WHERE order_id = ?').all(order.id);
+    const fraudScore = await aiClient.scoreFraud({
+      orderId: order.id,
+      userId: order.user_id,
+      total: order.total,
+      items: items
+    });
+
+    res.json({ success: true, data: fraudScore });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Fraud check error: ' + err.message });
   }
 });
 

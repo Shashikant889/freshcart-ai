@@ -1,57 +1,6 @@
-/**
- * FreshCart AI - Backend Alpha & Beta Integration and Stress Test Suite
- * 
- * Alpha Stage: Full API contract & lifecycle testing across all 12 endpoints.
- * Beta Stage: Multi-user simulation, concurrent cart operations, order processing,
- * and high-throughput AI inference benchmark.
- */
-
-const http = require('http');
 const assert = require('assert');
-const { getDb, initDb } = require('../db/database');
-
-const BASE_URL = 'http://localhost:3000';
-
-function request(method, path, headers = {}, body = null) {
-  return new Promise((resolve, reject) => {
-    const url = new URL(path, BASE_URL);
-    const options = {
-      method,
-      hostname: url.hostname,
-      port: url.port,
-      path: url.pathname + url.search,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers
-      }
-    };
-
-    const req = http.request(options, res => {
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => {
-        let parsed = null;
-        try {
-          parsed = JSON.parse(data);
-        } catch (e) {
-          parsed = data;
-        }
-        resolve({
-          status: res.statusCode,
-          headers: res.headers,
-          data: parsed
-        });
-      });
-    });
-
-    req.on('error', reject);
-
-    if (body) {
-      req.write(typeof body === 'string' ? body : JSON.stringify(body));
-    }
-    req.end();
-  });
-}
+const { getDb } = require('../db/database');
+const { startTestServer } = require('./test-helper');
 
 let passedAlpha = 0;
 let failedAlpha = 0;
@@ -63,14 +12,17 @@ async function runBackendAlphaBeta() {
   console.log('  🧪 FRESHCART AI: BACKEND ALPHA & BETA TESTING SUITE');
   console.log('===============================================================\n');
 
-  await initDb();
-  const db = getDb();
-  db.prepare('UPDATE products SET stock = 100 WHERE stock < 30').run();
+  let testEnv = null;
+  try {
+    testEnv = await startTestServer();
+    const request = testEnv.request;
+    const db = getDb();
+    db.prepare('UPDATE products SET stock = 100 WHERE stock < 30').run();
 
-  // =============================================================
-  // ALPHA TESTING: Comprehensive API Contract & Route Lifecycle
-  // =============================================================
-  console.log('🔹 PHASE 1: ALPHA TESTING (API Endpoint Functional Verification)\n');
+    // =============================================================
+    // ALPHA TESTING: Comprehensive API Contract & Route Lifecycle
+    // =============================================================
+    console.log('🔹 PHASE 1: ALPHA TESTING (API Endpoint Functional Verification)\n');
 
   // Test 1: Products Listing
   try {
@@ -329,6 +281,12 @@ async function runBackendAlphaBeta() {
   console.log(`  🎯 TOTAL BACKEND ALPHA/BETA SCORE: ${passedAlpha + passedBeta} / ${passedAlpha + failedAlpha + passedBeta + failedBeta}`);
   console.log('===============================================================\n');
 
+  } finally {
+    if (testEnv) {
+      await testEnv.close();
+    }
+  }
+
   if (failedAlpha + failedBeta > 0) {
     process.exit(1);
   }
@@ -338,3 +296,4 @@ runBackendAlphaBeta().catch(err => {
   console.error('Fatal Alpha/Beta Test Error:', err);
   process.exit(1);
 });
+

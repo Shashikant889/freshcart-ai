@@ -37,6 +37,23 @@ router.post('/', optionalAuth, (req, res) => {
     return res.status(400).json({ success: false, message: 'Cart is empty' });
   }
 
+  // Validate stock availability for each item
+  for (const item of items) {
+    if (!item.quantity || item.quantity <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid item quantity' });
+    }
+    const p = db.prepare('SELECT stock, name FROM products WHERE id = ?').get(item.productId);
+    if (!p) {
+      return res.status(400).json({ success: false, message: `Product ${item.productId} not found` });
+    }
+    if (p.stock < item.quantity) {
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient stock for ${p.name}. Available: ${p.stock}`
+      });
+    }
+  }
+
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = subtotal > 500 ? 0 : 49;
   const tax = Math.round(subtotal * 0.08 * 100) / 100;

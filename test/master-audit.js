@@ -45,32 +45,48 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'server.js',
     'db/database.js',
     'db/seed.js',
-    'ml/recommendation-engine.js',
-    'ml/demand-forecasting.js',
+    'db/synthetic-data.js',
     'ml/customer-segmentation.js',
-    'ml/pricing-optimization.js',
+    'ml/dark-store-picker.js',
+    'ml/demand-forecasting.js',
+    'ml/dynamic-pricing.js',
+    'ml/flash-sale-ai.js',
     'ml/fraud-detection.js',
-    'ml/route-optimizer.js',
     'ml/fridge-vision-ai.js',
-    'routes/auth.js',
-    'routes/products.js',
-    'routes/cart.js',
-    'routes/orders.js',
+    'ml/nutrition-advisor.js',
+    'ml/recipe-assistant.js',
+    'ml/recommendation-engine.js',
+    'ml/route-optimizer.js',
+    'ml/smart-search.js',
+    'ml/visual-search.js',
+    'middleware/auth.js',
     'routes/admin.js',
-    'routes/recommendations.js',
     'routes/analytics.js',
-    'routes/search.js',
     'routes/assistant.js',
-    'routes/pricing.js',
+    'routes/auth.js',
+    'routes/cart.js',
     'routes/dispatch.js',
-    'routes/visual.js',
-    'routes/nutrition.js',
-    'routes/wallet.js',
     'routes/group-orders.js',
+    'routes/nutrition.js',
+    'routes/orders.js',
+    'routes/pricing.js',
+    'routes/products.js',
+    'routes/recommendations.js',
+    'routes/search.js',
     'routes/supplier.js',
+    'routes/visual.js',
+    'services/ai-client.js',
     'public/js/app.js',
     'public/js/admin.js',
-    'public/sw.js'
+    'public/sw.js',
+    'test/test-helper.js',
+    'test/deep-verify.js',
+    'test/security-safety-test.js',
+    'test/alpha-beta-backend.js',
+    'test/synthetic-frontend-test.js',
+    'test/enterprise-features-test.js',
+    'test/pwa-vision-payment-test.js',
+    'test/ai-service-integration-test.js'
   ];
 
   jsFiles.forEach(file => {
@@ -82,6 +98,8 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
       } catch (e) {
         assertCheck(`Syntax Check: ${file}`, false, e.message);
       }
+    } else {
+      assertCheck(`File exists: ${file}`, false, 'File not found');
     }
   });
 });
@@ -105,23 +123,24 @@ runAuditSection('2. Frontend Assets, PWA Manifest & Design System Tokens:', () =
 });
 
 // -------------------------------------------------------------
-// 3. Execution of All 6 Modular Test Suites
+// 3. Execution of All 7 Modular Test Suites
 // -------------------------------------------------------------
-runAuditSection('3. Executing All 6 Automated Multi-Tier Test Suites (85 Assertions):', () => {
+runAuditSection('3. Executing All 7 Automated Multi-Tier Test Suites (113 Assertions):', () => {
   const suites = [
     { name: '10-Agent ML Verification Suite', cmd: 'node test/deep-verify.js' },
     { name: 'OWASP Security & SQLi Immunity Suite', cmd: 'node test/security-safety-test.js' },
     { name: 'Backend Alpha/Beta & Concurrency Suite', cmd: 'node test/alpha-beta-backend.js' },
     { name: 'Frontend Synthetic DOM & Localization Suite', cmd: 'node test/synthetic-frontend-test.js' },
     { name: 'Enterprise Mega-Pack Verification Suite', cmd: 'node test/enterprise-features-test.js' },
-    { name: 'PWA, Vision AI & Payment Gateway Suite', cmd: 'node test/pwa-vision-payment-test.js' }
+    { name: 'PWA, Vision AI & Payment Gateway Suite', cmd: 'node test/pwa-vision-payment-test.js' },
+    { name: 'AI/ML Microservice & Operations Research Integration Suite', cmd: 'node test/ai-service-integration-test.js' }
   ];
 
   suites.forEach(suite => {
     try {
       const output = execSync(suite.cmd, { cwd: rootDir, stdio: 'pipe' }).toString();
-      const hasFailure = output.includes('FAIL') && !output.includes('0 FAILED');
-      assertCheck(suite.name, !hasFailure);
+      const isFailed = output.includes('❌') || output.includes('🚨') || (output.includes('FAILED') && !output.includes('0 FAILED'));
+      assertCheck(suite.name, !isFailed);
     } catch (err) {
       assertCheck(suite.name, false, err.stdout ? err.stdout.toString() : err.message);
     }
@@ -142,3 +161,4 @@ if (failedChecks === 0) {
   console.error(`\n  🚨 [STATUS: FAILING] Detected ${failedChecks} failed checks.\n`);
   process.exit(1);
 }
+

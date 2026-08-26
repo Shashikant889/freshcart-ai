@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db/database');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
+const aiClient = require('../services/ai-client');
 const { optimizeWarehousePickerRoute } = require('../ml/dark-store-picker');
 
 // GET /api/supplier/reorder-alerts - Compute automated Reorder Points (ROP) & Safety Stock
-router.get('/reorder-alerts', requireAuth, requireAdmin, (req, res) => {
+router.get('/reorder-alerts', requireAuth, requireAdmin, async (req, res) => {
   const db = getDb();
   try {
     const products = db.prepare('SELECT id, name, emoji, category, price, stock FROM products').all();
@@ -40,7 +41,8 @@ router.get('/reorder-alerts', requireAuth, requireAdmin, (req, res) => {
         needsReorder,
         suggestedOrderQty,
         estimatedWholesaleCost: estimatedCost,
-        priority: p.stock < safetyStock ? 'CRITICAL' : (needsReorder ? 'WARNING' : 'HEALTHY')
+        priority: p.stock < safetyStock ? 'CRITICAL' : (needsReorder ? 'WARNING' : 'HEALTHY'),
+        modelUsed: 'Continuous Review (r, Q) with EOQ & Stochastic Safety Stock'
       };
     });
 
@@ -63,16 +65,49 @@ router.get('/reorder-alerts', requireAuth, requireAdmin, (req, res) => {
 });
 
 // POST /api/supplier/warehouse-picker-route - Generate TSP picking sequence for dark store order
-router.post('/warehouse-picker-route', requireAuth, requireAdmin, (req, res) => {
+router.post('/warehouse-picker-route', requireAuth, requireAdmin, async (req, res) => {
   const { productIds = ['f1', 'v2', 'd1', 'b1', 's2'] } = req.body;
   try {
+    const aiWarehouse = await aiClient.optimizeWarehouse({ productIds });
+    
+    // Map to expected format for dashboard
+    const pickSequence = (aiWarehouse.pickingSequence || []).map(p => ({
+      id: p.product_id,
+      name: p.name,
+      aisle: p.aisle,
+      rack: p.rack,
+      shelf: p.shelf,
+      zone: p.zone,
+      x: p.x,
+      y: p.y
+    }));
+
+    const totDist = aiWarehouse.totalWalkingDistanceMeters || 45.0;
+    const totSec = aiWarehouse.estimatedPickTimeSeconds || 60;
+    const transitions = pickSequence.map(t => `${t.aisle || 'A1'}-R${t.rack || 1}`).join(' ➔ ');
+
+    res.json({
+      success: true,
+      data: {
+        totalItems: aiWarehouse.totalItems,
+        totalWalkingMeters: totDist,
+        totalDistanceMeters: totDist,
+        estimatedPickSeconds: totSec,
+        estimatedPickTimeMinutes: Math.round((totSec / 60) * 10) / 10,
+        pickSequence: pickSequence,
+        optimalPickSequence: pickSequence,
+        aisleTransitions: transitions || 'STATION ➔ A1-R1 ➔ STATION',
+        algorithmUsed: aiWarehouse.algorithmUsed,
+        engine: aiWarehouse.engine,
+        isFallback: aiWarehouse.isFallback
+      }
+    });
+  } catch (err) {
     const result = optimizeWarehousePickerRoute(productIds);
     res.json({
       success: true,
       data: result
     });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Warehouse routing error: ' + err.message });
   }
 });
 

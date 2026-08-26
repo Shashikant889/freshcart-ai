@@ -1,0 +1,70 @@
+{
+  "benchmark_results": {
+    "Rule-Based / Z-Score Baseline": {
+      "Precision": 0.10344827586206896,
+      "Recall": 0.06818181818181818,
+      "F1-Score": 0.0821917808219178,
+      "ROC-AUC": 0.5553837188452573
+    },
+    "Logistic Regression (Balanced)": {
+      "Precision": 0.05803571428571429,
+      "Recall": 0.5909090909090909,
+      "F1-Score": 0.10569105691056911,
+      "ROC-AUC": 0.6080105791644252
+    },
+    "Random Forest Classifier": {
+      "Precision": 0.08292682926829269,
+      "Recall": 0.38636363636363635,
+      "F1-Score": 0.13654618473895583,
+      "ROC-AUC": 0.6086829836829837
+    },
+    "Isolation Forest (Unsupervised)": {
+      "Precision": 0.0,
+      "Recall": 0.0,
+      "F1-Score": 0.0,
+      "ROC-AUC": 0.5258427469965932
+    }
+  },
+  "confusion_matrices": {
+    "Rule-Based / Z-Score Baseline": [
+      [
+        988,
+        26
+      ],
+      [
+        41,
+        3
+      ]
+    ],
+    "Logistic Regression (Balanced)": [
+      [
+        592,
+        422
+      ],
+      [
+        18,
+        26
+      ]
+    ],
+    "Random Forest Classifier": [
+      [
+        826,
+        188
+      ],
+      [
+        27,
+        17
+      ]
+    ],
+    "Isolation Forest (Unsupervised)": [
+      [
+        965,
+        49
+      ],
+      [
+        44,
+        0
+      ]
+    ]
+  }
+}
