@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecfdf5"/><stop offset="100%" stop-color="#d1fae5"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <path d="M92,120 L88,162 L112,162 L108,120 Z" fill="#86efac"/>
+     <g fill="#15803d">
+      <circle cx="75" cy="95" r="24"/>
+      <circle cx="125" cy="95" r="24"/>
+      <circle cx="100" cy="74" r="26"/>
+      <circle cx="100" cy="102" r="26"/>
+      <circle cx="68" cy="115" r="16"/>
+      <circle cx="132" cy="115" r="16"/>
+     </g>
+  </g>
+</svg>

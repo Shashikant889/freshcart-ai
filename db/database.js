@@ -35,6 +35,11 @@ async function initDb(options = {}) {
     if (fs.existsSync(dbPath)) {
       const fileBuffer = fs.readFileSync(dbPath);
       dbInstance = new SQL.Database(fileBuffer);
+      dbInstance.run(`
+        CREATE INDEX IF NOT EXISTS idx_products_cat_price ON products(category, price ASC);
+        CREATE INDEX IF NOT EXISTS idx_products_cat_rating ON products(category, rating DESC);
+        CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+      `);
     } else {
       dbInstance = new SQL.Database();
       const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');

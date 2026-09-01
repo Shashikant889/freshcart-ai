@@ -32,7 +32,8 @@ function calculateTotals(items) {
 function getUserCartItems(userId) {
   const db = getDb();
   const rows = db.prepare(`
-    SELECT c.product_id as productId, c.quantity, p.name, p.emoji, p.price, p.unit, p.stock
+    SELECT c.product_id as productId, c.quantity, p.name, p.emoji, p.price, p.unit, p.stock,
+           p.image_url, p.image_key, p.image_alt, p.brand, p.mrp, p.discount
     FROM cart_items c
     JOIN products p ON c.product_id = p.id
     WHERE c.user_id = ?
@@ -124,7 +125,13 @@ router.post('/add', optionalAuth, (req, res) => {
       emoji: product.emoji,
       price: product.price,
       unit: product.unit,
-      quantity
+      quantity,
+      image_url: product.image_url,
+      image_key: product.image_key,
+      image_alt: product.image_alt,
+      brand: product.brand,
+      mrp: product.mrp,
+      discount: product.discount
     });
   }
 

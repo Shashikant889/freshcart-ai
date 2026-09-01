@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="frozenBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/><stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="pouchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <filter id="shadowFrozen" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#frozenBg)"/>
+  <g filter="url(#shadowFrozen)">
+    <!-- Frozen Snack Pouch -->
+    <rect x="55" y="45" width="90" height="120" rx="14" fill="url(#pouchGrad)"/>
+    <!-- Top Seal Crimps -->
+    <rect x="55" y="45" width="90" height="12" rx="4" fill="#075985"/>
+    <line x1="60" y1="47" x2="60" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="70" y1="47" x2="70" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="80" y1="47" x2="80" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="90" y1="47" x2="90" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="100" y1="47" x2="100" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="110" y1="47" x2="110" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="120" y1="47" x2="120" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="130" y1="47" x2="130" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <line x1="140" y1="47" x2="140" y2="55" stroke="#38bdf8" stroke-width="2"/>
+    <!-- Center Food Window / Illustration -->
+    <circle cx="100" cy="105" r="26" fill="#f8fafc" stroke="#38bdf8" stroke-width="3"/>
+    <!-- Golden Veggie Nugget / Patty -->
+    <ellipse cx="95" cy="103" rx="14" ry="10" fill="#f59e0b" transform="rotate(-15 95 103)"/>
+    <ellipse cx="106" cy="108" rx="13" ry="9" fill="#d97706" transform="rotate(10 106 108)"/>
+    <!-- Sub-Zero Snowflake / Frost Badge -->
+    <circle cx="128" cy="70" r="12" fill="#38bdf8"/>
+    <text x="128" y="75" font-size="12" text-anchor="middle" font-family="sans-serif">❄️</text>
+    <!-- Label -->
+    <rect x="68" y="140" width="64" height="16" rx="5" fill="#f59e0b"/>
+    <text x="100" y="152" font-size="9" font-weight="900" fill="#78350f" text-anchor="middle" font-family="sans-serif">FROZEN</text>
+  </g>
+</svg>

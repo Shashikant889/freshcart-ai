@@ -23,22 +23,25 @@ router.get('/simulate/:productId', async (req, res) => {
   if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
 
   try {
-    const aiPricing = await aiClient.recommendPrice({
-      productId: product.id,
-      category: product.category,
-      basePrice: product.price
-    });
-
     const result = simulatePriceChange(req.params.productId, proposedPrice);
+    let aiPricing = null;
+    try {
+      aiPricing = await aiClient.recommendPrice({
+        productId: product.id,
+        category: product.category,
+        basePrice: product.price
+      });
+    } catch (e) {}
     
     res.json({
       success: true,
       data: {
         ...result,
-        engine: aiPricing.engine,
-        optimalRevenuePrice: aiPricing.recommendedPrice || result.optimalRevenuePrice,
-        priceElasticityModel: aiPricing.modelUsed,
-        disclaimer: aiPricing.disclaimer || 'Model-based estimate'
+        engine: aiPricing ? aiPricing.engine : 'node_ml_fallback',
+        optimalRevenuePrice: aiPricing?.recommendedPrice || result.optimalRevenuePrice,
+        priceElasticityModel: aiPricing?.modelUsed || 'Log-Linear OLS Price Elasticity of Demand (PED)',
+        explanationSteps: result.explanationSteps,
+        disclaimer: result.disclaimer || aiPricing?.disclaimer || 'Simulated pricing is an econometric estimation based on historical price elasticity.'
       }
     });
   } catch (err) {

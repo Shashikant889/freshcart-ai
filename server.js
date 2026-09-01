@@ -12,6 +12,10 @@ function createApp() {
   // API Routes
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/products', require('./routes/products'));
+  app.get('/api/categories', (req, res, next) => {
+    req.url = '/categories';
+    require('./routes/products')(req, res, next);
+  });
   app.use('/api/cart', require('./routes/cart').router);
   app.use('/api/orders', require('./routes/orders'));
   app.use('/api/admin', require('./routes/admin'));
@@ -26,6 +30,7 @@ function createApp() {
   app.use('/api/wallet', require('./routes/wallet'));
   app.use('/api/group-orders', require('./routes/group-orders'));
   app.use('/api/supplier', require('./routes/supplier'));
+  app.use('/api/health', require('./routes/health'));
 
   // Serve Admin Dashboard page
   app.get('/admin', (req, res) => {

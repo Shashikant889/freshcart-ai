@@ -1,39 +1,117 @@
-# Dependencies
+# ==============================================================================
+# FreshCart AI — Comprehensive .gitignore
+# ==============================================================================
+
+# Node Dependencies & Package Manager Files
 node_modules/
-
-# Environment Variables
-.env
-.env.local
-.env.*
-
-# Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
 
-# Test Coverage & Temporary Artifacts
-coverage/
-.pytest_cache/
-scratch/
-.tempmediaStorage/
-
-# OS Files
-.DS_Store
-Thumbs.db
-
-# IDE & Editor Files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Python
+# Python Virtual Environments & Packages
 .venv/
 venv/
 ENV/
 env/
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python Bytecode & Cache
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa*
+
+# SQLite Database Binaries & Temporary Journals (Keep local; regenerate via node scripts/generate-all-data.js)
+db/*.db
+db/*.db-journal
+db/*.db-wal
+db/*.db-shm
+*.db.bak
+*.db.baseline.bak
+db/*.bak
+db/*.baseline.bak
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Application & Debug Logs
+logs/
+*.log
+
+# Test Coverage & Automation Screenshots
+coverage/
+.nyc_output/
+scratch/
+.tempmediaStorage/
+qa_*.png
+test-report*.json
+
+# Temporary Debug & Scratch Scripts
+scripts/debug-*.js
+scripts/capture-*.js
+scripts/test-click.js
+scripts/test-checkout-modal.js
+scripts/repo-audit.js
+test/debug-browser-load.js
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# Large Binary Archives (Backups)
+*.zip
+*.tar.gz
+*.rar
+*.7z

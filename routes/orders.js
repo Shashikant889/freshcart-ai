@@ -8,12 +8,12 @@ const { getGuestCart } = require('./cart');
 // POST /api/orders - Place an order
 router.post('/', optionalAuth, (req, res) => {
   const db = getDb();
-  const { customerName, address, phone, paymentMethod = 'cash' } = req.body;
+  const { customerName, address, phone = '9876543210', paymentMethod = 'cash' } = req.body;
 
-  if (!customerName || !address || !phone) {
+  if (!customerName || !address) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide customerName, address, and phone'
+      message: 'Please provide customerName and address'
     });
   }
 
@@ -22,7 +22,8 @@ router.post('/', optionalAuth, (req, res) => {
 
   if (userId) {
     items = db.prepare(`
-      SELECT c.product_id as productId, c.quantity, p.name, p.emoji, p.price, p.unit
+      SELECT c.product_id as productId, c.quantity, p.name, p.emoji, p.price, p.unit,
+             p.image_url, p.image_key, p.image_alt, p.brand
       FROM cart_items c
       JOIN products p ON c.product_id = p.id
       WHERE c.user_id = ?
@@ -31,6 +32,25 @@ router.post('/', optionalAuth, (req, res) => {
     const sessionId = req.headers['x-session-id'] || 'default';
     const guestCart = getGuestCart(sessionId);
     items = guestCart.items;
+  }
+
+  // Fallback to direct items payload if cart is empty
+  if ((!items || items.length === 0) && Array.isArray(req.body.items) && req.body.items.length > 0) {
+    items = req.body.items.map(i => {
+      const p = db.prepare('SELECT id, name, emoji, price, unit, stock, image_url, image_key, image_alt, brand FROM products WHERE id = ?').get(i.productId || i.id);
+      return {
+        productId: p.id,
+        quantity: i.quantity || 1,
+        name: p ? p.name : (i.name || 'Item'),
+        emoji: p ? p.emoji : '📦',
+        price: p ? p.price : (i.price || 0),
+        unit: p ? p.unit : 'unit',
+        image_url: p ? p.image_url : null,
+        image_key: p ? p.image_key : null,
+        image_alt: p ? p.image_alt : null,
+        brand: p ? p.brand : null
+      };
+    });
   }
 
   if (!items || items.length === 0) {
@@ -120,6 +140,7 @@ router.post('/', optionalAuth, (req, res) => {
       message: 'Order placed successfully!',
       data: {
         id: orderId,
+        orderId: orderId,
         items,
         subtotal,
         deliveryFee,
@@ -164,7 +185,8 @@ router.get('/', optionalAuth, (req, res) => {
 
     // Attach items to each order
     const getItems = db.prepare(`
-      SELECT oi.product_id as productId, oi.quantity, oi.price_at_purchase as price, p.name, p.emoji, p.unit
+      SELECT oi.product_id as productId, oi.quantity, oi.price_at_purchase as price,
+             p.name, p.emoji, p.unit, p.image_url, p.image_key, p.image_alt, p.brand
       FROM order_items oi
       JOIN products p ON oi.product_id = p.id
       WHERE oi.order_id = ?
@@ -191,7 +213,8 @@ router.get('/:id', (req, res) => {
     }
 
     const items = db.prepare(`
-      SELECT oi.product_id as productId, oi.quantity, oi.price_at_purchase as price, p.name, p.emoji, p.unit
+      SELECT oi.product_id as productId, oi.quantity, oi.price_at_purchase as price,
+             p.name, p.emoji, p.unit, p.image_url, p.image_key, p.image_alt, p.brand
       FROM order_items oi
       JOIN products p ON oi.product_id = p.id
       WHERE oi.order_id = ?

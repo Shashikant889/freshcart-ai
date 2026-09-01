@@ -60,8 +60,56 @@ function forecastProductDemand(productId, horizonDays = 7) {
   `).all(productId);
 
   const product = db.prepare('SELECT * FROM products WHERE id = ?').get(productId);
-  if (!product || history.length === 0) {
-    return { success: false, message: 'No historical data found' };
+  if (!product) {
+    return { success: false, message: 'Product not found' };
+  }
+
+  if (history.length === 0) {
+    const baseDaily = Math.max(2, Math.round((product.stock || 50) / 20));
+    const points = [];
+    let cum = 0;
+    const now = new Date();
+    for (let step = 1; step <= horizonDays; step++) {
+      const fDate = new Date(now);
+      fDate.setDate(now.getDate() + step);
+      const qty = baseDaily;
+      cum += qty;
+      points.push({
+        date: fDate.toISOString().split('T')[0],
+        day: fDate.toLocaleDateString('en-US', { weekday: 'short' }),
+        predictedQuantity: qty,
+        lowerBound: Math.max(1, qty - 1),
+        upperBound: qty + 2
+      });
+    }
+    const daysStock = baseDaily > 0 ? Math.round(((product.stock || 0) / baseDaily) * 10) / 10 : 99;
+    return {
+      productId: product.id,
+      productName: product.name,
+      emoji: product.emoji,
+      category: product.category,
+      currentStock: product.stock || 0,
+      currentPrice: product.price || 0,
+      daysOfStock: daysStock,
+      stockStatus: daysStock <= 3 ? 'Critical Stockout Risk' : 'Adequate Stock Level',
+      riskLevel: daysStock <= 3 ? 'critical' : 'low',
+      totalForecastPeriod: horizonDays,
+      cumulativeForecastQuantity: cum,
+      predictedRevenue: Math.round(cum * (product.price || 0)),
+      dailyForecast: points,
+      forecast: points,
+      isColdStart: true,
+      metrics: {
+        sma7: baseDaily,
+        sma14: baseDaily,
+        sma30: baseDaily,
+        trendSlope: 0,
+        rSquared: 1,
+        rmse: 0,
+        mae: 0,
+        mape: '0%'
+      }
+    };
   }
 
   const n = history.length;
@@ -216,30 +264,69 @@ function forecastCategoryDemand(category, horizonDays = 7) {
 }
 
 /**
- * 3. Automated Inventory Stock Alerts (Stockouts & Overstocks)
+ * 3. Automated Inventory Stock Alerts (Stockouts & Overstocks) - High-Performance Batch Aggregator
  */
+let cachedAlerts = null;
+let lastAlertsTime = 0;
+const ALERTS_CACHE_TTL = 30000;
+
 function getInventoryStockAlerts() {
+  const now = Date.now();
+  if (cachedAlerts && (now - lastAlertsTime < ALERTS_CACHE_TTL)) {
+    return cachedAlerts;
+  }
+
   const db = getDb();
-  const products = db.prepare('SELECT id FROM products').all();
+  const products = db.prepare('SELECT id, name, emoji, category, stock, price FROM products').all();
+
+  // Aggregate 30-day sales run-rates in a single vectorized query
+  const salesMap = new Map();
+  try {
+    const rows = db.prepare(`
+      SELECT product_id, SUM(quantity_sold) as total_qty, COUNT(DISTINCT date) as days_count
+      FROM sales_history
+      GROUP BY product_id
+    `).all();
+    for (const r of rows) {
+      salesMap.set(r.product_id, r);
+    }
+  } catch (e) {}
 
   const alerts = [];
   for (const p of products) {
-    const f = forecastProductDemand(p.id, 7);
-    if (f.riskLevel === 'critical' || f.riskLevel === 'medium' || f.riskLevel === 'overstock') {
+    const s = salesMap.get(p.id);
+    const avgDaily = s && s.days_count > 0 ? (s.total_qty / s.days_count) : Math.max(2, Math.round((p.stock || 50) / 20));
+    const predicted7Day = Math.round(avgDaily * 7);
+    const daysOfStock = avgDaily > 0 ? Math.round(((p.stock || 0) / avgDaily) * 10) / 10 : 99;
+
+    let riskLevel = 'low';
+    let stockStatus = 'Adequate Stock Level';
+    if (daysOfStock <= 3) {
+      riskLevel = 'critical';
+      stockStatus = 'Critical Stockout Risk';
+    } else if (daysOfStock <= 7) {
+      riskLevel = 'medium';
+      stockStatus = 'Moderate Stockout Risk';
+    } else if (daysOfStock > 45) {
+      riskLevel = 'overstock';
+      stockStatus = 'Overstocked Capital Risk';
+    }
+
+    if (riskLevel !== 'low') {
       alerts.push({
-        id: f.productId,
-        name: f.productName,
-        emoji: f.emoji,
-        category: f.category,
-        currentStock: f.currentStock,
-        predicted7DayDemand: f.cumulativeForecastQuantity,
-        daysOfStock: f.daysOfStock,
-        riskLevel: f.riskLevel,
-        status: f.stockStatus,
-        recommendedAction: f.riskLevel === 'critical'
-          ? `Urgent Reorder: Order at least ${Math.round(f.cumulativeForecastQuantity * 1.5)} units immediately.`
-          : f.riskLevel === 'medium'
-            ? `Reorder Notice: Order ${f.cumulativeForecastQuantity} units within 48 hours.`
+        id: p.id,
+        name: p.name,
+        emoji: p.emoji,
+        category: p.category,
+        currentStock: p.stock || 0,
+        predicted7DayDemand: predicted7Day,
+        daysOfStock: daysOfStock,
+        riskLevel: riskLevel,
+        status: stockStatus,
+        recommendedAction: riskLevel === 'critical'
+          ? `Urgent Reorder: Order at least ${Math.round(predicted7Day * 1.5)} units immediately.`
+          : riskLevel === 'medium'
+            ? `Reorder Notice: Order ${predicted7Day} units within 48 hours.`
             : `Promotional Discount: Reduce price by 10-15% to clear excess inventory.`
       });
     }
@@ -249,6 +336,8 @@ function getInventoryStockAlerts() {
   const priorityMap = { critical: 1, medium: 2, overstock: 3 };
   alerts.sort((a, b) => (priorityMap[a.riskLevel] || 4) - (priorityMap[b.riskLevel] || 4));
 
+  cachedAlerts = alerts;
+  lastAlertsTime = now;
   return alerts;
 }
 

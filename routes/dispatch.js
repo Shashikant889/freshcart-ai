@@ -53,4 +53,14 @@ router.get('/optimize', async (req, res) => {
   }
 });
 
+// Alias: GET /api/dispatch/routes -> calls /optimize
+router.get('/routes', (req, res) => {
+  const batchSize = parseInt(req.query.batchSize) || 8;
+  const result = optimizeDeliveryDispatch(batchSize);
+  res.json({
+    success: true,
+    data: result
+  });
+});
+
 module.exports = router;

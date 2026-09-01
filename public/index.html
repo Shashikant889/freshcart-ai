@@ -14,68 +14,76 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <!-- Chart.js CDN for ML & Analytics Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Top Quick-Commerce Notification & Location Sub-Bar -->
+  <!-- Top Quick-Commerce Notification & Utility Rail -->
   <div class="qc-sub-bar">
     <div class="qc-sub-container">
       <div class="qc-left-items">
-        <div class="location-badge" id="location-picker-btn" title="Change Delivery Dark Store">
-          <span class="pulse-dot"></span>
-          <span id="current-location-text">📍 Indiranagar Hub #04 • <strong>⚡ 11 Mins ETA</strong></span>
-          <small style="color:var(--text-dim);">▼</small>
-        </div>
-        <span style="color:var(--text-dim); font-size:0.75rem;">|</span>
-        <span style="color:var(--green-400); font-weight:600;" id="top-free-del-text">🎁 Free Delivery unlocked on orders > ₹500</span>
+        <span class="qc-promo-badge">⚡ 10-MIN EXPRESS</span>
+        <span class="qc-free-del-text" id="top-free-del-text">🎁 Free Delivery unlocked on orders > ₹500</span>
       </div>
 
-      <div class="qc-right-items">
+      <div class="qc-right-items" role="toolbar" aria-label="Quick Commerce Utilities">
         <button class="qc-pill-btn" id="fridge-scan-btn" title="Snap Your Fridge & Pantry AI Scanner">
-          <span>📸</span>
+          <span class="qc-pill-icon">📸</span>
           <span>Snap Fridge AI</span>
         </button>
 
-        <button class="qc-pill-btn" id="pwa-install-btn" style="display:none; border-color:var(--green-400); color:var(--green-400);" title="Install FreshCart AI App">
-          <span>📲</span>
+        <button class="qc-pill-btn" id="pwa-install-btn" style="display:none;" title="Install FreshCart AI App">
+          <span class="qc-pill-icon">📲</span>
           <span>Install App</span>
         </button>
 
         <button class="qc-pill-btn" id="wallet-btn" title="FreshWallet Balance & Instant Pay">
-          <span>💳</span>
+          <span class="qc-pill-icon">💳</span>
           <span id="header-wallet-val">₹150 Wallet</span>
         </button>
 
         <button class="qc-pill-btn" id="nutrition-btn" title="Cart Nutrition & Allergen Advisor">
-          <span>🥗</span>
+          <span class="qc-pill-icon">🥗</span>
           <span>Nutri-AI</span>
         </button>
 
         <button class="qc-pill-btn" id="group-buy-btn" title="Neighborhood Group Buy Lobbies">
-          <span>👥</span>
+          <span class="qc-pill-icon">👥</span>
           <span>Group Buy</span>
         </button>
 
         <button class="qc-pill-btn coins-badge" id="coins-btn" title="View FreshCoins Balance">
-          <span>🪙</span>
+          <span class="qc-pill-icon">🪙</span>
           <span id="header-coins-val">250 Coins</span>
         </button>
 
         <button class="qc-pill-btn" id="lucky-spin-btn" title="Spin the Lucky Wheel for Coupons">
-          <span>🎰</span>
+          <span class="qc-pill-icon">🎰</span>
           <span>Lucky Spin</span>
         </button>
 
         <button class="qc-pill-btn" id="pantry-sub-btn" title="Manage Daily Milk & Pantry Subscriptions">
-          <span>🥛</span>
+          <span class="qc-pill-icon">🥛</span>
           <span>Subscriptions</span>
         </button>
 
+        <button class="qc-pill-btn" id="wishlist-btn" title="Saved Wishlist & Favorites">
+          <span class="qc-pill-icon">❤️</span>
+          <span>Wishlist (<span id="wishlist-badge">0</span>)</span>
+        </button>
+
+        <button class="qc-pill-btn" id="compare-btn" title="Product Comparison Matrix">
+          <span class="qc-pill-icon">⚖️</span>
+          <span>Compare (<span id="compare-badge">0</span>)</span>
+        </button>
+
         <button class="qc-pill-btn" id="lang-toggle-btn" title="Switch Language (Hindi / English)">
-          <span>🌐</span>
+          <span class="qc-pill-icon">🌐</span>
           <span id="lang-label">हिन्दी</span>
         </button>
 
-        <button class="qc-pill-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+        <button class="qc-pill-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
           <span id="theme-icon">☀️</span>
         </button>
       </div>
@@ -83,52 +91,79 @@
   </div>
 
   <!-- Header / Main Navigation -->
-  <header class="header">
+  <header class="header" role="banner">
     <div class="header-container">
-      <a href="/" class="logo">
-        <span class="logo-icon">🌿</span>
-        <div class="logo-text">
-          <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
-          <span class="logo-subtitle">10-Min Quick Grocery</span>
-        </div>
-      </a>
+      <!-- Left: Brand Logo & Integrated Delivery Context -->
+      <div class="header-brand-wrap">
+        <a href="#store" class="logo" id="header-logo-link" title="FreshCart AI Home">
+          <span class="logo-icon" aria-hidden="true">🌿</span>
+          <div class="logo-text">
+            <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
+            <span class="logo-subtitle">10-Min Quick Grocery</span>
+          </div>
+        </a>
 
-      <!-- Smart NLP Search Bar with Voice & Visual Search -->
-      <div class="search-container">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" placeholder="Search groceries, e.g. 'organic apples', 'dahi', 'seb', 'snack'..." autocomplete="off">
-        
-        <!-- Live Speech Recognition Button -->
-        <button id="voice-search-btn" class="voice-search-btn" title="Voice Search (Speak in English/Hindi)">🎙️</button>
-        
-        <!-- Multimodal Vision Button -->
-        <button id="visual-search-btn" class="visual-search-btn" title="Search by Photo / Handwritten List">📷</button>
-        <button id="search-clear" class="search-clear-btn" style="display:none;">✕</button>
-        <div id="smart-search-dropdown" class="search-dropdown" style="display:none;"></div>
+        <!-- Location / Dark Store Delivery Hub Context -->
+        <button class="location-badge" id="location-picker-btn" title="Change Delivery Dark Store" aria-label="Change delivery location">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span class="location-inner-wrap" id="current-location-text">
+            <span class="location-title">Delivery in 10 MINS</span>
+            <span class="location-sub">📍 Indiranagar Hub #04</span>
+          </span>
+          <span class="location-arrow" aria-hidden="true">▾</span>
+        </button>
       </div>
 
-      <!-- Navigation Actions -->
+      <!-- Center: Large Focused Smart NLP Search Bar with Voice & Visual AI Actions -->
+      <div class="search-container" id="header-search-container" role="search">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input type="text"
+               id="search-input"
+               placeholder="Search fresh veggies, milk, fruits, snacks, atta, cold brew..."
+               autocomplete="off"
+               aria-label="Search groceries and essentials"
+               aria-autocomplete="list"
+               aria-controls="smart-search-dropdown">
+        
+        <div class="search-actions-group">
+          <button id="search-clear" class="search-action-btn search-clear-btn" style="display:none;" title="Clear Search" aria-label="Clear Search">✕</button>
+          <button id="voice-search-btn" class="search-action-btn voice-search-btn" title="Voice Search (Speak in English or Hindi)" aria-label="Voice Search">🎙️</button>
+          <button id="visual-search-btn" class="search-action-btn visual-search-btn" title="Search by Photo / Handwritten Grocery List" aria-label="Visual Search">📷</button>
+        </div>
+        
+        <div id="smart-search-dropdown" class="search-dropdown" style="display:none;" role="listbox" aria-label="Search Suggestions"></div>
+      </div>
+
+      <!-- Right: Unified Navigation Controls -->
       <div class="nav-actions">
-        <!-- Auth Button / User Profile -->
+        <!-- Application View Switcher Tabs -->
+        <nav class="app-views-nav" id="app-views-nav" aria-label="Application Views">
+          <button class="view-nav-btn active" id="view-nav-store" title="Customer Grocery Storefront">
+            <span class="btn-icon">🛒</span> <span>Store</span>
+          </button>
+          <button class="view-nav-btn" id="view-nav-orders" title="Live Order Tracking & History">
+            <span class="btn-icon">📦</span> <span>Orders</span>
+          </button>
+          <button class="view-nav-btn admin-mode-btn" id="view-nav-admin" title="Admin & AI Operations Dashboard">
+            <span class="btn-icon">⚡</span> <span id="nav-admin-label">Admin & AI</span>
+          </button>
+        </nav>
+
+        <!-- Hidden backward-compatibility alias buttons for test harnesses -->
+        <button class="nav-btn" id="orders-btn" style="display:none;" aria-hidden="true"><span class="btn-icon">📦</span><span>Orders</span></button>
+        <button class="nav-btn admin-nav-btn" id="admin-link" style="display:none;" aria-hidden="true"><span class="btn-icon">⚡</span><span>Admin & AI</span></button>
+
+        <!-- User Authentication -->
         <div id="auth-section">
-          <button class="nav-btn" id="login-modal-btn">
+          <button class="nav-btn auth-nav-btn" id="login-modal-btn" title="Sign In / User Profile">
             <span class="btn-icon">👤</span>
             <span id="auth-btn-text">Sign In</span>
           </button>
         </div>
 
-        <button class="nav-btn" id="orders-btn">
-          <span class="btn-icon">📦</span>
-          <span>Orders</span>
-        </button>
-
-        <a href="/admin" class="nav-btn admin-nav-btn" id="admin-link">
-          <span class="btn-icon">⚡</span>
-          <span>Admin & AI</span>
-        </a>
-
-        <button class="nav-btn cart-nav-btn" id="cart-btn">
-          <span class="btn-icon">🛒</span>
+        <!-- Cart Button -->
+        <button class="nav-btn cart-nav-btn" id="cart-btn" title="View Shopping Cart" aria-label="View Shopping Cart">
+          <span class="btn-icon">🛍️</span>
           <span>Cart</span>
           <span class="cart-badge" id="cart-badge">0</span>
         </button>
@@ -136,161 +171,708 @@
     </div>
   </header>
 
-  <!-- Main Hero Section -->
-  <section class="hero-section">
-    <div class="hero-container">
-      <div class="hero-content">
-        <div class="ai-pill">✨ Powered by Collaborative & Content-Based ML</div>
-        <h1 class="hero-title">Fresh Groceries,<br><span class="gradient-text">Delivered in 10 Minutes.</span></h1>
-        <p class="hero-desc">
-          Hyper-local quick commerce powered by real-time OLS demand forecasting, 2-Opt fleet dispatch, and AI recipe-to-cart solver.
-        </p>
-        
-        <div class="hero-stats">
-          <div class="stat-box">
-            <span class="stat-val">₹500+</span>
-            <span class="stat-lbl">Free Delivery</span>
+  <!-- ==========================================================================
+       VIEW 1: CUSTOMER GROCERY STOREFRONT PANE
+       ========================================================================== -->
+  <main id="view-storefront" class="app-view-pane active">
+    <!-- Main Hero Section -->
+    <section class="hero-section">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="ai-pill">✨ Powered by Collaborative & Content-Based ML</div>
+          <h1 class="hero-title">Fresh Groceries,<br><span class="gradient-text">Delivered in 10 Minutes.</span></h1>
+          <p class="hero-desc">
+            Hyper-local quick commerce powered by real-time OLS demand forecasting, 2-Opt fleet dispatch, and AI recipe-to-cart solver.
+          </p>
+          
+          <div class="hero-stats">
+            <div class="stat-box">
+              <span class="stat-val">₹500+</span>
+              <span class="stat-lbl">Free Delivery</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val">10 Min</span>
+              <span class="stat-lbl">Express Delivery</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val">98.4%</span>
+              <span class="stat-lbl">ML Match Score</span>
+            </div>
           </div>
-          <div class="stat-box">
-            <span class="stat-val">10 Min</span>
-            <span class="stat-lbl">Express Delivery</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-val">98.4%</span>
-            <span class="stat-lbl">ML Match Score</span>
+
+          <div class="hero-buttons">
+            <button class="btn-primary" id="hero-shop-btn">Explore Products ↓</button>
+            <button class="btn-secondary" id="demo-login-btn">Quick Demo Login (Customer)</button>
           </div>
         </div>
 
-        <div class="hero-buttons">
-          <button class="btn-primary" id="hero-shop-btn">Explore Products ↓</button>
-          <button class="btn-secondary" id="demo-login-btn">Quick Demo Login (Customer)</button>
+        <div class="hero-visual">
+          <div class="floating-card c1">
+            <span class="emoji">🍎</span>
+            <div>
+              <strong>Organic Apples</strong>
+              <small>₹249/kg • 99% AI Match</small>
+            </div>
+          </div>
+          <div class="floating-card c2">
+            <span class="emoji">🥛</span>
+            <div>
+              <strong>Fresh Whole Milk</strong>
+              <small>₹69/L • Frequently Bought</small>
+            </div>
+          </div>
+          <div class="floating-card c3">
+            <span class="emoji">🥑</span>
+            <div>
+              <strong>Avocado & Veggies</strong>
+              <small>Demand Trending 🔥</small>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="hero-visual">
-        <div class="floating-card c1">
-          <span class="emoji">🍎</span>
-          <div>
-            <strong>Organic Apples</strong>
-            <small>₹249/kg • 99% AI Match</small>
+    <!-- Flash Deals & Midnight Steals Ticker -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-container">
+        <div class="flash-deals-banner">
+          <div class="flash-header">
+            <div class="flash-title-wrap">
+              <span class="flash-title">⚡ Flash Deals & Fresh Steals</span>
+              <span style="font-size:0.8rem; color:rgba(255,255,255,0.8);">Up to 40% Off on Selected Farm Produce</span>
+            </div>
+            <div class="countdown-box">
+              <span>⏳ Ends in:</span>
+              <span id="flash-countdown">02:44:18</span>
+            </div>
           </div>
-        </div>
-        <div class="floating-card c2">
-          <span class="emoji">🥛</span>
-          <div>
-            <strong>Fresh Whole Milk</strong>
-            <small>₹69/L • Frequently Bought</small>
-          </div>
-        </div>
-        <div class="floating-card c3">
-          <span class="emoji">🥑</span>
-          <div>
-            <strong>Avocado & Veggies</strong>
-            <small>Demand Trending 🔥</small>
+
+          <div class="flash-grid" id="flash-deals-grid">
+            <!-- Populated dynamically via JS -->
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Flash Deals & Midnight Steals Ticker (Instamart / Zepto Style) -->
-  <section class="section" style="padding-top:0;">
-    <div class="section-container">
-      <div class="flash-deals-banner">
-        <div class="flash-header">
-          <div class="flash-title-wrap">
-            <span class="flash-title">⚡ Flash Deals & Fresh Steals</span>
-            <span style="font-size:0.8rem; color:rgba(255,255,255,0.8);">Up to 40% Off on Selected Farm Produce</span>
-          </div>
-          <div class="countdown-box">
-            <span>⏳ Ends in:</span>
-            <span id="flash-countdown">02:44:18</span>
+    <!-- 1-Click Curated Value Combos Section -->
+    <section class="section combos-section">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <div class="section-badge">🍳 1-Click Meal Kits</div>
+            <h2 class="section-title">Curated Smart Combos</h2>
+            <p class="section-subtitle">Pre-bundled ingredient kits curated by AI with bundled savings</p>
           </div>
         </div>
 
-        <div class="flash-grid" id="flash-deals-grid">
-          <!-- Populated dynamically via JS -->
+        <div class="combo-grid" id="combo-packs-grid">
+          <!-- Loaded dynamically -->
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 1-Click Curated Value Combos Section -->
-  <section class="section combos-section">
-    <div class="section-container">
+    <!-- AI Recommendations Section -->
+    <section class="section recs-section" id="ai-recs-section">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <div class="section-badge">🤖 Machine Learning Engine</div>
+            <h2 class="section-title">Recommended Just For You</h2>
+            <p class="section-subtitle" id="rec-subtitle">Personalized based on hybrid collaborative filtering & your shopping patterns</p>
+          </div>
+          <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
+        </div>
+
+        <div class="product-grid" id="ai-recs-grid">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Buy Again & Reorder Section -->
+    <section class="section" id="buy-again-section" style="padding-top:10px;">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <div class="section-badge">🔁 Quick Restock</div>
+            <h2 class="section-title">Buy Again & Reorder</h2>
+            <p class="section-subtitle">Frequently ordered daily staples & essential replenish items</p>
+          </div>
+          <span class="algorithm-badge">Purchase History Recency/Frequency</span>
+        </div>
+
+        <div class="product-grid" id="buy-again-grid">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Recently Viewed Products Section -->
+    <section class="section" id="recently-viewed-section" style="padding-top:10px; display:none;">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <div class="section-badge">👁️ Browsing History</div>
+            <h2 class="section-title">Recently Viewed Products</h2>
+            <p class="section-subtitle">Pick up right where you left off</p>
+          </div>
+          <button class="btn-secondary" style="font-size:0.8rem; padding:4px 10px;" onclick="app.clearRecentlyViewed()">Clear History</button>
+        </div>
+
+        <div class="product-grid" id="recently-viewed-grid">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Category & Main Product Catalog Section -->
+    <section class="section" id="catalog-section">
+      <div class="section-container">
+        <!-- Dietary & Health Specialty Filters -->
+        <div class="diet-filter-wrapper">
+          <button class="diet-pill active" data-diet="all">🌟 All Categories</button>
+          <button class="diet-pill" data-diet="organic">🌱 100% Organic</button>
+          <button class="diet-pill" data-diet="protein">💪 High Protein</button>
+          <button class="diet-pill" data-diet="keto">🥑 Keto Friendly</button>
+          <button class="diet-pill" data-diet="gluten-free">🌾 Gluten-Free</button>
+          <button class="diet-pill" data-diet="diabetic">🩺 Diabetic Safe</button>
+        </div>
+
+        <div class="catalog-controls">
+          <div id="dynamic-category-bar" class="dynamic-category-bar">
+            <!-- Dynamic 108 Categories Chips and Dropdown populated via JS -->
+          </div>
+
+          <div class="sort-wrapper">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" class="sort-select">
+              <option value="rating">⭐ Highest Rated</option>
+              <option value="price-asc">₹ Price: Low to High</option>
+              <option value="price-desc">₹ Price: High to Low</option>
+              <option value="name">🔤 Name (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Main Product Grid -->
+        <div class="product-grid" id="products-grid">
+          <!-- Loaded dynamically -->
+        </div>
+
+        <!-- Professional Dynamic Catalog Pagination Bar -->
+        <div class="catalog-pagination-bar" id="catalog-pagination" role="navigation" aria-label="Product Catalog Pagination">
+          <input type="hidden" id="catalog-jump-input" value="1">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       VIEW 2: DEDICATED ORDERS & 10-MIN LIVE DELIVERY TRACKING PANE
+       ========================================================================== -->
+  <main id="view-orders-page" class="app-view-pane" style="display:none;">
+    <div class="section-container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
       <div class="section-header">
         <div>
-          <div class="section-badge">🍳 1-Click Meal Kits</div>
-          <h2 class="section-title">Curated Smart Combos</h2>
-          <p class="section-subtitle">Pre-bundled ingredient kits curated by AI with bundled savings</p>
+          <div class="section-badge">📦 Real-Time Quick Commerce Fulfillment</div>
+          <h2 class="section-title">Your Orders & 10-Minute Delivery Tracker</h2>
+          <p class="section-subtitle">Track hyper-local rider dispatch, view detailed order receipts, and print GST tax invoices.</p>
+        </div>
+        <button class="btn-primary" onclick="app.switchView('store')">← Continue Shopping</button>
+      </div>
+
+      <!-- Live Order Stepper Card -->
+      <div id="live-order-tracker-card" style="background:var(--bg-card); border:1px solid var(--border-active); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px; box-shadow:0 0 20px rgba(16,185,129,0.15);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div>
+            <span class="pulse-dot" style="display:inline-block; margin-right:6px;"></span>
+            <strong style="color:var(--green-400); font-size:1.1rem;">⚡ Live Delivery in Progress</strong>
+            <small style="display:block; color:var(--text-dim);" id="tracker-order-id-label">Order #ORD-LATEST • Indiranagar Hub #04</small>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.4rem; font-weight:800; color:var(--green-400);" id="tracker-eta-clock">11 Mins</div>
+            <small style="color:var(--text-dim);">Estimated Arrival</small>
+          </div>
+        </div>
+
+        <div class="order-stepper" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin: 20px 0; text-align:center;">
+          <div class="step-box active" id="step-1" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
+            <span style="font-size:1.3rem; display:block;">✅</span>
+            <strong style="font-size:0.8rem; color:#fff;">Order Placed</strong>
+          </div>
+          <div class="step-box active" id="step-2" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
+            <span style="font-size:1.3rem; display:block;">🏭</span>
+            <strong style="font-size:0.8rem; color:#fff;">Dark Store Picked</strong>
+          </div>
+          <div class="step-box active" id="step-3" style="background:rgba(59,130,246,0.15); border:1px solid var(--blue-500); padding:12px 6px; border-radius:var(--radius-sm);">
+            <span style="font-size:1.3rem; display:block;">🛵</span>
+            <strong style="font-size:0.8rem; color:#fff;">Rider Dispatched</strong>
+          </div>
+          <div class="step-box" id="step-4" style="background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); padding:12px 6px; border-radius:var(--radius-sm);">
+            <span style="font-size:1.3rem; display:block;">🏠</span>
+            <strong style="font-size:0.8rem; color:var(--text-dim);">Delivered</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); padding:12px 16px; border-radius:var(--radius-md); font-size:0.88rem;">
+          <div>
+            <span>🛵 <strong>Delivery Partner:</strong> Ramesh K. (4.9★, EV Scooter #KA-03-9941)</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-secondary" style="padding:6px 14px; font-size:0.82rem;" onclick="app.showToast('Calling delivery partner...')">📞 Call Partner</button>
+            <button class="btn-primary" style="padding:6px 14px; font-size:0.82rem;" onclick="app.openInvoiceModal(state.lastPlacedOrder)">📄 View Tax Invoice</button>
+          </div>
         </div>
       </div>
 
-      <div class="combo-grid" id="combo-packs-grid">
-        <!-- Loaded dynamically -->
+      <!-- Past Orders List Container -->
+      <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px;">
+        <h3 style="margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+          <span>📜</span> <span>Order History & Receipts</span>
+        </h3>
+        <div id="orders-full-page-list" style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Loaded dynamically via JS -->
+        </div>
       </div>
     </div>
-  </section>
+  </main>
 
-  <!-- AI Recommendations Section -->
-  <section class="section recs-section" id="ai-recs-section">
-    <div class="section-container">
-      <div class="section-header">
-        <div>
-          <div class="section-badge">🤖 Machine Learning Engine</div>
-          <h2 class="section-title">Recommended Just For You</h2>
-          <p class="section-subtitle" id="rec-subtitle">Personalized based on hybrid collaborative filtering & your shopping patterns</p>
+  <!-- ==========================================================================
+       VIEW 3: EMBEDDED ADMIN & OPERATIONS DASHBOARD PANE
+       ========================================================================== -->
+  <main id="view-admin-page" class="app-view-pane" style="display:none;">
+    <div class="admin-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <a href="#store" class="admin-logo" onclick="app.switchView('store')">
+            <span class="logo-emoji">🌿</span>
+            <div>
+              <div class="logo-brand">FreshCart <span class="badge-ai">AI Admin</span></div>
+              <small>Operations & Analytics Suite</small>
+            </div>
+          </a>
         </div>
-        <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
-      </div>
 
-      <div class="product-grid" id="ai-recs-grid">
-        <!-- Loaded dynamically -->
-      </div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-tab="overview">📊 Overview & Sales</button>
+          <button class="nav-item" data-tab="forecasting">📈 AI Demand Forecasting</button>
+          <button class="nav-item" data-tab="pricing-simulator">📉 Dynamic Pricing & Elasticity</button>
+          <button class="nav-item" data-tab="dispatch-routes">🚚 Delivery Route Optimizer (VRP)</button>
+          <button class="nav-item" data-tab="warehouse-picker">🏭 Warehouse Picker Route (2D TSP)</button>
+          <button class="nav-item" data-tab="segmentation">👥 AI Customer Segments</button>
+          <button class="nav-item" data-tab="stock-alerts">🚨 Inventory & Stock Alerts</button>
+          <button class="nav-item" data-tab="ml-metrics">🧠 ML Model Evaluation</button>
+          <button class="nav-item" data-tab="products-crud">📦 Products Management</button>
+          <button class="nav-item" data-tab="orders-feed">🛒 Orders Feed</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="btn-back-store" style="width:100%;" onclick="app.switchView('store')">← Back to Customer Store</button>
+        </div>
+      </aside>
+
+      <!-- Main Admin Content Area -->
+      <section class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <div>
+            <h1 id="page-title">Executive Overview & Analytics</h1>
+            <p class="subtitle">AI models trained on 12 months synthetic history & 83,000+ interactions</p>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div class="user-pill" id="ai-service-badge" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+              <span class="avatar" id="ai-service-dot">🟢</span>
+              <div>
+                <strong id="ai-service-title" style="font-size:0.85rem;">Python AI Gateway</strong>
+                <small id="ai-service-status" style="color:var(--green-400); display:block;">Active (v2.0.0)</small>
+              </div>
+            </div>
+            <div class="user-pill">
+              <span class="avatar">👨‍💼</span>
+              <div>
+                <strong>Admin Portal</strong>
+                <small>admin@freshcart.com</small>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- KPI Summary Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon icon-revenue">₹</div>
+            <div>
+              <div class="kpi-label">Total Store Revenue</div>
+              <div class="kpi-value" id="kpi-revenue">₹0.00</div>
+              <small class="kpi-sub">Across 4,200+ historical orders</small>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-orders">📦</div>
+            <div>
+              <div class="kpi-label">Total Orders Placed</div>
+              <div class="kpi-value" id="kpi-orders">0</div>
+              <small class="kpi-sub" id="kpi-aov">Avg Order: ₹0.00</small>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-users">👥</div>
+            <div>
+              <div class="kpi-label">Registered Customers</div>
+              <div class="kpi-value" id="kpi-users">52</div>
+              <small class="kpi-sub">Segmented via K-Means</small>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-ai">🎯</div>
+            <div>
+              <div class="kpi-label">Recommendation Precision@5</div>
+              <div class="kpi-value" id="kpi-precision">78.4%</div>
+              <small class="kpi-sub">Hybrid Collaborative Model</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 1: Overview & Sales -->
+        <section class="tab-pane active" id="tab-overview">
+          <div class="chart-grid">
+            <div class="chart-card chart-wide">
+              <div class="chart-header">
+                <h3>📈 30-Day Daily Sales & Revenue Trend</h3>
+                <span class="badge-tag">Time Series</span>
+              </div>
+              <canvas id="salesTrendChart" height="90"></canvas>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>🍩 Revenue Share by Category</h3>
+                <span class="badge-tag">Distribution</span>
+              </div>
+              <canvas id="categoryRevenueChart"></canvas>
+            </div>
+
+            <div class="chart-card chart-wide">
+              <div class="chart-header">
+                <h3>🏆 Top 5 Revenue Generating Products</h3>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-table" id="top-products-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Units Sold</th>
+                      <th>Total Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: AI Demand Forecasting -->
+        <section class="tab-pane" id="tab-forecasting">
+          <div class="section-banner">
+            <div class="banner-left">
+              <h2>📈 Time-Series Demand Forecasting</h2>
+              <p>Predicts next 7 to 30 days quantity demand using Ordinary Least Squares Linear Regression, Moving Averages, and Day-of-Week Seasonality.</p>
+            </div>
+            <div class="forecast-selector">
+              <label>Select Product to Forecast:</label>
+              <select id="forecast-product-select" class="admin-select"></select>
+            </div>
+          </div>
+
+          <div class="forecast-metrics-grid" id="forecast-metrics-cards"></div>
+
+          <div class="chart-card" style="margin-top:20px;">
+            <div class="chart-header">
+              <h3 id="forecast-chart-title">Demand Forecast Analysis</h3>
+              <span class="badge-tag">Hybrid Regression + 7-Day SMA</span>
+            </div>
+            <canvas id="demandForecastChart" height="85"></canvas>
+          </div>
+        </section>
+
+        <!-- Tab: Dynamic Pricing & Price Elasticity Simulator -->
+        <section class="tab-pane" id="tab-pricing-simulator">
+          <div class="section-banner">
+            <div class="banner-left">
+              <h2>📉 Dynamic Pricing & Price Elasticity Simulator</h2>
+              <p>Simulate the microeconomic revenue and demand impact of price changes using category elasticity coefficients (Ed = %ΔQ / %ΔP).</p>
+            </div>
+            <div class="forecast-selector">
+              <label>Select Product to Simulate:</label>
+              <select id="pricing-product-select" class="admin-select"></select>
+            </div>
+          </div>
+
+          <div class="chart-grid">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>🎛️ Interactive Price Adjustment Slider</h3>
+                <span class="badge-tag" id="pricing-elasticity-badge">Elasticity: -1.25</span>
+              </div>
+
+              <div style="margin: 20px 0;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:700;">
+                  <span>Adjust Proposed Price (₹):</span>
+                  <span id="slider-price-val" style="color:var(--green-400); font-size:1.3rem;">₹249</span>
+                </div>
+                <input type="range" id="pricing-slider" min="20" max="800" step="5" value="249" style="width:100%; cursor:pointer;">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:4px;">
+                  <span>-50% Markdown</span>
+                  <span id="orig-price-marker">Original: ₹249</span>
+                  <span>+50% Markup</span>
+                </div>
+              </div>
+
+              <div class="forecast-metrics-grid" id="pricing-sim-results" style="grid-template-columns: 1fr 1fr;"></div>
+              <div id="pricing-recommendation-box" style="margin-top:16px; padding:14px; background:rgba(16,185,129,0.08); border:1px solid var(--border-active); border-radius:var(--radius-sm); font-size:0.88rem;"></div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>📊 Category Price Elasticity Reference</h3>
+              </div>
+              <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.6;">
+                <p><strong>🥛 Dairy & Staples (Ed ≈ -0.58):</strong> Inelastic. Demand remains steady even if price increases.</p>
+                <p style="margin-top:8px;"><strong>🥦 Vegetables (Ed ≈ -0.82):</strong> Moderate elasticity.</p>
+                <p style="margin-top:8px;"><strong>🍎 Fruits & Bakery (Ed ≈ -1.25):</strong> Elastic. Sensitive to markups; discounts drive significant volume.</p>
+                <p style="margin-top:8px;"><strong>🥜 Snacks (Ed ≈ -1.35):</strong> Highly elastic discretionary item.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Delivery Dispatch Route Optimizer (VRP) -->
+        <section class="tab-pane" id="tab-dispatch-routes">
+          <div class="section-banner">
+            <div class="banner-left">
+              <h2>🚚 AI Delivery Dispatch Route Optimizer (VRP / TSP)</h2>
+              <p>Solves the Vehicle Routing Problem using Haversine distance, Nearest Neighbor initialization, and 2-Opt local search heuristics.</p>
+            </div>
+            <button class="btn-action" id="btn-reoptimize-routes">⚡ Re-calculate Route (2-Opt)</button>
+          </div>
+
+          <div class="forecast-metrics-grid" id="dispatch-metrics-grid"></div>
+
+          <div class="chart-grid" style="margin-top:20px;">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>🗺️ Optimized Multi-Stop GPS Dispatch Map</h3>
+                <span class="badge-tag">2-Opt Heuristic Topology</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.3); border-radius:var(--radius-sm); padding:10px; display:flex; justify-content:center;">
+                <canvas id="routeCanvas" width="480" height="320" style="width:100%; max-width:480px;"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>📋 Turn-by-Turn Delivery Itinerary</h3>
+              </div>
+              <div class="table-wrapper" style="max-height:330px; overflow-y:auto;">
+                <table class="data-table" id="dispatch-itinerary-table">
+                  <thead>
+                    <tr>
+                      <th>Step</th>
+                      <th>Destination</th>
+                      <th>Area</th>
+                      <th>Leg (km)</th>
+                      <th>Total (km)</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Warehouse Picker Route Optimizer (2D TSP) -->
+        <section class="tab-pane" id="tab-warehouse-picker">
+          <div class="section-banner">
+            <div class="banner-left">
+              <h2>🏭 Dark Store Warehouse Picker Route Optimizer (2D TSP)</h2>
+              <p>Solves the Traveling Salesperson Problem (TSP) on the physical 2D micro-fulfillment grid using Euclidean metrics, Nearest Neighbor heuristic, and 2-Opt local search.</p>
+            </div>
+            <button class="btn-action" id="btn-reoptimize-warehouse">⚡ Re-calculate Pick Path (2-Opt TSP)</button>
+          </div>
+
+          <div class="forecast-metrics-grid" id="warehouse-metrics-grid"></div>
+
+          <div class="chart-grid" style="margin-top:20px;">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>🗺️ Dark Store 2D Layout & Optimal Pick Path</h3>
+                <span class="badge-tag" id="warehouse-engine-badge">2-Opt TSP Solver</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.35); border-radius:var(--radius-sm); padding:12px; display:flex; justify-content:center;">
+                <canvas id="warehouseCanvas" width="540" height="340" style="width:100%; max-width:540px;"></canvas>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-dim); margin-top:8px;">
+                <span>🟡 Packing Station (0, 0)</span>
+                <span>🟢 Pick Target Nodes</span>
+                <span>🏷️ Aisles: A1 (Fruits), A2 (Veg), A3 (Dairy), A4 (Bakery), A5 (Snacks)</span>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>📋 Optimized Item Picking Sequence</h3>
+              </div>
+              <div class="table-wrapper" style="max-height:340px; overflow-y:auto;">
+                <table class="data-table" id="warehouse-sequence-table">
+                  <thead>
+                    <tr>
+                      <th>Step</th>
+                      <th>Product</th>
+                      <th>Zone</th>
+                      <th>Location</th>
+                      <th>Coords (X, Y)</th>
+                      <th>Leg (m)</th>
+                      <th>Total (m)</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card" style="margin-top:20px;">
+            <div class="chart-header">
+              <h3>🧭 Optimal Aisle & Rack Navigation Sequence</h3>
+              <span class="badge-tag">Sub-90s Assembly Target</span>
+            </div>
+            <div id="warehouse-transition-flow" style="font-size:0.92rem; color:var(--text-main); font-weight:600; padding:12px; background:rgba(16,185,129,0.08); border-radius:var(--radius-sm); border:1px solid var(--border-active);"></div>
+          </div>
+        </section>
+
+        <!-- Tab 3: AI Customer Segmentation -->
+        <section class="tab-pane" id="tab-segmentation">
+          <div class="section-banner">
+            <div class="banner-left">
+              <h2>👥 Customer Segmentation Engine (K-Means Clustering)</h2>
+              <p>Clusters customers based on <strong>Recency (days)</strong>, <strong>Frequency (orders)</strong>, and <strong>Monetary (spend in ₹)</strong> with Min-Max feature normalization.</p>
+            </div>
+            <button class="btn-action" id="btn-recluster">⚡ Re-run K-Means (k=4)</button>
+          </div>
+
+          <div class="persona-grid" id="persona-cards-container"></div>
+
+          <div class="chart-card" style="margin-top:24px;">
+            <div class="chart-header">
+              <h3>📉 WCSS Elbow Curve (Optimal Cluster Selection)</h3>
+              <span class="badge-tag">Within-Cluster Sum of Squares</span>
+            </div>
+            <canvas id="elbowCurveChart" height="70"></canvas>
+          </div>
+        </section>
+
+        <!-- Tab 4: Inventory & Stock Alerts -->
+        <section class="tab-pane" id="tab-stock-alerts">
+          <div class="section-banner">
+            <div>
+              <h2>🚨 Automated Inventory & Stock Risk Alerts</h2>
+              <p>AI compares current warehouse stock against 7-day predicted demand run-rates to identify imminent stockouts and overstocked inventory.</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper" style="margin-top:16px;">
+            <table class="data-table" id="stock-alerts-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Predicted 7-Day Demand</th>
+                  <th>Stock Run-Rate</th>
+                  <th>Risk Level</th>
+                  <th>AI Recommended Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Tab 5: ML Model Evaluation -->
+        <section class="tab-pane" id="tab-ml-metrics">
+          <div class="section-banner">
+            <div>
+              <h2>🧠 Machine Learning Model Evaluation & Viva Reference</h2>
+              <p>Mathematical formulations, validation metrics, baseline benchmarks, and evaluation datasets for CSE-AIML project defense.</p>
+            </div>
+          </div>
+
+          <div class="metrics-summary-container" id="ml-evaluation-content"></div>
+        </section>
+
+        <!-- Tab 6: Products CRUD -->
+        <section class="tab-pane" id="tab-products-crud">
+          <div class="section-banner">
+            <div>
+              <h2>📦 Product Catalog & Warehouse Inventory Management</h2>
+              <p>Adjust live stock levels and prices in Indian Rupees (₹).</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper" style="margin-top:16px;">
+            <table class="data-table" id="crud-products-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Category</th>
+                  <th>Unit</th>
+                  <th>Price (₹)</th>
+                  <th>Current Stock</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Tab 7: Orders Feed -->
+        <section class="tab-pane" id="tab-orders-feed">
+          <div class="section-banner">
+            <div>
+              <h2>🛒 Live Customer Orders Feed & AI Fraud Detection</h2>
+              <p>Real-time order statuses, customer addresses, and Z-Score ML Fraud Risk Scoring.</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper" style="margin-top:16px;">
+            <table class="data-table" id="orders-feed-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Phone & Address</th>
+                  <th>Items Ordered</th>
+                  <th>Total (₹)</th>
+                  <th>Fraud Risk Assessment</th>
+                  <th>Status</th>
+                  <th>Update Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
     </div>
-  </section>
-
-  <!-- Category & Main Product Catalog Section -->
-  <section class="section" id="catalog-section">
-    <div class="section-container">
-      <!-- Dietary & Health Specialty Filters -->
-      <div class="diet-filter-wrapper">
-        <button class="diet-pill active" data-diet="all">🌟 All Categories</button>
-        <button class="diet-pill" data-diet="organic">🌱 100% Organic</button>
-        <button class="diet-pill" data-diet="protein">💪 High Protein</button>
-        <button class="diet-pill" data-diet="keto">🥑 Keto Friendly</button>
-        <button class="diet-pill" data-diet="gluten-free">🌾 Gluten-Free</button>
-        <button class="diet-pill" data-diet="diabetic">🩺 Diabetic Safe</button>
-      </div>
-
-      <div class="catalog-controls">
-        <div class="category-pills" id="category-pills">
-          <button class="cat-pill active" data-category="all">🛒 All Items</button>
-          <button class="cat-pill" data-category="fruits">🍎 Fruits</button>
-          <button class="cat-pill" data-category="vegetables">🥦 Vegetables</button>
-          <button class="cat-pill" data-category="dairy">🥛 Dairy & Eggs</button>
-          <button class="cat-pill" data-category="bakery">🍞 Bakery</button>
-          <button class="cat-pill" data-category="beverages">🧃 Beverages</button>
-          <button class="cat-pill" data-category="snacks">🥜 Snacks</button>
-        </div>
-
-        <div class="sort-wrapper">
-          <label for="sort-select">Sort by:</label>
-          <select id="sort-select" class="sort-select">
-            <option value="rating">⭐ Highest Rated</option>
-            <option value="price-asc">₹ Price: Low to High</option>
-            <option value="price-desc">₹ Price: High to Low</option>
-            <option value="name">🔤 Name (A-Z)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Main Product Grid -->
-      <div class="product-grid" id="products-grid">
-        <!-- Loaded dynamically -->
-      </div>
-    </div>
-  </section>
+  </main>
 
   <!-- Cart Sidebar Drawer -->
   <div class="cart-overlay" id="cart-overlay"></div>
@@ -1185,8 +1767,123 @@
     </div>
   </div>
 
+  <!-- Wishlist Modal -->
+  <div class="modal-overlay" id="wishlist-modal-overlay" style="display:none;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">❤️ Saved Items</span>
+          <h3 style="font-size:1.3rem; margin-top:2px;">Your Wishlist & Favorites</h3>
+        </div>
+        <button class="close-btn" id="wishlist-modal-close" onclick="app.closeWishlistModal()">✕</button>
+      </div>
+      <div id="wishlist-items-container" style="max-height:360px; overflow-y:auto; margin-bottom:16px;">
+        <!-- Loaded dynamically -->
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:14px;">
+        <button class="btn-secondary" onclick="app.clearWishlist()">Clear Wishlist</button>
+        <button class="btn-checkout" onclick="app.addAllWishlistToCart()" style="padding:10px 20px;">🛒 Add All to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Comparison Matrix Modal -->
+  <div class="modal-overlay" id="compare-modal-overlay" style="display:none;">
+    <div class="modal-card" style="max-width:920px; width:95%;">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">⚖️ Side-by-Side Analysis</span>
+          <h3 style="font-size:1.3rem; margin-top:2px;">Product Comparison Matrix</h3>
+        </div>
+        <button class="close-btn" id="compare-modal-close" onclick="app.closeCompareModal()">✕</button>
+      </div>
+      <div id="compare-matrix-content" style="overflow-x:auto; margin-bottom:16px;">
+        <!-- Populated dynamically via compareProducts() -->
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:14px;">
+        <small style="color:var(--text-dim);">Compare up to 4 products across price, ratings, diet, and stock.</small>
+        <button class="btn-secondary" onclick="app.clearCompareList()">Clear Comparison</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Price-Drop & Back-in-Stock Alert Modal -->
+  <div class="modal-overlay" id="stock-alert-overlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">🔔 Smart Notification</span>
+          <h3 style="font-size:1.2rem; margin-top:2px;" id="stock-alert-title">Set Stock & Price Alert</h3>
+        </div>
+        <button class="close-btn" onclick="app.closeStockAlertModal()">✕</button>
+      </div>
+      <div style="padding:10px 0;">
+        <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;" id="stock-alert-desc">Get notified instantly via SMS / App Notification when this item is restocked or when price drops.</p>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Target Price (Optional):</label>
+          <input type="number" id="alert-target-price" placeholder="e.g. 199" style="font-weight:600;">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Mobile Number / Email:</label>
+          <input type="text" id="alert-contact-input" placeholder="e.g. +91 98765 43210" style="font-weight:600;">
+        </div>
+        <button class="btn-checkout" style="width:100%;" onclick="app.saveStockAlert()">
+          🔔 Activate Instant Alert
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 108 Categories Mega Directory & Search Modal -->
+  <div class="modal-overlay" id="category-mega-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="category-mega-title">
+    <div class="modal-card modal-wide category-mega-card">
+      <div class="modal-header">
+        <div>
+          <span class="ai-pill">📂 Quick-Commerce Directory</span>
+          <h3 style="font-size:1.25rem; margin-top:2px;" id="category-mega-title">All 108 Grocery & Household Categories</h3>
+        </div>
+        <button class="close-btn" onclick="app.closeCategoryMegaModal()" aria-label="Close categories directory">✕</button>
+      </div>
+
+      <div class="category-mega-search-wrap">
+        <span class="cat-search-icon" aria-hidden="true">🔍</span>
+        <input type="text"
+               id="category-mega-search-input"
+               class="category-mega-search-input"
+               placeholder="Filter across all 108 categories (e.g. 'oil', 'milk', 'spices', 'dry fruit', 'soap')..."
+               oninput="app.filterMegaCategories(this.value)"
+               aria-label="Filter categories">
+        <span class="category-mega-count" id="category-mega-match-count">108 categories</span>
+      </div>
+
+      <div class="category-mega-departments-grid" id="category-mega-grid">
+        <!-- Rendered dynamically by department with categories -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Sticky Bottom Quick-Access Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Mobile Quick Navigation">
+    <button class="mobile-nav-btn active" id="mobile-nav-store" onclick="app.switchView('store')">
+      <span class="mobile-nav-icon">🛒</span>
+      <span>Store</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobile-nav-categories" onclick="app.openCategoryMegaModal()">
+      <span class="mobile-nav-icon">📂</span>
+      <span>Categories</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobile-nav-orders" onclick="app.switchView('orders')">
+      <span class="mobile-nav-icon">📦</span>
+      <span>Orders</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobile-nav-cart" onclick="app.openCart()">
+      <span class="mobile-nav-icon">🛍️</span>
+      <span>Cart (<span id="mobile-cart-badge">0</span>)</span>
+    </button>
+  </nav>
+
   <!-- Toast Notification Container -->
-  <div class="toast-container" id="toast-container"></div>
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
   <!-- Footer -->
   <footer class="footer">
@@ -1196,6 +1893,7 @@
     </div>
   </footer>
 
+  <script src="js/admin.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

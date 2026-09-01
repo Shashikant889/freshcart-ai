@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fefce8"/><stop offset="100%" stop-color="#fef9c3"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <rect x="75" y="70" width="50" height="96" rx="8" fill="#fef08a"/>
+     <rect x="86" y="44" width="28" height="26" rx="4" fill="#eab308"/>
+     <rect x="75" y="95" width="50" height="36" fill="#ca8a04"/>
+     <text x="100" y="112" font-size="9" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif">COOKING</text>
+     <text x="100" y="124" font-size="9" font-weight="bold" fill="#fef08a" text-anchor="middle" font-family="sans-serif">OIL (1L)</text>
+  </g>
+</svg>

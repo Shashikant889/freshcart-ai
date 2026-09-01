@@ -19,7 +19,13 @@ CREATE TABLE IF NOT EXISTS products (
   description TEXT,
   stock INTEGER DEFAULT 0,
   rating REAL DEFAULT 0,
-  tags TEXT DEFAULT '[]'
+  tags TEXT DEFAULT '[]',
+  image_key TEXT,
+  image_url TEXT,
+  image_alt TEXT,
+  brand TEXT,
+  mrp REAL,
+  discount INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -70,12 +76,25 @@ CREATE TABLE IF NOT EXISTS sales_history (
   revenue REAL NOT NULL
 );
 
--- Indexes for ML query performance
+-- High-performance indexes for large catalog (10K products, 150K users, 1M events)
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+CREATE INDEX IF NOT EXISTS idx_products_rating ON products(rating DESC);
+CREATE INDEX IF NOT EXISTS idx_products_price ON products(price ASC);
+CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);
+CREATE INDEX IF NOT EXISTS idx_products_image_key ON products(image_key);
 CREATE INDEX IF NOT EXISTS idx_interactions_user ON user_interactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_interactions_product ON user_interactions(product_id);
 CREATE INDEX IF NOT EXISTS idx_interactions_action ON user_interactions(action);
+CREATE INDEX IF NOT EXISTS idx_interactions_user_action ON user_interactions(user_id, action);
 CREATE INDEX IF NOT EXISTS idx_sales_product_date ON sales_history(product_id, date);
+CREATE INDEX IF NOT EXISTS idx_sales_date ON sales_history(date);
 CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_products_cat_price ON products(category, price ASC);
+CREATE INDEX IF NOT EXISTS idx_products_cat_rating ON products(category, rating DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+

@@ -1,0 +1,565 @@
+{
+  "version": "2.0.0",
+  "genericFallback": {
+    "imageKey": "grocery-default",
+    "imageUrl": "/images/products/grocery-default.svg",
+    "imageAlt": "FreshCart Grocery Item"
+  },
+  "productFamilies": {
+    "apple": {
+      "keywords": ["apple", "apples", "fuji", "gala", "kashmiri", "kinnaur", "red delicious", "granny smith", "seb"],
+      "imageKey": "fresh-apples",
+      "imageUrl": "/images/products/fresh-apples.svg",
+      "imageAlt": "Fresh Crisp Apples"
+    },
+    "banana": {
+      "keywords": ["banana", "bananas", "robusta", "yelakki", "nendran", "cavendish", "kela"],
+      "imageKey": "fresh-bananas",
+      "imageUrl": "/images/products/fresh-bananas.svg",
+      "imageAlt": "Fresh Farm Bananas"
+    },
+    "orange": {
+      "keywords": ["orange", "oranges", "valencia", "nagpur", "kinnow", "citrus", "santra", "mosambi"],
+      "imageKey": "juicy-oranges",
+      "imageUrl": "/images/products/juicy-oranges.svg",
+      "imageAlt": "Juicy Sweet Oranges"
+    },
+    "mango": {
+      "keywords": ["mango", "mangoes", "alphonso", "hapus", "kesar", "banganapalli", "dasheri", "langra", "totapuri", "aam"],
+      "imageKey": "fresh-mangoes",
+      "imageUrl": "/images/products/fresh-mangoes.svg",
+      "imageAlt": "Fresh Ripe Mangoes"
+    },
+    "strawberry": {
+      "keywords": ["strawberry", "strawberries", "berry", "berries"],
+      "imageKey": "sweet-strawberries",
+      "imageUrl": "/images/products/sweet-strawberries.svg",
+      "imageAlt": "Farm Sweet Strawberries"
+    },
+    "grape": {
+      "keywords": ["grape", "grapes", "seedless", "thompson", "sharad", "sonaka", "angoor"],
+      "imageKey": "green-grapes",
+      "imageUrl": "/images/products/green-grapes.svg",
+      "imageAlt": "Fresh Sweet Grapes"
+    },
+    "papaya": {
+      "keywords": ["papaya", "papayas", "red lady", "taiwan 786", "papita"],
+      "imageKey": "fresh-papaya",
+      "imageUrl": "/images/products/fresh-papaya.svg",
+      "imageAlt": "Fresh Sweet Papaya"
+    },
+    "watermelon": {
+      "keywords": ["watermelon", "watermelons", "sugar baby", "tarbooz", "melon"],
+      "imageKey": "fresh-watermelon",
+      "imageUrl": "/images/products/fresh-watermelon.svg",
+      "imageAlt": "Fresh Juicy Watermelon"
+    },
+    "pomegranate": {
+      "keywords": ["pomegranate", "pomegranates", "anar", "bhagwa", "arakta"],
+      "imageKey": "fresh-pomegranate",
+      "imageUrl": "/images/products/fresh-pomegranate.svg",
+      "imageAlt": "Ruby Red Pomegranate"
+    },
+    "guava": {
+      "keywords": ["guava", "guavas", "safeda", "amrood", "peru"],
+      "imageKey": "fresh-guava",
+      "imageUrl": "/images/products/fresh-guava.svg",
+      "imageAlt": "Farm Fresh Guava"
+    },
+    "pineapple": {
+      "keywords": ["pineapple", "pineapples", "ananas", "mauritius", "kew"],
+      "imageKey": "fresh-pineapple",
+      "imageUrl": "/images/products/fresh-pineapple.svg",
+      "imageAlt": "Fresh Sweet Pineapple"
+    },
+    "avocado": {
+      "keywords": ["avocado", "avocados", "hass", "guacamole"],
+      "imageKey": "fresh-avocado",
+      "imageUrl": "/images/products/fresh-avocado.svg",
+      "imageAlt": "Fresh Creamy Avocado"
+    },
+    "kiwi": {
+      "keywords": ["kiwi", "kiwis", "zespri"],
+      "imageKey": "fresh-kiwi",
+      "imageUrl": "/images/products/fresh-kiwi.svg",
+      "imageAlt": "Fresh Zesty Kiwi"
+    },
+    "blueberry": {
+      "keywords": ["blueberry", "blueberries", "blackberry", "raspberry", "cranberry"],
+      "imageKey": "fresh-berries",
+      "imageUrl": "/images/products/fresh-berries.svg",
+      "imageAlt": "Fresh Wild Berries"
+    },
+    "tomato": {
+      "keywords": ["tomato", "tomatoes", "cherry tomato", "tamatar", "roma", "desi tomato"],
+      "imageKey": "farm-tomatoes",
+      "imageUrl": "/images/products/farm-tomatoes.svg",
+      "imageAlt": "Fresh Farm Tomatoes"
+    },
+    "potato": {
+      "keywords": ["potato", "potatoes", "aloo", "pahari", "jyoti", "baby potato"],
+      "imageKey": "gold-potatoes",
+      "imageUrl": "/images/products/gold-potatoes.svg",
+      "imageAlt": "Mountain Gold Potatoes"
+    },
+    "onion": {
+      "keywords": ["onion", "onions", "pyaz", "kanda", "nashik pink", "shallot", "spring onion"],
+      "imageKey": "pink-onions",
+      "imageUrl": "/images/products/pink-onions.svg",
+      "imageAlt": "Premium Pink Onions"
+    },
+    "cauliflower": {
+      "keywords": ["cauliflower", "gobhi", "phool gobhi"],
+      "imageKey": "fresh-cauliflower",
+      "imageUrl": "/images/products/fresh-cauliflower.svg",
+      "imageAlt": "Fresh Tender Cauliflower"
+    },
+    "cabbage": {
+      "keywords": ["cabbage", "patta gobhi", "bandgobhi", "savoy"],
+      "imageKey": "green-cabbage",
+      "imageUrl": "/images/products/green-cabbage.svg",
+      "imageAlt": "Crunchy Green Cabbage"
+    },
+    "broccoli": {
+      "keywords": ["broccoli", "brocolli", "green florets"],
+      "imageKey": "fresh-broccoli",
+      "imageUrl": "/images/products/fresh-broccoli.svg",
+      "imageAlt": "Crisp Green Broccoli"
+    },
+    "carrot": {
+      "keywords": ["carrot", "carrots", "gajar", "baby carrot"],
+      "imageKey": "baby-carrots",
+      "imageUrl": "/images/products/baby-carrots.svg",
+      "imageAlt": "Sweet Baby Carrots"
+    },
+    "spinach": {
+      "keywords": ["spinach", "palak", "greens", "saag", "methi", "coriander", "dhaniya", "mint", "pudina"],
+      "imageKey": "fresh-spinach",
+      "imageUrl": "/images/products/fresh-spinach.svg",
+      "imageAlt": "Fresh Green Spinach"
+    },
+    "bell_pepper": {
+      "keywords": ["capsicum", "bell pepper", "shimla mirch", "peppers"],
+      "imageKey": "bell-peppers",
+      "imageUrl": "/images/products/bell-peppers.svg",
+      "imageAlt": "Crisp Bell Peppers"
+    },
+    "corn": {
+      "keywords": ["corn", "sweet corn", "bhutta", "maize"],
+      "imageKey": "sweet-corn",
+      "imageUrl": "/images/products/sweet-corn.svg",
+      "imageAlt": "Fresh Sweet Corn"
+    },
+    "green_beans": {
+      "keywords": ["beans", "green beans", "french beans", "cluster beans", "sem", "gwar"],
+      "imageKey": "green-beans",
+      "imageUrl": "/images/products/green-beans.svg",
+      "imageAlt": "Fresh Green Beans"
+    },
+    "peas": {
+      "keywords": ["peas", "green peas", "matar", "muttar"],
+      "imageKey": "green-peas",
+      "imageUrl": "/images/products/green-peas.svg",
+      "imageAlt": "Farm Fresh Green Peas"
+    },
+    "ladyfinger": {
+      "keywords": ["ladyfinger", "bhindi", "okra"],
+      "imageKey": "fresh-bhindi",
+      "imageUrl": "/images/products/fresh-bhindi.svg",
+      "imageAlt": "Fresh Tender Bhindi / Okra"
+    },
+    "bottle_gourd": {
+      "keywords": ["bottle gourd", "lauki", "doodhi", "ghiya", "ridge gourd", "turai", "karela", "bitter gourd"],
+      "imageKey": "bottle-gourd",
+      "imageUrl": "/images/products/bottle-gourd.svg",
+      "imageAlt": "Fresh Farm Bottle Gourd"
+    },
+    "ginger_garlic": {
+      "keywords": ["ginger", "garlic", "adrak", "lahsun", "chilli", "mirchi"],
+      "imageKey": "ginger-garlic",
+      "imageUrl": "/images/products/ginger-garlic.svg",
+      "imageAlt": "Fresh Ginger & Garlic"
+    },
+    "milk": {
+      "keywords": ["milk", "doodh", "toned milk", "cow milk", "homogenised", "taaza", "slim & trim", "full cream"],
+      "imageKey": "milk-toned",
+      "imageUrl": "/images/products/milk-toned.svg",
+      "imageAlt": "Farm Fresh Milk"
+    },
+    "milk_full_cream": {
+      "keywords": ["full cream milk", "gold milk", "buffalo milk", "a2 cow milk"],
+      "imageKey": "milk-full-cream",
+      "imageUrl": "/images/products/milk-full-cream.svg",
+      "imageAlt": "Amul Full Cream Gold Milk"
+    },
+    "paneer": {
+      "keywords": ["paneer", "cottage cheese", "malai paneer", "tofu"],
+      "imageKey": "malai-paneer",
+      "imageUrl": "/images/products/malai-paneer.svg",
+      "imageAlt": "Farm Fresh Malai Paneer"
+    },
+    "curd": {
+      "keywords": ["curd", "dahi", "yogurt", "probiotic dahi", "greek yogurt"],
+      "imageKey": "probiotic-dahi",
+      "imageUrl": "/images/products/probiotic-dahi.svg",
+      "imageAlt": "Creamy Probiotic Dahi Curd"
+    },
+    "butter": {
+      "keywords": ["butter", "makhan", "salted butter", "unsalted butter", "table butter"],
+      "imageKey": "table-butter",
+      "imageUrl": "/images/products/table-butter.svg",
+      "imageAlt": "Pasteurized Table Butter"
+    },
+    "cheese": {
+      "keywords": ["cheese", "cheddar", "mozzarella", "cheese slices", "cheese block", "cheese spread", "pizza cheese"],
+      "imageKey": "cheddar-cheese",
+      "imageUrl": "/images/products/cheddar-cheese.svg",
+      "imageAlt": "Aged Cheddar Cheese"
+    },
+    "ghee": {
+      "keywords": ["ghee", "desi ghee", "cow ghee", "bilona ghee", "danedar"],
+      "imageKey": "desi-ghee",
+      "imageUrl": "/images/products/desi-ghee.svg",
+      "imageAlt": "Pure Desi Ghee"
+    },
+    "eggs": {
+      "keywords": ["egg", "eggs", "anda", "farm eggs", "free range eggs", "white eggs", "brown eggs"],
+      "imageKey": "farm-eggs",
+      "imageUrl": "/images/products/farm-eggs.svg",
+      "imageAlt": "Farm Fresh Free-Range Eggs"
+    },
+    "bread": {
+      "keywords": ["bread", "sourdough", "white bread", "brown bread", "multigrain bread", "atta bread", "loaf", "sandwich bread"],
+      "imageKey": "sourdough-bread",
+      "imageUrl": "/images/products/sourdough-bread.svg",
+      "imageAlt": "Artisan Sourdough Bread Loaf"
+    },
+    "croissant": {
+      "keywords": ["croissant", "croissants", "flaky croissant", "danish"],
+      "imageKey": "butter-croissant",
+      "imageUrl": "/images/products/butter-croissant.svg",
+      "imageAlt": "Flaky Butter Croissants"
+    },
+    "bagel": {
+      "keywords": ["bagel", "bagels", "bun", "buns", "pav", "burger bun", "pizza base"],
+      "imageKey": "plain-bagel",
+      "imageUrl": "/images/products/plain-bagel.svg",
+      "imageAlt": "New York Style Bagels & Buns"
+    },
+    "cake": {
+      "keywords": ["cake", "chocolate cake", "pastry", "pastries", "brownie", "truffle"],
+      "imageKey": "chocolate-cake",
+      "imageUrl": "/images/products/chocolate-cake.svg",
+      "imageAlt": "Rich Dark Chocolate Cake"
+    },
+    "muffin": {
+      "keywords": ["muffin", "muffins", "cupcake", "blueberry muffin"],
+      "imageKey": "blueberry-muffin",
+      "imageUrl": "/images/products/blueberry-muffin.svg",
+      "imageAlt": "Fresh Blueberry Muffins"
+    },
+    "biscuits": {
+      "keywords": ["biscuit", "biscuits", "cookie", "cookies", "crackers", "cream biscuits", "digestive", "marie", "rusk"],
+      "imageKey": "biscuit-cookies",
+      "imageUrl": "/images/products/biscuit-cookies.svg",
+      "imageAlt": "Crunchy Biscuits & Cookies"
+    },
+    "rice": {
+      "keywords": ["rice", "basmati", "basmati rice", "chawal", "biryani rice", "kolam", "sona masoori", "brown rice"],
+      "imageKey": "basmati-rice",
+      "imageUrl": "/images/products/basmati-rice.svg",
+      "imageAlt": "Royal Aged Basmati Rice Bag"
+    },
+    "wheat_atta": {
+      "keywords": ["atta", "wheat atta", "flour", "gehu", "maida", "besan", "suji", "rava", "chakki fresh"],
+      "imageKey": "wheat-atta",
+      "imageUrl": "/images/products/wheat-atta.svg",
+      "imageAlt": "Chakki Fresh 100% Whole Wheat Atta"
+    },
+    "dal_pulses": {
+      "keywords": ["dal", "pulses", "toor dal", "arhar", "moong dal", "urad dal", "chana dal", "masoor dal", "lentils"],
+      "imageKey": "toor-dal",
+      "imageUrl": "/images/products/toor-dal.svg",
+      "imageAlt": "Unpolished Toor Dal Lentils"
+    },
+    "chickpeas": {
+      "keywords": ["chickpeas", "chana", "kabuli chana", "rajma", "kidney beans", "black chana", "lobia"],
+      "imageKey": "chickpeas-chana",
+      "imageUrl": "/images/products/chickpeas-chana.svg",
+      "imageAlt": "Premium Kabuli Chickpeas Chana"
+    },
+    "cooking_oil": {
+      "keywords": ["oil", "cooking oil", "mustard oil", "sunflower oil", "groundnut oil", "soybean oil", "rice bran oil", "olive oil", "tel"],
+      "imageKey": "sunflower-oil",
+      "imageUrl": "/images/products/sunflower-oil.svg",
+      "imageAlt": "Refined Sunflower Cooking Oil Bottle"
+    },
+    "salt_spices": {
+      "keywords": ["salt", "namak", "table salt", "rock salt", "sendha namak", "haldi", "turmeric", "mirch powder", "chilli powder", "dhaniya powder", "garam masala", "spices"],
+      "imageKey": "table-salt",
+      "imageUrl": "/images/products/table-salt.svg",
+      "imageAlt": "Iodized Table Salt & Spices"
+    },
+    "sugar": {
+      "keywords": ["sugar", "cheeni", "shakkar", "jaggery", "gud", "sweetener"],
+      "imageKey": "sugar-jaggery",
+      "imageUrl": "/images/products/sugar-jaggery.svg",
+      "imageAlt": "Pure Sugar & Organic Jaggery"
+    },
+    "chips": {
+      "keywords": ["chips", "potato chips", "wafers", "kettle chips", "crisps", "nachos", "doritos", "lays"],
+      "imageKey": "potato-chips",
+      "imageUrl": "/images/products/potato-chips.svg",
+      "imageAlt": "Crispy Potato Chips Pack"
+    },
+    "namkeen": {
+      "keywords": ["namkeen", "bhujia", "aloo bhujia", "sev", "mixture", "chivda", "farsan", "kurkure"],
+      "imageKey": "namkeen-bhujia",
+      "imageUrl": "/images/products/namkeen-bhujia.svg",
+      "imageAlt": "Crispy Aloo Bhujia Namkeen"
+    },
+    "makhana": {
+      "keywords": ["makhana", "foxnuts", "roasted makhana", "lotus seeds"],
+      "imageKey": "roasted-makhana",
+      "imageUrl": "/images/products/roasted-makhana.svg",
+      "imageAlt": "Premium Roasted Foxnuts Makhana"
+    },
+    "nuts": {
+      "keywords": ["nuts", "almonds", "badam", "cashews", "kaju", "walnuts", "akhrot", "pistachios", "pista", "raisins", "kishmish", "dry fruits"],
+      "imageKey": "mixed-nuts",
+      "imageUrl": "/images/products/mixed-nuts.svg",
+      "imageAlt": "Roasted Premium Mixed Dry Fruits"
+    },
+    "chocolate": {
+      "keywords": ["chocolate", "dark chocolate", "cadbury", "dairy milk", "cacao", "candy", "toffees"],
+      "imageKey": "dark-chocolate",
+      "imageUrl": "/images/products/dark-chocolate.svg",
+      "imageAlt": "Rich Dark Chocolate Bar"
+    },
+    "granola": {
+      "keywords": ["granola", "granola bar", "muesli", "oats", "cereal", "corn flakes", "energy bar"],
+      "imageKey": "granola-bars",
+      "imageUrl": "/images/products/granola-bars.svg",
+      "imageAlt": "Oat & Honey Granola Energy Bars"
+    },
+    "noodles_pasta": {
+      "keywords": ["noodles", "maggi", "pasta", "macaroni", "spaghetti", "instant noodles", "vermicelli", "yippee", "ramen"],
+      "imageKey": "instant-noodles",
+      "imageUrl": "/images/products/instant-noodles.svg",
+      "imageAlt": "Instant Noodles & Pasta"
+    },
+    "sauces_spreads": {
+      "keywords": ["ketchup", "sauce", "mayonnaise", "jam", "peanut butter", "spread", "chutney", "pickle", "achar"],
+      "imageKey": "sauces-spreads",
+      "imageUrl": "/images/products/sauces-spreads.svg",
+      "imageAlt": "Gourmet Sauces & Fresh Spreads"
+    },
+    "juice": {
+      "keywords": ["juice", "fruit juice", "orange juice", "apple juice", "mango juice", "real", "tropicana", "paper boat"],
+      "imageKey": "fruit-juice",
+      "imageUrl": "/images/products/fruit-juice.svg",
+      "imageAlt": "100% Pure Real Fruit Juice"
+    },
+    "tea": {
+      "keywords": ["tea", "chai", "green tea", "black tea", "ctc tea", "assam tea", "darjeeling", "tea bags"],
+      "imageKey": "green-tea",
+      "imageUrl": "/images/products/green-tea.svg",
+      "imageAlt": "Organic Herbal Green Tea"
+    },
+    "coffee": {
+      "keywords": ["coffee", "cold brew", "instant coffee", "filter coffee", "nescafe", "bru", "espresso", "cappuccino"],
+      "imageKey": "cold-brew",
+      "imageUrl": "/images/products/cold-brew.svg",
+      "imageAlt": "Premium Cold Brew & Roasted Coffee"
+    },
+    "water_softdrinks": {
+      "keywords": ["water", "sparkling water", "mineral water", "soda", "cola", "pepsi", "coca-cola", "soft drink", "energy drink", "red bull"],
+      "imageKey": "sparkling-water",
+      "imageUrl": "/images/products/sparkling-water.svg",
+      "imageAlt": "Sparkling Natural Mineral Water"
+    },
+    "soap": {
+      "keywords": ["soap", "bath soap", "bathing bar", "dettol", "lifebuoy", "dove", "lux", "pears", "body wash", "handwash"],
+      "imageKey": "bath-soap",
+      "imageUrl": "/images/products/bath-soap.svg",
+      "imageAlt": "Gentle Cleansing Bath Soap Bar"
+    },
+    "shampoo": {
+      "keywords": ["shampoo", "conditioner", "hair cleanser", "pantene", "head & shoulders", "clinic plus", "hair oil"],
+      "imageKey": "shampoo-bottle",
+      "imageUrl": "/images/products/shampoo-bottle.svg",
+      "imageAlt": "Nourishing Hair Care Shampoo"
+    },
+    "oral_care": {
+      "keywords": ["toothpaste", "toothbrush", "colgate", "pepsodent", "sensodyne", "mouthwash", "oral"],
+      "imageKey": "oral-care",
+      "imageUrl": "/images/products/oral-care.svg",
+      "imageAlt": "Fluoride Fresh Toothpaste & Oral Care"
+    },
+    "skin_care": {
+      "keywords": ["cream", "lotion", "moisturizer", "nivea", "ponds", "sunscreen", "face wash", "talc", "deodorant", "fogg", "axe"],
+      "imageKey": "skin-care",
+      "imageUrl": "/images/products/skin-care.svg",
+      "imageAlt": "Hydrating Skin Care & Grooming"
+    },
+    "detergent": {
+      "keywords": ["detergent", "washing powder", "surf excel", "ariel", "tide", "rin", "fabric conditioner", "comfort", "laundry"],
+      "imageKey": "detergent-powder",
+      "imageUrl": "/images/products/detergent-powder.svg",
+      "imageAlt": "Advanced Stain Removal Detergent"
+    },
+    "dishwash_cleaning": {
+      "keywords": ["dishwash", "vim", "pril", "scrub", "scotch-brite", "cleaner", "lizol", "colin", "harpic", "floor cleaner", "toilet cleaner"],
+      "imageKey": "dishwash-cleaner",
+      "imageUrl": "/images/products/dishwash-cleaner.svg",
+      "imageAlt": "Disinfectant Cleaner & Dishwash"
+    },
+    "home_repellents": {
+      "keywords": ["repellent", "good knight", "all out", "hit", "odonil", "air freshener", "room freshener", "tissues", "foil"],
+      "imageKey": "home-care",
+      "imageUrl": "/images/products/home-care.svg",
+      "imageAlt": "Home Freshener & Protective Care"
+    },
+    "baby_care": {
+      "keywords": ["baby", "diaper", "diapers", "pampers", "huggies", "wipes", "cerelac", "baby wash", "baby lotion"],
+      "imageKey": "baby-care",
+      "imageUrl": "/images/products/baby-care.svg",
+      "imageAlt": "Gentle Baby Diapers & Care"
+    },
+    "pet_care": {
+      "keywords": ["pet", "dog", "cat", "dog food", "cat food", "pedigree", "drools", "whiskas", "pet treats"],
+      "imageKey": "pet-food",
+      "imageUrl": "/images/products/pet-food.svg",
+      "imageAlt": "Complete Nutrition Pet Food"
+    },
+    "pooja": {
+      "keywords": ["agarbatti", "incense", "dhoop", "pooja", "camphor", "kapur", "diya", "hawan", "cycle pure"],
+      "imageKey": "pooja-essentials",
+      "imageUrl": "/images/products/pooja-essentials.svg",
+      "imageAlt": "Sacred Pooja Agarbatti & Essentials"
+    },
+    "sweets": {
+      "keywords": ["mithai", "sweets", "gulab jamun", "rasgulla", "kaju katli", "laddu", "soan papdi", "haldiram"],
+      "imageKey": "indian-sweets",
+      "imageUrl": "/images/products/indian-sweets.svg",
+      "imageAlt": "Traditional Indian Sweets & Mithai"
+    },
+    "chicken_meat": {
+      "keywords": ["chicken", "meat", "mutton", "fish", "prawns", "seafood", "poultry", "curry cut"],
+      "imageKey": "fresh-chicken",
+      "imageUrl": "/images/products/fresh-chicken.svg",
+      "imageAlt": "Fresh Farm Chicken & Tender Cuts"
+    },
+    "frozen_fries": {
+      "keywords": ["french fries", "fries", "potato fries", "crinkle fries", "potato wedges", "mccain fries"],
+      "imageKey": "frozen-fries",
+      "imageUrl": "/images/products/frozen-fries.svg",
+      "imageAlt": "Crispy Golden French Fries"
+    },
+    "frozen_food": {
+      "keywords": ["frozen snack", "frozen snacks", "veggie nuggets", "frozen patties", "frozen burger patty", "frozen samosa", "frozen spring rolls"],
+      "imageKey": "frozen-food",
+      "imageUrl": "/images/products/frozen-food.svg",
+      "imageAlt": "Crispy Frozen Snacks & Veggie Medley"
+    },
+    "ice_cream": {
+      "keywords": ["ice cream", "icecream", "kulfi", "gelato", "frozen dessert", "cassata", "sundae", "cornetto"],
+      "imageKey": "ice-cream",
+      "imageUrl": "/images/products/ice-cream.svg",
+      "imageAlt": "Artisanal Ice Cream Tub"
+    },
+    "durum_pasta": {
+      "keywords": ["pasta", "penne", "fusilli", "macaroni", "spaghetti", "durum wheat pasta"],
+      "imageKey": "durum-pasta",
+      "imageUrl": "/images/products/durum-pasta.svg",
+      "imageAlt": "Italian Durum Wheat Pasta"
+    }
+  },
+  "departmentDefaults": {
+    "Fresh Produce": {
+      "imageKey": "fresh-apples",
+      "imageUrl": "/images/products/fresh-apples.svg",
+      "imageAlt": "Farm Fresh Produce"
+    },
+    "Dairy & Eggs": {
+      "imageKey": "milk-toned",
+      "imageUrl": "/images/products/milk-toned.svg",
+      "imageAlt": "Fresh Dairy & Farm Eggs"
+    },
+    "Bakery": {
+      "imageKey": "sourdough-bread",
+      "imageUrl": "/images/products/sourdough-bread.svg",
+      "imageAlt": "Artisan Bakery & Fresh Breads"
+    },
+    "Confectionery": {
+      "imageKey": "dark-chocolate",
+      "imageUrl": "/images/products/dark-chocolate.svg",
+      "imageAlt": "Chocolates & Sweet Confectionery"
+    },
+    "Frozen Foods": {
+      "imageKey": "frozen-food",
+      "imageUrl": "/images/products/frozen-food.svg",
+      "imageAlt": "Quick Frozen Meals & Treats"
+    },
+    "Staples & Grains": {
+      "imageKey": "basmati-rice",
+      "imageUrl": "/images/products/basmati-rice.svg",
+      "imageAlt": "Essential Kitchen Staples & Grains"
+    },
+    "Dry Fruits & Nuts": {
+      "imageKey": "mixed-nuts",
+      "imageUrl": "/images/products/mixed-nuts.svg",
+      "imageAlt": "Wholesome Dry Fruits & Nuts"
+    },
+    "Snacks & Munchies": {
+      "imageKey": "potato-chips",
+      "imageUrl": "/images/products/potato-chips.svg",
+      "imageAlt": "Crispy Snacks & Munchies"
+    },
+    "Beverages": {
+      "imageKey": "fruit-juice",
+      "imageUrl": "/images/products/fruit-juice.svg",
+      "imageAlt": "Refreshing Drinks & Beverages"
+    },
+    "Instant & Frozen": {
+      "imageKey": "instant-noodles",
+      "imageUrl": "/images/products/instant-noodles.svg",
+      "imageAlt": "Ready-to-Cook & Instant Foods"
+    },
+    "Personal Care": {
+      "imageKey": "bath-soap",
+      "imageUrl": "/images/products/bath-soap.svg",
+      "imageAlt": "Personal Care & Hygiene"
+    },
+    "Baby Care": {
+      "imageKey": "baby-care",
+      "imageUrl": "/images/products/baby-care.svg",
+      "imageAlt": "Gentle Baby Care Essentials"
+    },
+    "Household & Cleaning": {
+      "imageKey": "detergent-powder",
+      "imageUrl": "/images/products/detergent-powder.svg",
+      "imageAlt": "Household Supplies & Cleaning"
+    },
+    "Specialty & Wellness": {
+      "imageKey": "granola-bars",
+      "imageUrl": "/images/products/granola-bars.svg",
+      "imageAlt": "Organic Health & Wellness"
+    },
+    "Regional Foods": {
+      "imageKey": "indian-sweets",
+      "imageUrl": "/images/products/indian-sweets.svg",
+      "imageAlt": "Authentic Regional Specialties"
+    },
+    "Pet Supplies": {
+      "imageKey": "pet-food",
+      "imageUrl": "/images/products/pet-food.svg",
+      "imageAlt": "Nutritious Pet Foods & Supplies"
+    },
+    "Pooja Essentials": {
+      "imageKey": "pooja-essentials",
+      "imageUrl": "/images/products/pooja-essentials.svg",
+      "imageAlt": "Traditional Pooja & Festivity Essentials"
+    }
+  }
+}

@@ -5,8 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "start:all": "node scripts/dev-start.js",
     "seed": "node db/seed.js",
     "dev": "nodemon server.js",
+    "dev:all": "node scripts/dev-start.js",
     "test": "node test/deep-verify.js",
     "test:security": "node test/security-safety-test.js",
     "test:alpha-beta": "node test/alpha-beta-backend.js",
@@ -14,7 +16,8 @@
     "test:enterprise": "node test/enterprise-features-test.js",
     "test:pwa-vision": "node test/pwa-vision-payment-test.js",
     "test:integration": "node test/ai-service-integration-test.js",
-    "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js && node test/enterprise-features-test.js && node test/pwa-vision-payment-test.js && node test/ai-service-integration-test.js",
+    "test:hardening": "node test/unified-app-hardening-test.js",
+    "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js && node test/enterprise-features-test.js && node test/pwa-vision-payment-test.js && node test/ai-service-integration-test.js && node test/unified-app-hardening-test.js",
     "check": "node test/master-audit.js",
     "audit": "node test/master-audit.js"
   },

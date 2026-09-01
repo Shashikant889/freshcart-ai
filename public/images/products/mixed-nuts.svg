@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <ellipse cx="80" cy="110" rx="16" ry="24" transform="rotate(-20 80 110)" fill="#78350f"/>
+     <path d="M110,95 C125,95 135,110 125,130 C115,130 110,115 110,95 Z" fill="#fef08a"/>
+     <circle cx="100" cy="135" r="12" fill="#15803d"/>
+     <text x="100" y="70" font-size="11" font-weight="900" fill="#78350f" text-anchor="middle" font-family="sans-serif">DRY FRUITS</text>
+  </g>
+</svg>

@@ -15,6 +15,22 @@
 (function () {
   'use strict';
 
+  // DOM Query Helpers
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+
+  function safeJsonParse(val, fallback) {
+    try {
+      return val ? JSON.parse(val) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function generateUUID() {
+    return 'sess_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
   // Application State
   const state = {
     user: null,
@@ -38,31 +54,53 @@
     hubEta: '11 Mins',
     lastPlacedOrder: null,
     subscriptions: [
-      { id: 'sub-1', name: 'Fresh Whole Milk (1L)', emoji: '🥛', price: 69, frequency: 'Daily (7:00 AM)', active: true },
-      { id: 'sub-2', name: 'Artisan Sourdough Bread', emoji: '🍞', price: 89, frequency: 'Mon, Wed, Fri', active: true },
-      { id: 'sub-3', name: 'Farm Fresh Organic Eggs (6pcs)', emoji: '🥚', price: 85, frequency: 'Daily (7:00 AM)', active: false }
+      { id: 'sub-1', name: 'Fresh Whole Milk (1L)', emoji: '🥛', image_url: '/images/products/milk-toned.svg', price: 69, frequency: 'Daily (7:00 AM)', active: true },
+      { id: 'sub-2', name: 'Artisan Sourdough Bread', emoji: '🍞', image_url: '/images/products/sourdough-bread.svg', price: 89, frequency: 'Mon, Wed, Fri', active: true },
+      { id: 'sub-3', name: 'Farm Fresh Organic Eggs (6pcs)', emoji: '🥚', image_url: '/images/products/farm-eggs.svg', price: 85, frequency: 'Daily (7:00 AM)', active: false }
     ],
     pantryItems: [
-      { name: 'Cow Milk (1L)', emoji: '🥛', daysLeft: 1, stockLevel: 'Low', status: 'low' },
-      { name: 'Brown Bread', emoji: '🍞', daysLeft: 2, stockLevel: 'Low', status: 'low' },
-      { name: 'Eggs (Dozen)', emoji: '🥚', daysLeft: 4, stockLevel: 'Medium', status: 'ok' },
-      { name: 'Basmati Rice (5kg)', emoji: '🍚', daysLeft: 14, stockLevel: 'Good', status: 'ok' },
-      { name: 'Sunflower Oil (1L)', emoji: '🌻', daysLeft: 8, stockLevel: 'Medium', status: 'ok' }
-    ]
+      { name: 'Cow Milk (1L)', emoji: '🥛', image_url: '/images/products/milk-toned.svg', daysLeft: 1, stockLevel: 'Low', status: 'low' },
+      { name: 'Brown Bread', emoji: '🍞', image_url: '/images/products/sourdough-bread.svg', daysLeft: 2, stockLevel: 'Low', status: 'low' },
+      { name: 'Eggs (Dozen)', emoji: '🥚', image_url: '/images/products/farm-eggs.svg', daysLeft: 4, stockLevel: 'Medium', status: 'ok' },
+      { name: 'Basmati Rice (5kg)', emoji: '🍚', image_url: '/images/products/basmati-rice.svg', daysLeft: 14, stockLevel: 'Good', status: 'ok' },
+      { name: 'Sunflower Oil (1L)', emoji: '🌻', image_url: '/images/products/sunflower-oil.svg', daysLeft: 8, stockLevel: 'Medium', status: 'ok' }
+    ],
+    wishlist: safeJsonParse(localStorage.getItem('freshcart_wishlist'), []),
+    compareList: safeJsonParse(localStorage.getItem('freshcart_compare'), []),
+    recentlyViewed: safeJsonParse(localStorage.getItem('freshcart_recent'), []),
+    smartBundles: [],
+    buyAgain: []
   };
 
   localStorage.setItem('freshcart_session', state.sessionId);
 
-  function generateUUID() {
-    return 'sess_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  // In-Memory API Cache for instant responses & zero redundant roundtrips
+  const apiCache = new Map();
+
+  function invalidateApiCache(prefix = '') {
+    if (!prefix) {
+      apiCache.clear();
+      return;
+    }
+    for (const key of apiCache.keys()) {
+      if (key.startsWith(prefix)) apiCache.delete(key);
+    }
   }
 
-  // DOM Helper
-  const $ = (selector) => document.querySelector(selector);
-  const $$ = (selector) => document.querySelectorAll(selector);
-
-  // API Request Wrapper
+  // API Request Wrapper with Caching & Deduplication
   async function api(endpoint, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    const useCache = options.useCache !== false && method === 'GET';
+    const cacheKey = `${endpoint}::${state.token || 'anon'}::${state.sessionId}`;
+
+    if (useCache && apiCache.has(cacheKey)) {
+      const cached = apiCache.get(cacheKey);
+      if (Date.now() - cached.timestamp < (options.ttl || 30000)) {
+        return cached.data;
+      }
+      apiCache.delete(cacheKey);
+    }
+
     const headers = {
       'Content-Type': 'application/json',
       'x-session-id': state.sessionId,
@@ -76,14 +114,19 @@
       if (!res.ok) {
         throw new Error(data.message || 'API request failed');
       }
+      if (useCache) {
+        apiCache.set(cacheKey, { data, timestamp: Date.now() });
+      }
       return data;
     } catch (err) {
-      showToast(err.message, 'error');
+      if (!options.silent) {
+        showToast(err.message, 'error');
+      }
       throw err;
     }
   }
 
-  // Toast Notification
+  // Toast Notification with Smooth Animated Exit
   function showToast(message, type = 'success') {
     const container = $('#toast-container');
     if (!container) return;
@@ -91,7 +134,10 @@
     toast.className = 'toast';
     toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span> <span>${message}</span>`;
     container.appendChild(toast);
-    setTimeout(() => toast.remove(), 3500);
+    setTimeout(() => {
+      toast.classList.add('toast-leave');
+      setTimeout(() => toast.remove(), 260);
+    }, 3200);
   }
 
   // ----------------------------------------------------
@@ -168,17 +214,25 @@
     const authBtnText = $('#auth-btn-text');
     const recSubtitle = $('#rec-subtitle');
     const recAlgoBadge = $('#rec-algo-badge');
+    const navAdminLabel = $('#nav-admin-label');
 
     if (user) {
       authBtnText.textContent = user.name.split(' ')[0] + ' (Sign Out)';
       $('#login-modal-btn').onclick = logout;
-      recSubtitle.textContent = `Personalized for ${user.name} using Collaborative & Content AI`;
-      recAlgoBadge.textContent = 'Hybrid User-User Collaborative Filtering';
+      if (recSubtitle) recSubtitle.textContent = `Personalized for ${user.name} using Collaborative & Content AI`;
+      if (recAlgoBadge) recAlgoBadge.textContent = 'Hybrid User-User Collaborative Filtering';
+
+      if (user.role === 'admin') {
+        if (navAdminLabel) navAdminLabel.textContent = 'Admin & AI ⚡';
+      } else {
+        if (navAdminLabel) navAdminLabel.textContent = 'Admin & AI';
+      }
     } else {
       authBtnText.textContent = 'Sign In';
       $('#login-modal-btn').onclick = () => openAuthModal('login');
-      recSubtitle.textContent = 'Trending items • Sign in for personalized Collaborative AI suggestions';
-      recAlgoBadge.textContent = 'Popularity & Trending ML';
+      if (recSubtitle) recSubtitle.textContent = 'Trending items • Sign in for personalized Collaborative AI suggestions';
+      if (recAlgoBadge) recAlgoBadge.textContent = 'Popularity & Trending ML';
+      if (navAdminLabel) navAdminLabel.textContent = 'Admin & AI';
     }
   }
 
@@ -191,6 +245,7 @@
       state.token = res.data.token;
       state.user = res.data.user;
       localStorage.setItem('freshcart_token', state.token);
+      invalidateApiCache();
       updateAuthUI(state.user);
       closeAuthModal();
       showToast(`Welcome back, ${state.user.name}!`);
@@ -208,6 +263,7 @@
       state.token = res.data.token;
       state.user = res.data.user;
       localStorage.setItem('freshcart_token', state.token);
+      invalidateApiCache();
       updateAuthUI(state.user);
       closeAuthModal();
       showToast(`Account created for ${state.user.name}!`);
@@ -220,6 +276,7 @@
     state.token = null;
     state.user = null;
     localStorage.removeItem('freshcart_token');
+    invalidateApiCache();
     updateAuthUI(null);
     showToast('Signed out successfully');
     loadRecommendations();
@@ -252,27 +309,479 @@
   // ----------------------------------------------------
   // Product Catalog & Recommendations Loading
   // ----------------------------------------------------
-  async function loadProducts() {
+  function renderProductsSkeleton() {
+    const grid = $('#products-grid');
+    if (!grid) return;
+    grid.innerHTML = Array.from({ length: 6 }).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-box img"></div>
+        <div class="skeleton-box title"></div>
+        <div class="skeleton-box text"></div>
+        <div class="skeleton-box footer"></div>
+      </div>
+    `).join('');
+  }
+
+  function renderRecommendationsSkeleton() {
+    const grid = $('#ai-recs-grid');
+    if (!grid) return;
+    grid.innerHTML = Array.from({ length: 4 }).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-box img"></div>
+        <div class="skeleton-box title"></div>
+        <div class="skeleton-box text"></div>
+        <div class="skeleton-box footer"></div>
+      </div>
+    `).join('');
+  }
+
+  // ----------------------------------------------------
+  // 8 Quick-Commerce Major Departments & Category Engine
+  // ----------------------------------------------------
+  const DEPARTMENTS = [
+    { id: 'all', name: 'All Departments', emoji: '🌟' },
+    { id: 'produce', name: 'Fruits & Veggies', emoji: '🍎', keywords: ['vegetable', 'fruit', 'herb', 'organic', 'greens', 'exotic', 'hydroponic', 'leafy', 'onion', 'potato', 'tomato', 'mango', 'apple', 'banana', 'citrus'] },
+    { id: 'dairy', name: 'Dairy & Bakery', emoji: '🥛', keywords: ['dairy', 'milk', 'cheese', 'butter', 'yogurt', 'paneer', 'bread', 'bakery', 'egg', 'cream', 'toast', 'bun', 'curd', 'ghee'] },
+    { id: 'snacks', name: 'Snacks & Munchies', emoji: '🍿', keywords: ['snack', 'chips', 'biscuit', 'chocolate', 'namkeen', 'dry_fruit', 'nut', 'popcorn', 'sweet', 'cookie', 'wafer', 'candy', 'munch'] },
+    { id: 'beverages', name: 'Drinks & Juices', emoji: '🥤', keywords: ['drink', 'beverage', 'juice', 'tea', 'coffee', 'soda', 'water', 'energy', 'cola', 'syrup', 'shake', 'cold'] },
+    { id: 'staples', name: 'Atta, Rice & Dals', emoji: '🌾', keywords: ['staple', 'atta', 'flour', 'rice', 'dal', 'pulse', 'oil', 'spice', 'salt', 'sugar', 'masala', 'grain', 'wheat', 'lentil', 'mustard'] },
+    { id: 'cleaning', name: 'Cleaning & Home', emoji: '🧼', keywords: ['clean', 'detergent', 'dishwash', 'tissue', 'garbage', 'freshener', 'mop', 'repellent', 'pooja', 'home', 'spray', 'wash'] },
+    { id: 'personal', name: 'Personal & Baby Care', emoji: '💆', keywords: ['personal', 'soap', 'shampoo', 'oral', 'skincare', 'haircare', 'deo', 'sanitary', 'paste', 'brush', 'bath', 'baby', 'pet', 'lotion', 'cream'] }
+  ];
+
+  function getCategoryDepartment(catId, catName) {
+    const text = ((catId || '') + ' ' + (catName || '')).toLowerCase();
+    for (const d of DEPARTMENTS) {
+      if (d.keywords && d.keywords.some(k => text.includes(k))) {
+        return d;
+      }
+    }
+    return DEPARTMENTS[5]; // defaults to staples
+  }
+
+  async function loadCategories() {
     try {
+      const res = await api('/api/products/categories');
+      if (res) {
+        const raw = res.categories || res.data || [];
+        state.categoriesList = raw.map(c => typeof c === 'string' ? {
+          id: c,
+          name: c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, ' '),
+          emoji: '🛒',
+          department: 'General Grocery',
+          count: ''
+        } : {
+          id: c.id || c.category,
+          name: c.name || (c.id ? c.id.charAt(0).toUpperCase() + c.id.slice(1).replace(/_/g, ' ') : 'Category'),
+          emoji: c.emoji || '🛒',
+          department: c.department || 'General Grocery',
+          count: c.productCount || c.count || ''
+        });
+        renderCategorySelector();
+      }
+    } catch (e) {
+      console.warn('Error loading categories:', e);
+    }
+  }
+
+  function renderCategorySelector() {
+    const container = $('#dynamic-category-bar');
+    if (!container || !state.categoriesList) return;
+
+    state.currentDepartment = state.currentDepartment || 'all';
+
+    // Filter categories for the active department
+    let visibleCats = state.categoriesList;
+    if (state.currentDepartment !== 'all') {
+      const deptObj = DEPARTMENTS.find(d => d.id === state.currentDepartment);
+      if (deptObj && deptObj.keywords) {
+        visibleCats = state.categoriesList.filter(c => {
+          const text = (c.id + ' ' + c.name).toLowerCase();
+          return deptObj.keywords.some(k => text.includes(k));
+        });
+      }
+    }
+
+    const topChips = visibleCats.slice(0, 12);
+
+    container.innerHTML = `
+      <!-- Major Department Filter Rail -->
+      <div class="dept-filter-rail" role="tablist" aria-label="Grocery Departments">
+        ${DEPARTMENTS.map(d => `
+          <button class="dept-pill ${state.currentDepartment === d.id ? 'active' : ''}" 
+                  onclick="app.selectDepartment('${d.id}')"
+                  role="tab"
+                  aria-selected="${state.currentDepartment === d.id}">
+            <span>${d.emoji}</span>
+            <span>${d.name}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- Subcategory Horizontal Scrolling Chips & Mega Directory Trigger -->
+      <div class="category-subrail-wrap">
+        <div class="category-chips-container" role="tablist" aria-label="Categories">
+          <button class="cat-pill ${state.currentCategory === 'all' ? 'active' : ''}" onclick="app.selectCategory('all')">
+            🛒 All Items <span class="cat-count-badge">${state.totalProductsCount ? state.totalProductsCount.toLocaleString() : '10,000'}</span>
+          </button>
+          ${topChips.map(c => `
+            <button class="cat-pill ${state.currentCategory === c.id ? 'active' : ''}" onclick="app.selectCategory('${c.id}')">
+              ${c.emoji || '🛒'} ${c.name} <span class="cat-count-badge">${c.count || ''}</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <button class="btn-mega-cat" onclick="app.openCategoryMegaModal()" title="Explore all 108 categories">
+          📂 All 108 Categories (${state.categoriesList.length})
+        </button>
+
+        <!-- Keep full-category-select in DOM for test & accessibility parity -->
+        <div class="category-select-wrapper" style="display:none;">
+          <select id="full-category-select" class="category-dropdown-select" onchange="app.selectCategory(this.value)">
+            <option value="">📂 All 108 Categories (${state.categoriesList.length} total)...</option>
+            ${state.categoriesList.map(c => `
+              <option value="${c.id}" ${state.currentCategory === c.id ? 'selected' : ''}>
+                ${c.emoji || '🛒'} ${c.name} — ${c.department || 'General'} (${c.count || ''} items)
+              </option>
+            `).join('')}
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  // 108 Categories Mega Navigation Directory Modal
+  function openCategoryMegaModal() {
+    const overlay = $('#category-mega-overlay');
+    if (!overlay) return;
+    renderMegaCategories('');
+    overlay.style.display = 'flex';
+    const input = $('#category-mega-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  function closeCategoryMegaModal() {
+    const overlay = $('#category-mega-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  function renderMegaCategories(query = '') {
+    const grid = $('#category-mega-grid');
+    const countEl = $('#category-mega-match-count');
+    if (!grid || !state.categoriesList) return;
+
+    const q = (query || '').trim().toLowerCase();
+    let matchedCats = state.categoriesList;
+    if (q) {
+      matchedCats = state.categoriesList.filter(c => 
+        c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q)
+      );
+    }
+
+    if (countEl) {
+      countEl.textContent = `${matchedCats.length} categorie${matchedCats.length === 1 ? '' : 's'}`;
+    }
+
+    // Group matched categories by department
+    const groups = {};
+    DEPARTMENTS.filter(d => d.id !== 'all').forEach(d => {
+      groups[d.id] = { dept: d, items: [] };
+    });
+
+    matchedCats.forEach(c => {
+      const dept = getCategoryDepartment(c.id, c.name);
+      if (groups[dept.id]) {
+        groups[dept.id].items.push(c);
+      } else {
+        groups['staples'].items.push(c);
+      }
+    });
+
+    grid.innerHTML = Object.values(groups)
+      .filter(g => g.items.length > 0)
+      .map(g => `
+        <div class="category-dept-card">
+          <div class="category-dept-title">
+            <span>${g.dept.emoji}</span>
+            <span>${g.dept.name} (${g.items.length})</span>
+          </div>
+          <div class="category-dept-items">
+            ${g.items.map(c => `
+              <button class="category-mega-item-btn ${state.currentCategory === c.id ? 'active' : ''}" 
+                      onclick="app.selectCategoryFromMega('${c.id}')">
+                <span>${c.emoji || '🛒'}</span>
+                <span>${highlightSearchMatch(c.name, q)}</span>
+                ${c.count ? `<small style="opacity:0.75; font-size:0.7rem;">(${c.count})</small>` : ''}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+  }
+
+  function getPaginationPages(current, total) {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = [];
+    pages.push(1);
+
+    const start = Math.max(2, current - 2);
+    const end = Math.min(total - 1, current + 2);
+
+    if (start > 2) {
+      pages.push('...');
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (end < total - 1) {
+      pages.push('...');
+    }
+
+    pages.push(total);
+    return pages;
+  }
+
+  async function loadProducts(page = 1) {
+    try {
+      state.currentPage = page;
+      if (!state.products || state.products.length === 0) {
+        renderProductsSkeleton();
+      }
       const params = new URLSearchParams({
         category: state.currentCategory,
         sort: state.currentSort,
+        page: state.currentPage,
+        limit: 24,
+        ...(state.currentDiet && state.currentDiet !== 'all' ? { diet: state.currentDiet } : {}),
         ...(state.searchQuery ? { search: state.searchQuery } : {})
       });
       const res = await api(`/api/products?${params.toString()}`);
-      state.products = res.data;
+      state.products = res.data || [];
+      state.currentPage = res.page || 1;
+      state.totalPages = res.totalPages || 1;
+      state.totalProductsCount = res.total || state.products.length;
+
       renderProductsGrid();
+      renderPaginationControls();
+      renderCategorySelector();
       renderFlashDeals();
       renderComboPacks();
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Error loading products:', e);
+    }
+  }
+
+  function renderPaginationControls() {
+    let paginationEl = $('#catalog-pagination');
+    if (!paginationEl) {
+      const grid = $('#products-grid');
+      if (!grid) return;
+      paginationEl = document.createElement('div');
+      paginationEl.id = 'catalog-pagination';
+      paginationEl.className = 'catalog-pagination-bar';
+      grid.parentNode.insertBefore(paginationEl, grid.nextSibling);
+    }
+
+    if (state.totalPages <= 1) {
+      paginationEl.innerHTML = '';
+      return;
+    }
+
+    const startItem = (state.currentPage - 1) * 24 + 1;
+    const endItem = Math.min(state.currentPage * 24, state.totalProductsCount);
+    const pages = getPaginationPages(state.currentPage, state.totalPages);
+
+    paginationEl.innerHTML = `
+      <div class="pagination-meta">
+        <span class="pagination-range-text">
+          Showing <strong>${startItem.toLocaleString()}–${endItem.toLocaleString()}</strong> of <strong>${state.totalProductsCount.toLocaleString()}</strong> products
+        </span>
+      </div>
+
+      <!-- Desktop & Tablet Navigation Controls -->
+      <div class="pagination-nav-group">
+        <button class="pagination-btn pagination-prev ${state.currentPage <= 1 ? 'disabled' : ''}" 
+                ${state.currentPage <= 1 ? 'disabled' : ''} 
+                onclick="app.goToPage(${state.currentPage - 1})"
+                aria-label="Go to previous page">
+          ◀ Previous
+        </button>
+
+        <div class="pagination-pages-list" role="navigation" aria-label="Pagination Pages">
+          ${pages.map(p => {
+            if (p === '...') {
+              return `<span class="pagination-ellipsis" aria-hidden="true">…</span>`;
+            }
+            const isActive = p === state.currentPage;
+            return `
+              <button class="pagination-page-pill ${isActive ? 'active' : ''}"
+                      onclick="app.goToPage(${p})"
+                      ${isActive ? 'aria-current="page"' : ''}
+                      aria-label="Page ${p}">
+                ${p}
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <button class="pagination-btn pagination-next ${state.currentPage >= state.totalPages ? 'disabled' : ''}" 
+                ${state.currentPage >= state.totalPages ? 'disabled' : ''} 
+                onclick="app.goToPage(${state.currentPage + 1})"
+                aria-label="Go to next page">
+          Next ▶
+        </button>
+      </div>
+
+      <!-- Direct Jump To Page Form -->
+      <div class="pagination-jump-group">
+        <span class="jump-label">Go to page:</span>
+        <div class="jump-input-wrap">
+          <input type="number" 
+                 id="catalog-jump-input" 
+                 class="pagination-jump-input" 
+                 min="1" 
+                 max="${state.totalPages}" 
+                 value="${state.currentPage}" 
+                 aria-label="Target page number"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault(); app.handlePageJump();}">
+          <button class="pagination-jump-go-btn" onclick="app.handlePageJump()">Go</button>
+        </div>
+      </div>
+
+      <!-- Mobile Compact Bar (Shown on <= 768px) -->
+      <div class="pagination-mobile-bar">
+        <button class="pagination-btn-mobile" 
+                ${state.currentPage <= 1 ? 'disabled' : ''} 
+                onclick="app.goToPage(${state.currentPage - 1})"
+                aria-label="Previous Page">◀</button>
+        <span class="pagination-mobile-label">Page <strong>${state.currentPage}</strong> / ${state.totalPages}</span>
+        <button class="pagination-mobile-jump-btn" onclick="app.promptMobileJump()">Go to page</button>
+        <button class="pagination-btn-mobile" 
+                ${state.currentPage >= state.totalPages ? 'disabled' : ''} 
+                onclick="app.goToPage(${state.currentPage + 1})"
+                aria-label="Next Page">▶</button>
+      </div>
+    `;
   }
 
   async function loadRecommendations() {
     try {
+      if (!state.recommendedProducts || state.recommendedProducts.length === 0) {
+        renderRecommendationsSkeleton();
+      }
       const res = await api('/api/recommendations/personal?limit=6');
       state.recommendedProducts = res.data;
       renderRecommendationsGrid();
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Error loading recommendations:', e);
+    }
+  }
+
+  // ----------------------------------------------------
+  // Product Card Builder with Wishlist & Compare Badges
+  // ----------------------------------------------------
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function handleImageError(imgEl, category) {
+    if (!imgEl) return;
+    imgEl.onerror = null;
+    imgEl.classList.add('img-fallback');
+    if (category) {
+      imgEl.src = `/images/categories/dept-${category}.svg`;
+    } else {
+      imgEl.src = '/images/fallback.svg';
+    }
+  }
+  window.handleImageError = handleImageError;
+
+  function isWishlisted(id) {
+    return state.wishlist && state.wishlist.includes(id);
+  }
+
+  function isComparing(id) {
+    return state.compareList && state.compareList.includes(id);
+  }
+
+  function getCartItemQuantity(productId) {
+    if (!state.cart || !state.cart.items) return 0;
+    const item = state.cart.items.find(i => (i.productId || i.id) === productId);
+    return item ? item.quantity : 0;
+  }
+
+  function createProductCardHtml(p, matchBadge = '') {
+    const wishActive = isWishlisted(p.id);
+    const compActive = isComparing(p.id);
+    const inCartQty = getCartItemQuantity(p.id);
+    const imgUrl = p.image_url || '/images/products/grocery-default.svg';
+    const altText = escapeHtml(p.image_alt || p.name);
+    const discount = p.discount || (p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0);
+    const mrp = p.mrp || (discount > 0 ? Math.round(p.price * 1.2) : null);
+
+    return `
+      <div class="product-card" data-product-id="${p.id}">
+        <div class="card-top-actions">
+          <button class="card-action-btn ${wishActive ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleWishlist('${p.id}')" title="${wishActive ? 'Remove from Wishlist' : 'Add to Wishlist'}" aria-label="Toggle Wishlist">
+            ${wishActive ? '❤️' : '🤍'}
+          </button>
+          <button class="card-action-btn ${compActive ? 'compare-active' : ''}" onclick="event.stopPropagation(); app.toggleCompare('${p.id}')" title="${compActive ? 'Remove from Compare' : 'Add to Compare'}" aria-label="Toggle Compare">
+            ⚖️
+          </button>
+        </div>
+        ${matchBadge ? `<div class="card-match-badge">${matchBadge}</div>` : ''}
+        
+        <div class="product-image-container" onclick="app.openProductDetail('${p.id}')" role="button" tabindex="0" aria-label="View details for ${altText}">
+          <span class="delivery-time-badge">⚡ 10 MINS</span>
+          ${discount > 0 ? `<span class="discount-pill">${discount}% OFF</span>` : ''}
+          <img class="product-image"
+               src="${imgUrl}"
+               alt="${altText}"
+               loading="lazy"
+               decoding="async"
+               onerror="handleImageError(this, '${p.category || ''}')">
+        </div>
+
+        <div class="product-info">
+          ${p.brand ? `<div class="product-brand-tag">${escapeHtml(p.brand)}</div>` : ''}
+          <div class="product-name" onclick="app.openProductDetail('${p.id}')" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
+          <div class="product-pack-size">${escapeHtml(p.unit || '1 pack')}</div>
+          <div class="product-rating">⭐ ${p.rating || 4.5} <span style="color:var(--text-dim); font-size:0.75rem;">(${p.review_count || 42})</span> • <small style="color:var(--text-dim);">${p.stock || 0} in stock</small></div>
+          
+          <div class="product-footer">
+            <div class="card-price-row">
+              <span class="selling-price">₹${p.price}</span>
+              ${mrp && mrp > p.price ? `<span class="mrp-price">₹${mrp}</span>` : ''}
+            </div>
+
+            ${p.stock <= 0
+              ? `<button class="btn-secondary" style="font-size:0.75rem; padding:5px 10px;" onclick="event.stopPropagation(); app.openStockAlertModal('${p.id}')">🔔 Notify</button>`
+              : inCartQty > 0
+                ? `<div class="card-qty-stepper">
+                     <button class="card-qty-btn" onclick="event.stopPropagation(); app.updateCartQty('${p.id}', ${inCartQty - 1})" aria-label="Decrease quantity">-</button>
+                     <span class="card-qty-val">${inCartQty}</span>
+                     <button class="card-qty-btn" onclick="event.stopPropagation(); app.updateCartQty('${p.id}', ${inCartQty + 1})" aria-label="Increase quantity">+</button>
+                   </div>`
+                : `<button class="btn-add-cart" onclick="event.stopPropagation(); app.addToCart('${p.id}')">+ ADD</button>`
+            }
+          </div>
+          <button class="btn-fbt-inline" onclick="event.stopPropagation(); app.openFBTModal('${p.id}')">✨ Pair with smart add-ons ›</button>
+        </div>
+      </div>
+    `;
   }
 
   function renderRecommendationsGrid() {
@@ -284,26 +793,9 @@
       return;
     }
 
-    grid.innerHTML = state.recommendedProducts.map(p => `
-      <div class="product-card">
-        <div class="card-match-badge">✨ ${p.matchPercentage || 95}% Match</div>
-        <div class="product-emoji" onclick="app.openProductDetail('${p.id}')">${p.emoji}</div>
-        <div class="product-info">
-          <div class="product-category">${p.category}</div>
-          <div class="product-name" onclick="app.openProductDetail('${p.id}')">${p.name}</div>
-          <div class="product-desc">${p.description}</div>
-          <div class="product-rating">⭐ ${p.rating} / 5.0</div>
-          <div class="product-footer">
-            <div class="price-box">
-              <span class="product-price">₹${p.price}</span>
-              <span class="product-unit">per ${p.unit}</span>
-            </div>
-            <button class="btn-add-cart" onclick="app.addToCart('${p.id}')">+ Add</button>
-          </div>
-          <button class="btn-fbt" onclick="app.openFBTModal('${p.id}')">🔗 Frequently Bought Together</button>
-        </div>
-      </div>
-    `).join('');
+    grid.innerHTML = state.recommendedProducts.map(p => 
+      createProductCardHtml(p, `✨ ${p.matchPercentage || 95}% Match`)
+    ).join('');
   }
 
   function renderProductsGrid() {
@@ -330,29 +822,81 @@
       return;
     }
 
-    grid.innerHTML = filtered.map(p => `
-      <div class="product-card">
-        <div class="product-emoji" onclick="app.openProductDetail('${p.id}')">${p.emoji}</div>
-        <div class="product-info">
-          <div class="product-category">${p.category}</div>
-          <div class="product-name" onclick="app.openProductDetail('${p.id}')">${p.name}</div>
-          <div class="product-desc">${p.description}</div>
-          <div class="product-rating">⭐ ${p.rating} / 5.0 • <small style="color:var(--text-dim);">${p.stock} in stock</small></div>
-          <div class="product-footer">
-            <div class="price-box">
-              <span class="product-price">₹${p.price}</span>
-              <span class="product-unit">per ${p.unit}</span>
-            </div>
-            <button class="btn-add-cart" onclick="app.addToCart('${p.id}')">+ Add</button>
-          </div>
-          <button class="btn-fbt" onclick="app.openFBTModal('${p.id}')">🔗 Frequently Bought Together</button>
-        </div>
-      </div>
-    `).join('');
+    grid.innerHTML = filtered.map(p => createProductCardHtml(p)).join('');
   }
 
   // ----------------------------------------------------
-  // Flash Deals & Curated Combo Packs
+  // "Buy Again & Reorder" Feature Module
+  // ----------------------------------------------------
+  async function loadBuyAgain() {
+    try {
+      const res = await api('/api/recommendations/buy-again?limit=4');
+      if (res && res.data) {
+        state.buyAgain = res.data;
+        renderBuyAgainGrid();
+      }
+    } catch (e) {
+      console.warn('Error loading buy again items:', e);
+    }
+  }
+
+  function renderBuyAgainGrid() {
+    const grid = $('#buy-again-grid');
+    if (!grid) return;
+
+    if (!state.buyAgain || state.buyAgain.length === 0) {
+      grid.innerHTML = '<p style="color:var(--text-muted);">Explore catalog to build your restock list.</p>';
+      return;
+    }
+
+    grid.innerHTML = state.buyAgain.map(p => 
+      createProductCardHtml(p, p.reorderReason || '🔁 Frequent Essential')
+    ).join('');
+  }
+
+  // ----------------------------------------------------
+  // Recently Viewed Items Tracker
+  // ----------------------------------------------------
+  function trackRecentlyViewed(productId) {
+    if (!productId) return;
+    let list = state.recentlyViewed || [];
+    list = list.filter(id => id !== productId);
+    list.unshift(productId);
+    state.recentlyViewed = list.slice(0, 8);
+    localStorage.setItem('freshcart_recent', JSON.stringify(state.recentlyViewed));
+    renderRecentlyViewed();
+  }
+
+  async function renderRecentlyViewed() {
+    const section = $('#recently-viewed-section');
+    const grid = $('#recently-viewed-grid');
+    if (!section || !grid) return;
+
+    if (!state.recentlyViewed || state.recentlyViewed.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    try {
+      section.style.display = 'block';
+      const placeholders = state.recentlyViewed.slice(0, 4);
+      // Fetch details from state.products or load
+      const matched = placeholders.map(id => state.products.find(p => p.id === id)).filter(Boolean);
+      if (matched.length > 0) {
+        grid.innerHTML = matched.map(p => createProductCardHtml(p, '👁️ Viewed')).join('');
+      }
+    } catch (e) {}
+  }
+
+  function clearRecentlyViewed() {
+    state.recentlyViewed = [];
+    localStorage.removeItem('freshcart_recent');
+    renderRecentlyViewed();
+    showToast('Browsing history cleared');
+  }
+
+  // ----------------------------------------------------
+  // Flash Deals & Curated Smart Combos
   // ----------------------------------------------------
   function renderFlashDeals() {
     const grid = $('#flash-deals-grid');
@@ -360,15 +904,17 @@
 
     const deals = state.products.slice(0, 4);
     grid.innerHTML = deals.map(p => {
-      const origPrice = Math.round(p.price * 1.4);
+      const origPrice = p.mrp || Math.round(p.price * 1.3);
       return `
         <div class="flash-card">
           <div class="flash-top">
-            <span style="font-size:1.8rem;">${p.emoji}</span>
+            <div class="cart-item-img-container" style="width:48px; height:48px;">
+              <img class="cart-item-img" src="${p.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async" onerror="handleImageError(this, '${p.category || ''}')">
+            </div>
             <span class="discount-tag">30% OFF</span>
           </div>
           <div style="margin: 8px 0;">
-            <strong style="font-size:0.85rem; display:block; color:#fff;">${p.name}</strong>
+            <strong style="font-size:0.85rem; display:block; color:#fff;" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</strong>
             <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px;">
               <span style="font-size:1.05rem; font-weight:800; color:var(--green-400);">₹${p.price}</span>
               <span style="font-size:0.75rem; text-decoration:line-through; color:rgba(255,255,255,0.4);">₹${origPrice}</span>
@@ -379,15 +925,17 @@
       `;
     }).join('');
 
-    // Start countdown timer
     startCountdown();
   }
 
   function startCountdown() {
+    if (state.countdownInterval) {
+      clearInterval(state.countdownInterval);
+    }
     let seconds = 9858;
     const el = $('#flash-countdown');
     if (!el) return;
-    setInterval(() => {
+    state.countdownInterval = setInterval(() => {
       seconds--;
       if (seconds <= 0) seconds = 10800;
       const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -397,56 +945,43 @@
     }, 1000);
   }
 
-  function renderComboPacks() {
+  async function loadSmartBundles() {
     const grid = $('#combo-packs-grid');
     if (!grid) return;
 
-    const combos = [
-      {
-        title: '🍳 Power Breakfast Combo',
-        desc: 'Whole Milk (1L) + Sourdough Bread + Eggs (6) + Salted Butter',
-        emojis: '🥛 🍞 🥚 🧈',
-        origPrice: 260,
-        dealPrice: 220,
-        items: ['p3', 'p7', 'p8']
-      },
-      {
-        title: '🥗 Detox Green Salad Box',
-        desc: 'Organic Spinach + Fresh Broccoli + Hass Avocado + Fresh Lime',
-        emojis: '🥬 🥦 🥑 🍋',
-        origPrice: 350,
-        dealPrice: 299,
-        items: ['p4', 'p5', 'p6']
-      },
-      {
-        title: '☕ Evening Chai & Snack Pack',
-        desc: 'Assam Tea Leaves + Pure Cow Milk + Refined Sugar + Butter Cookies',
-        emojis: '🍵 🥛 🍬 🍪',
-        origPrice: 220,
-        dealPrice: 180,
-        items: ['p3', 'p9', 'p10']
+    try {
+      const res = await api('/api/recommendations/smart-bundles?limit=3');
+      if (res && res.data && res.data.length > 0) {
+        state.smartBundles = res.data;
+        grid.innerHTML = res.data.map(c => `
+          <div class="combo-card">
+            <div>
+              <div class="combo-header">
+                <strong style="color:var(--green-400); font-size:0.95rem;">${c.emoji || '🎁'} ${escapeHtml(c.bundleName)}</strong>
+                <span class="discount-tag" style="background:linear-gradient(135deg, #10b981, #059669);">Save ₹${c.savingsAmount} (15% Off)</span>
+              </div>
+              <div class="combo-items-row" style="display:flex; gap:6px; margin:8px 0;">
+                ${(c.items || []).map(i => `<img class="combo-thumb" src="${i.image_url || '/images/products/grocery-default.svg'}" title="${escapeHtml(i.name)}" alt="${escapeHtml(i.name)}" onerror="handleImageError(this, '')">`).join('')}
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.3;">${escapeHtml(c.subtitle || '')}</p>
+            </div>
+            <div class="combo-footer">
+              <div>
+                <span style="font-size:1.15rem; font-weight:800; color:#fff;">₹${c.bundlePrice}</span>
+                <span style="font-size:0.75rem; text-decoration:line-through; color:var(--text-dim); margin-left:4px;">₹${c.originalPrice}</span>
+              </div>
+              <button class="btn-primary" style="padding:6px 12px; font-size:0.78rem;" onclick="app.addBundleToCart('${c.bundleId}')">Add Bundle 🛒</button>
+            </div>
+          </div>
+        `).join('');
       }
-    ];
+    } catch (e) {
+      console.warn('Error loading smart bundles:', e);
+    }
+  }
 
-    grid.innerHTML = combos.map(c => `
-      <div class="combo-card">
-        <div>
-          <div class="combo-header">
-            <strong style="color:var(--green-400); font-size:0.95rem;">${c.title}</strong>
-            <span class="discount-tag" style="background:linear-gradient(135deg, #10b981, #059669);">Save ₹${c.origPrice - c.dealPrice}</span>
-          </div>
-          <div class="combo-items-row">${c.emojis}</div>
-          <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.3;">${c.desc}</p>
-        </div>
-        <div class="combo-footer">
-          <div>
-            <span style="font-size:1.15rem; font-weight:800; color:#fff;">₹${c.dealPrice}</span>
-            <span style="font-size:0.75rem; text-decoration:line-through; color:var(--text-dim); margin-left:4px;">₹${c.origPrice}</span>
-          </div>
-          <button class="btn-primary" style="padding:6px 12px; font-size:0.78rem;" onclick="app.addCombo('${c.title}')">Add Combo 🛒</button>
-        </div>
-      </div>
-    `).join('');
+  function renderComboPacks() {
+    loadSmartBundles();
   }
 
   // ----------------------------------------------------
@@ -515,6 +1050,7 @@
 
   async function addToCart(productId, quantity = 1) {
     try {
+      invalidateApiCache('/api/cart');
       const res = await api('/api/cart/add', {
         method: 'POST',
         body: JSON.stringify({ productId, quantity })
@@ -528,6 +1064,7 @@
 
   async function updateCartQty(productId, quantity) {
     try {
+      invalidateApiCache('/api/cart');
       const res = await api('/api/cart/update', {
         method: 'PUT',
         body: JSON.stringify({ productId, quantity })
@@ -539,6 +1076,7 @@
 
   async function clearCart() {
     try {
+      invalidateApiCache('/api/cart');
       const res = await api('/api/cart/clear', { method: 'DELETE' });
       state.cart = res.data;
       updateCartUI();
@@ -592,10 +1130,17 @@
 
     container.innerHTML = state.cart.items.map(item => `
       <div class="cart-item">
-        <div class="item-emoji">${item.emoji}</div>
+        <div class="cart-item-img-container">
+          <img class="cart-item-img"
+               src="${item.image_url || '/images/products/grocery-default.svg'}"
+               alt="${escapeHtml(item.image_alt || item.name)}"
+               loading="lazy"
+               decoding="async"
+               onerror="handleImageError(this, '')">
+        </div>
         <div class="item-details">
-          <div class="item-name">${item.name}</div>
-          <div class="item-price">₹${item.price} / ${item.unit}</div>
+          <div class="item-name">${escapeHtml(item.name)}</div>
+          <div class="item-price">₹${item.price} / ${item.unit || 'unit'}</div>
         </div>
         <div class="qty-controls">
           <button class="qty-btn" onclick="app.updateCartQty('${item.productId}', ${item.quantity - 1})">-</button>
@@ -640,9 +1185,12 @@
       if (addons.length > 0) {
         list.innerHTML = addons.slice(0, 2).map(a => `
           <div class="addon-card">
-            <div>
-              <strong>${a.emoji} ${a.name}</strong>
-              <small style="color:var(--text-muted); display:block;">₹${a.price} • ${a.confidence}% cross-sell</small>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img class="combo-thumb" src="${a.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(a.name)}" onerror="handleImageError(this, '')">
+              <div>
+                <strong>${escapeHtml(a.name)}</strong>
+                <small style="color:var(--text-muted); display:block;">₹${a.price} • ${a.confidence}% cross-sell</small>
+              </div>
             </div>
             <button class="btn-add-cart" style="padding:4px 10px; font-size:0.75rem;" onclick="app.addToCart('${a.id}')">+ Add</button>
           </div>
@@ -861,7 +1409,8 @@
       drawWheel(0);
     };
 
-    $('#wheel-close').onclick = () => modal.style.display = 'none';
+    const wheelClose = $('#wheel-close');
+    if (wheelClose) wheelClose.onclick = () => { if (modal) modal.style.display = 'none'; };
 
     const segments = ['INSTA50 (₹50 Off)', 'FRESHFREE (Free Del)', 'SUPER20 (20% Off)', '100 COINS', '₹25 CASH', 'ORGANIC10'];
     const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4'];
@@ -899,32 +1448,35 @@
     }
 
     let isSpinning = false;
-    spinBtn.onclick = () => {
-      if (isSpinning) return;
-      isSpinning = true;
-      let curAngle = 0;
-      const spins = 5 + Math.random() * 5;
-      const targetAngle = spins * Math.PI * 2 + Math.random() * Math.PI * 2;
-      let startTime = null;
+    if (spinBtn) {
+      spinBtn.onclick = () => {
+        if (isSpinning) return;
+        isSpinning = true;
+        let curAngle = 0;
+        const spins = 5 + Math.random() * 5;
+        const targetAngle = spins * Math.PI * 2 + Math.random() * Math.PI * 2;
+        let startTime = null;
 
-      function animateSpin(time) {
-        if (!startTime) startTime = time;
-        const elapsed = (time - startTime) / 3000;
-        if (elapsed < 1) {
-          const easeOut = 1 - Math.pow(1 - elapsed, 3);
-          curAngle = easeOut * targetAngle;
-          drawWheel(curAngle);
-          requestAnimationFrame(animateSpin);
-        } else {
-          isSpinning = false;
-          $('#wheel-result-msg').innerHTML = '🎉 You won coupon <strong>INSTA50</strong> (₹50 Off)! Copied to clipboard.';
-          state.appliedCoupon = { code: 'INSTA50', discount: 50 };
-          showToast('Coupon INSTA50 applied to cart!');
-          updateCartUI();
+        function animateSpin(time) {
+          if (!startTime) startTime = time;
+          const elapsed = (time - startTime) / 3000;
+          if (elapsed < 1) {
+            const easeOut = 1 - Math.pow(1 - elapsed, 3);
+            curAngle = easeOut * targetAngle;
+            drawWheel(curAngle);
+            requestAnimationFrame(animateSpin);
+          } else {
+            isSpinning = false;
+            const resMsg = $('#wheel-result-msg');
+            if (resMsg) resMsg.innerHTML = '🎉 You won coupon <strong>INSTA50</strong> (₹50 Off)! Copied to clipboard.';
+            state.appliedCoupon = { code: 'INSTA50', discount: 50 };
+            showToast('Coupon INSTA50 applied to cart!');
+            updateCartUI();
+          }
         }
-      }
-      requestAnimationFrame(animateSpin);
-    };
+        requestAnimationFrame(animateSpin);
+      };
+    }
   }
 
   // ----------------------------------------------------
@@ -935,19 +1487,36 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    $('#open-scratch-modal-btn').onclick = () => {
-      $('#confirmation-overlay').style.display = 'none';
-      $('#scratch-modal-overlay').style.display = 'flex';
-      initScratchCanvas();
-    };
+    const openScratchBtn = $('#open-scratch-modal-btn');
+    if (openScratchBtn) {
+      openScratchBtn.onclick = () => {
+        const conf = $('#confirmation-overlay');
+        const modal = $('#scratch-modal-overlay');
+        if (conf) conf.style.display = 'none';
+        if (modal) modal.style.display = 'flex';
+        initScratchCanvas();
+      };
+    }
 
-    $('#scratch-close').onclick = () => $('#scratch-modal-overlay').style.display = 'none';
-    $('#claim-scratch-btn').onclick = () => {
-      $('#scratch-modal-overlay').style.display = 'none';
-      showToast('₹50 Cashback credited to your FreshCoins wallet!');
-      state.coins += 100;
-      $('#header-coins-val').textContent = `${state.coins} Coins`;
-    };
+    const scratchClose = $('#scratch-close');
+    if (scratchClose) {
+      scratchClose.onclick = () => {
+        const modal = $('#scratch-modal-overlay');
+        if (modal) modal.style.display = 'none';
+      };
+    }
+
+    const claimScratchBtn = $('#claim-scratch-btn');
+    if (claimScratchBtn) {
+      claimScratchBtn.onclick = () => {
+        const modal = $('#scratch-modal-overlay');
+        if (modal) modal.style.display = 'none';
+        showToast('₹50 Cashback credited to your FreshCoins wallet!');
+        state.coins += 100;
+        const coinsVal = $('#header-coins-val');
+        if (coinsVal) coinsVal.textContent = `${state.coins} Coins`;
+      };
+    }
 
     function initScratchCanvas() {
       ctx.fillStyle = '#94a3b8';
@@ -1075,36 +1644,78 @@
     const p = state.products.find(x => x.id === productId) || state.recommendedProducts.find(x => x.id === productId);
     if (!p) return;
 
-    $('#detail-prod-name').textContent = `${p.emoji} ${p.name}`;
+    const imgUrl = p.image_url || '/images/products/grocery-default.svg';
+    const altText = escapeHtml(p.image_alt || p.name);
+    const discount = p.discount || (p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0);
+    const mrp = p.mrp || (discount > 0 ? Math.round(p.price * 1.2) : null);
+    const savings = mrp && mrp > p.price ? mrp - p.price : 0;
+
+    $('#detail-prod-name').textContent = p.name;
     const content = $('#product-detail-content');
 
     content.innerHTML = `
       <div style="text-align:center; padding:10px 0;">
-        <span style="font-size:3.5rem;">${p.emoji}</span>
-        <h3 style="margin-top:6px; color:var(--text-main);">${p.name}</h3>
-        <p style="color:var(--text-muted); font-size:0.85rem;">${p.description}</p>
-        <div style="font-size:1.3rem; font-weight:800; color:var(--green-400); margin:8px 0;">
-          ₹${p.price} <small style="font-size:0.8rem; color:var(--text-dim);">per ${p.unit}</small>
+        <div class="detail-hero-container">
+          <img class="detail-hero-img"
+               src="${imgUrl}"
+               alt="${altText}"
+               loading="eager"
+               decoding="async"
+               onerror="handleImageError(this, '${p.category || ''}')">
         </div>
-      </div>
 
-      <div style="background:rgba(16,185,129,0.06); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); margin-bottom:12px;">
-        <strong style="color:var(--green-400); font-size:0.8rem;">🌿 Freshness & Storage Tip:</strong>
-        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-          Store at 2-4°C in vegetable crisper drawer. Peak freshness within 4 days of delivery.
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+          ${p.brand ? `<span class="product-brand-tag" style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">${escapeHtml(p.brand)}</span>` : ''}
+          <span style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; font-weight:700;">${p.category || 'Grocery'}</span>
+        </div>
+
+        <h3 style="margin:4px 0 6px; color:var(--text-main); font-size:1.25rem;">${escapeHtml(p.name)}</h3>
+        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Pack Size: <strong>${p.unit || '1 pack'}</strong></div>
+
+        <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin:12px 0;">
+          <span style="font-size:1.6rem; font-weight:800; color:var(--green-400);">₹${p.price}</span>
+          ${mrp && mrp > p.price ? `<span style="font-size:1.05rem; text-decoration:line-through; color:var(--text-dim);">₹${mrp}</span>` : ''}
+          ${discount > 0 ? `<span class="discount-pill" style="position:static;">${discount}% OFF</span>` : ''}
+        </div>
+        ${savings > 0 ? `<div style="font-size:0.8rem; color:var(--green-400); font-weight:600; margin-bottom:12px;">You save ₹${savings} on this item</div>` : ''}
+
+        <p style="color:var(--text-muted); font-size:0.88rem; line-height:1.4; text-align:left; background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:8px; border:1px solid var(--border-subtle); margin-bottom:12px;">
+          ${escapeHtml(p.description || '')}
         </p>
       </div>
 
-      <div style="border-top:1px solid var(--border-subtle); padding-top:10px;">
-        <strong style="font-size:0.85rem;">⭐ Customer Reviews (4.9/5.0):</strong>
-        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:6px; background:rgba(0,0,0,0.2); padding:8px; border-radius:6px;">
-          "Super fresh! Delivered in literally 9 minutes. Will definitely order again." — <em>Pooja M. (Verified Buyer)</em>
+      <div style="background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.08)); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid rgba(16,185,129,0.25); margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.4rem;">⚡</span>
+        <div style="text-align:left;">
+          <strong style="color:var(--green-400); font-size:0.82rem;">10-Minute Superfast Delivery</strong>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+            Fulfilled instantly from your nearest FreshCart dark store. Temperature controlled.
+          </p>
         </div>
       </div>
 
-      <button class="btn-primary" style="width:100%; margin-top:16px;" onclick="app.addToCart('${p.id}'); $('#product-detail-overlay').style.display='none';">
-        🛒 Add to Cart (₹${p.price})
-      </button>
+      <div style="background:rgba(16,185,129,0.04); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); margin-bottom:12px; text-align:left;">
+        <strong style="color:var(--green-400); font-size:0.8rem;">🌿 Freshness Guarantee & Storage:</strong>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+          Hygienically sorted and quality inspected. Store in a cool dry place. 100% replacement guarantee if not fresh.
+        </p>
+      </div>
+
+      <div style="border-top:1px solid var(--border-subtle); padding-top:12px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="font-size:0.85rem;">⭐ Customer Ratings & Reviews:</strong>
+          <span style="font-size:0.8rem; font-weight:700; color:#fbbf24;">${p.rating || 4.8} / 5.0 (${p.review_count || 42} reviews)</span>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-muted); background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:6px; line-height:1.4; text-align:left;">
+          "Always crisp, fresh and authentic quality. Arrived in under 10 minutes!" — <em>Pooja M. (Verified Customer)</em>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn-primary" style="width:100%; padding:12px; font-size:0.95rem; font-weight:700;" onclick="app.addToCart('${p.id}'); $('#product-detail-overlay').style.display='none';">
+          🛒 Add to Cart (₹${p.price})
+        </button>
+      </div>
     `;
 
     $('#product-detail-overlay').style.display = 'flex';
@@ -1113,25 +1724,40 @@
   // ----------------------------------------------------
   // NLP Search & Multimodal Image Signature Matching
   // ----------------------------------------------------
+  let searchAbortController = null;
+
   function handleSearchInput(query) {
     state.searchQuery = query;
     clearTimeout(state.searchTimeout);
 
     const clearBtn = $('#search-clear');
-    clearBtn.style.display = query ? 'block' : 'none';
+    if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
+    if (!query.trim()) {
+      const dropdown = $('#smart-search-dropdown');
+      if (dropdown) dropdown.style.display = 'none';
+      loadProducts();
+      return;
+    }
 
     state.searchTimeout = setTimeout(async () => {
-      if (!query.trim()) {
-        $('#smart-search-dropdown').style.display = 'none';
-        loadProducts();
-        return;
+      if (searchAbortController) {
+        searchAbortController.abort();
       }
+      searchAbortController = new AbortController();
 
       try {
-        const res = await api(`/api/search?q=${encodeURIComponent(query)}`);
+        const res = await api(`/api/search?q=${encodeURIComponent(query.trim())}`, {
+          signal: searchAbortController.signal,
+          ttl: 60000
+        });
         renderSearchDropdown(res.data);
-      } catch (e) {}
-    }, 250);
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          console.warn('Search query error:', e);
+        }
+      }
+    }, 200);
   }
 
   function renderSearchDropdown(results) {
@@ -1143,11 +1769,13 @@
     }
 
     dropdown.innerHTML = results.slice(0, 5).map(r => `
-      <div class="search-drop-item" onclick="app.selectSearchResult('${r.name}')">
-        <div>
-          <span style="font-size:1.2rem; margin-right:6px;">${r.emoji}</span>
-          <strong>${r.name}</strong>
-          <small style="color:var(--text-dim); display:block;">₹${r.price} / ${r.unit} • ${r.category}</small>
+      <div class="search-drop-item" onclick="app.selectSearchResult('${escapeHtml(r.name)}')">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <img class="search-suggestion-thumb" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:rgba(255,255,255,0.05); padding:2px;" src="${r.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(r.name)}" onerror="handleImageError(this, '')">
+          <div>
+            <strong>${escapeHtml(r.name)}</strong>
+            <small style="color:var(--text-dim); display:block;">₹${r.price} / ${r.unit || 'unit'} • ${r.category}</small>
+          </div>
         </div>
         <span class="card-match-badge" style="position:static;">${Math.round(r.score * 100)}% Match</span>
       </div>
@@ -1301,39 +1929,192 @@
   }
 
   // ----------------------------------------------------
-  // Setup Event Listeners
+  // Single-URL Mode & Unified SPA View Switching
+  // ----------------------------------------------------
+  function switchView(viewName, subTab) {
+    const storePane = $('#view-storefront');
+    const ordersPane = $('#view-orders-page');
+    const adminPane = $('#view-admin-page');
+
+    const navStore = $('#view-nav-store');
+    const navOrders = $('#view-nav-orders');
+    const navAdmin = $('#view-nav-admin');
+
+    // Role-based check for Admin access
+    if (viewName === 'admin') {
+      const isAdmin = state.user && state.user.role === 'admin';
+      if (!isAdmin) {
+        showToast('Admin role required. Sign in as Admin or use 1-Click Demo.', 'error');
+        openAdminAuthPrompt();
+        return;
+      }
+    }
+
+    // Deactivate all nav buttons
+    [navStore, navOrders, navAdmin].forEach(b => { if (b) b.classList.remove('active'); });
+
+    // Hide all view panes
+    if (storePane) storePane.style.display = 'none';
+    if (ordersPane) ordersPane.style.display = 'none';
+    if (adminPane) adminPane.style.display = 'none';
+
+    if (viewName === 'admin') {
+      if (adminPane) adminPane.style.display = 'block';
+      if (navAdmin) navAdmin.classList.add('active');
+      if (window.initAdminDashboard) window.initAdminDashboard();
+      if (subTab && window.adminSwitchTab) window.adminSwitchTab(subTab);
+      window.location.hash = subTab ? `admin-${subTab}` : 'admin';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (viewName === 'orders') {
+      if (ordersPane) ordersPane.style.display = 'block';
+      if (navOrders) navOrders.classList.add('active');
+      loadOrdersPage();
+      window.location.hash = 'orders';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Default: Customer Storefront
+      if (storePane) storePane.style.display = 'block';
+      if (navStore) navStore.classList.add('active');
+      window.location.hash = 'store';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function handleHashRouting() {
+    const hash = (window.location.hash || '').replace('#', '').trim();
+    if (!hash || hash === 'store' || hash === 'catalog') {
+      switchView('store');
+    } else if (hash === 'orders') {
+      switchView('orders');
+    } else if (hash.startsWith('admin')) {
+      const parts = hash.split('-');
+      const subTab = parts.length > 1 ? parts.slice(1).join('-') : null;
+      switchView('admin', subTab);
+    }
+  }
+
+  function openAdminAuthPrompt() {
+    openAuthModal('login');
+    const emailInput = $('#login-email');
+    const passInput = $('#login-password');
+    if (emailInput) emailInput.value = 'admin@freshcart.com';
+    if (passInput) passInput.value = 'admin123';
+    showToast('Pre-filled Demo Admin credentials (admin@freshcart.com / admin123). Click Sign In!');
+  }
+
+  async function loadOrdersPage() {
+    const list = $('#orders-full-page-list');
+    if (!list) return;
+    list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);">Loading orders... 📦</div>';
+
+    try {
+      const res = await api('/api/orders');
+      const orders = res.data || [];
+
+      if (orders.length === 0) {
+        list.innerHTML = `
+          <div style="text-align:center; padding:30px; color:var(--text-muted);">
+            <span style="font-size:2.5rem; display:block; margin-bottom:8px;">📦</span>
+            <h4>No orders placed yet</h4>
+            <p style="font-size:0.85rem; margin-top:4px;">Your past and active 10-minute grocery orders will show up here.</p>
+            <button class="btn-primary" style="margin-top:14px;" onclick="app.switchView('store')">Shop Fresh Items Now</button>
+          </div>
+        `;
+        return;
+      }
+
+      // Update the active live tracker card with latest order
+      const latest = orders[0];
+      state.lastPlacedOrder = latest;
+      if ($('#tracker-order-id-label')) {
+        $('#tracker-order-id-label').textContent = `Order #${latest.id} • Indiranagar Hub #04`;
+      }
+
+      list.innerHTML = orders.map(o => `
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:16px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:10px;">
+            <div>
+              <strong style="color:var(--text-main); font-size:0.95rem;">Order #${o.id}</strong>
+              <small style="color:var(--text-dim); display:block;">${new Date(o.createdAt || Date.now()).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}</small>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge-tag" style="background:rgba(16,185,129,0.15); color:var(--green-400); font-weight:700;">₹${o.totalAmount || o.total}</span>
+              <small style="display:block; color:var(--text-dim); text-transform:uppercase;">${o.status}</small>
+            </div>
+          </div>
+
+          <div style="font-size:0.85rem; color:var(--text-muted);">
+            📍 <strong>Delivery Address:</strong> ${o.shippingAddress || o.address || 'Indiranagar 100ft Road, Bengaluru'}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <div style="font-size:0.8rem; color:var(--text-dim);">
+              💳 Paid via ${(o.paymentMethod || 'UPI').toUpperCase()} • ⚡ 10-Min Fast Dispatch
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick='app.openInvoiceModal(${JSON.stringify(o)})'>📄 Invoice</button>
+              <button class="btn-primary" style="padding:5px 12px; font-size:0.78rem;" onclick="app.switchView('store')">Re-Order 🛒</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--red-400);">Could not load orders. Please sign in or try again.</div>';
+    }
+  }
+
+  // ----------------------------------------------------
+  // Setup Event Listeners (Safe Null-Checked)
   // ----------------------------------------------------
   function setupEventListeners() {
-    // Search
-    $('#search-input').addEventListener('input', (e) => handleSearchInput(e.target.value));
-    $('#search-clear').addEventListener('click', () => {
-      $('#search-input').value = '';
-      handleSearchInput('');
-    });
+    const on = (sel, evt, handler) => {
+      const el = $(sel);
+      if (el) el.addEventListener(evt, handler);
+    };
+
+    // Single-URL Unified App View Navigation
+    on('#view-nav-store', 'click', () => switchView('store'));
+    on('#view-nav-orders', 'click', () => switchView('orders'));
+    on('#view-nav-admin', 'click', () => switchView('admin'));
+    on('#orders-btn', 'click', () => switchView('orders'));
+    on('#admin-link', 'click', (e) => { e.preventDefault(); switchView('admin'); });
+    on('#header-logo-link', 'click', (e) => { e.preventDefault(); switchView('store'); });
+
+    window.addEventListener('hashchange', handleHashRouting);
+
+    // Search (Handled by setupSearchAutocomplete)
 
     // Modals
-    $('#cart-btn').addEventListener('click', openCart);
-    $('#cart-close').addEventListener('click', closeCart);
-    $('#cart-overlay').addEventListener('click', closeCart);
-    $('#checkout-btn').addEventListener('click', openCheckout);
-    $('#checkout-close').addEventListener('click', closeCheckout);
-    $('#clear-cart-btn').addEventListener('click', clearCart);
-    $('#auth-close').addEventListener('click', closeAuthModal);
-    $('#hero-shop-btn').addEventListener('click', () => $('#catalog-section').scrollIntoView({ behavior: 'smooth' }));
-
-    $('#login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleLogin($('#login-email').value, $('#login-password').value);
+    on('#cart-btn', 'click', openCart);
+    on('#cart-close', 'click', closeCart);
+    on('#cart-overlay', 'click', closeCart);
+    on('#checkout-btn', 'click', openCheckout);
+    on('#checkout-close', 'click', closeCheckout);
+    on('#clear-cart-btn', 'click', clearCart);
+    on('#auth-close', 'click', closeAuthModal);
+    on('#hero-shop-btn', 'click', () => {
+      const cat = $('#catalog-section');
+      if (cat) cat.scrollIntoView({ behavior: 'smooth' });
     });
 
-    $('#register-form').addEventListener('submit', (e) => {
+    on('#login-form', 'submit', (e) => {
       e.preventDefault();
-      handleRegister($('#reg-name').value, $('#reg-email').value, $('#reg-password').value);
+      const email = $('#login-email');
+      const pass = $('#login-password');
+      if (email && pass) handleLogin(email.value, pass.value);
     });
 
-    $('#tab-login').addEventListener('click', () => switchAuthTab('login'));
-    $('#tab-register').addEventListener('click', () => switchAuthTab('register'));
-    $('#checkout-form').addEventListener('submit', handleCheckout);
+    on('#register-form', 'submit', (e) => {
+      e.preventDefault();
+      const name = $('#reg-name');
+      const email = $('#reg-email');
+      const pass = $('#reg-password');
+      if (name && email && pass) handleRegister(name.value, email.value, pass.value);
+    });
+
+    on('#tab-login', 'click', () => switchAuthTab('login'));
+    on('#tab-register', 'click', () => switchAuthTab('register'));
+    on('#checkout-form', 'submit', handleCheckout);
 
     // Tip Chips
     $$('#tip-chips .chip-btn').forEach(btn => {
@@ -1346,30 +2127,37 @@
     });
 
     // Eco Bag
-    $('#eco-bag-toggle').addEventListener('change', (e) => {
+    on('#eco-bag-toggle', 'change', (e) => {
       state.isEcoBag = e.target.checked;
       updateCheckoutTotal();
     });
 
     // Coupon Code
-    $('#apply-coupon-btn').addEventListener('click', () => {
-      const code = ($('#coupon-code-input').value || '').trim().toUpperCase();
+    on('#apply-coupon-btn', 'click', () => {
+      const input = $('#coupon-code-input');
+      const code = (input ? input.value : '').trim().toUpperCase();
       const msg = $('#coupon-msg');
       if (code === 'INSTA50' || code === 'CASH50') {
         state.appliedCoupon = { code, discount: 50 };
-        msg.style.color = 'var(--green-400)';
-        msg.textContent = `✅ Coupon ${code} applied! Saved ₹50.`;
+        if (msg) {
+          msg.style.color = 'var(--green-400)';
+          msg.textContent = `✅ Coupon ${code} applied! Saved ₹50.`;
+        }
         updateCheckoutTotal();
         updateCartUI();
       } else if (code === 'FRESHFREE') {
         state.appliedCoupon = { code, discount: 49 };
-        msg.style.color = 'var(--green-400)';
-        msg.textContent = `✅ Free delivery coupon applied!`;
+        if (msg) {
+          msg.style.color = 'var(--green-400)';
+          msg.textContent = `✅ Free delivery coupon applied!`;
+        }
         updateCheckoutTotal();
         updateCartUI();
       } else {
-        msg.style.color = '#ef4444';
-        msg.textContent = '❌ Invalid coupon code.';
+        if (msg) {
+          msg.style.color = '#ef4444';
+          msg.textContent = '❌ Invalid coupon code.';
+        }
       }
     });
 
@@ -1394,37 +2182,64 @@
     });
 
     // Sort Select
-    $('#sort-select').addEventListener('change', (e) => {
+    on('#sort-select', 'change', (e) => {
       state.currentSort = e.target.value;
       loadProducts();
     });
 
     // Location Picker
-    $('#location-picker-btn').addEventListener('click', () => $('#location-modal-overlay').style.display = 'flex');
-    $('#location-close').addEventListener('click', () => $('#location-modal-overlay').style.display = 'none');
+    on('#location-picker-btn', 'click', () => {
+      const modal = $('#location-modal-overlay');
+      if (modal) modal.style.display = 'flex';
+    });
+    on('#location-close', 'click', () => {
+      const modal = $('#location-modal-overlay');
+      if (modal) modal.style.display = 'none';
+    });
 
     // Language & Theme
-    $('#lang-toggle-btn').addEventListener('click', toggleLanguage);
-    $('#theme-toggle-btn').addEventListener('click', toggleTheme);
+    on('#lang-toggle-btn', 'click', toggleLanguage);
+    on('#theme-toggle-btn', 'click', toggleTheme);
 
     // Subscriptions
-    $('#pantry-sub-btn').addEventListener('click', openPantryModal);
-    $('#pantry-close').addEventListener('click', () => $('#pantry-modal-overlay').style.display = 'none');
+    on('#pantry-sub-btn', 'click', openPantryModal);
+    on('#pantry-close', 'click', () => {
+      const modal = $('#pantry-modal-overlay');
+      if (modal) modal.style.display = 'none';
+    });
 
     // Action buttons in Confirmation
-    $('#open-tracking-modal-btn').addEventListener('click', openTrackingModal);
-    $('#tracking-close').addEventListener('click', () => $('#tracking-modal-overlay').style.display = 'none');
-    $('#open-invoice-modal-btn').addEventListener('click', openInvoiceModal);
-    $('#invoice-close').addEventListener('click', () => $('#invoice-modal-overlay').style.display = 'none');
-    $('#continue-shopping-btn').addEventListener('click', () => $('#confirmation-overlay').style.display = 'none');
-    $('#product-detail-close').addEventListener('click', () => $('#product-detail-overlay').style.display = 'none');
+    on('#open-tracking-modal-btn', 'click', openTrackingModal);
+    on('#tracking-close', 'click', () => {
+      const modal = $('#tracking-modal-overlay');
+      if (modal) modal.style.display = 'none';
+    });
+    on('#open-invoice-modal-btn', 'click', openInvoiceModal);
+    on('#invoice-close', 'click', () => {
+      const modal = $('#invoice-modal-overlay');
+      if (modal) modal.style.display = 'none';
+    });
+    on('#continue-shopping-btn', 'click', () => {
+      const modal = $('#confirmation-overlay');
+      if (modal) modal.style.display = 'none';
+    });
+    on('#product-detail-close', 'click', () => {
+      const modal = $('#product-detail-overlay');
+      if (modal) modal.style.display = 'none';
+    });
 
     // Demo Login
-    $('#demo-login-btn').addEventListener('click', () => handleLogin('customer@freshcart.com', 'customer123'));
+    on('#demo-login-btn', 'click', () => handleLogin('customer@freshcart.com', 'customer123'));
 
     // Visual Modal
-    $('#visual-search-btn').addEventListener('click', () => $('#visual-modal-overlay').style.display = 'flex');
-    $('#visual-close').addEventListener('click', () => $('#visual-modal-overlay').style.display = 'none');
+    on('#visual-search-btn', 'click', () => {
+      const modal = $('#visual-modal-overlay');
+      if (modal) modal.style.display = 'flex';
+    });
+    on('#visual-close', 'click', () => {
+      const modal = $('#visual-modal-overlay');
+      if (modal) modal.style.display = 'none';
+    });
 
     $$('.visual-sample-card').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -1480,39 +2295,43 @@
     const topupBtn = $('#topup-action-btn');
     const topupInput = $('#topup-amount-input');
 
-    if (!walletBtn) return;
-
-    walletBtn.onclick = async () => {
-      await refreshWalletUI();
-      walletModal.style.display = 'flex';
-    };
-
-    walletClose.onclick = () => { walletModal.style.display = 'none'; };
-
-    topupBtn.onclick = async () => {
-      const amount = parseFloat(topupInput.value);
-      if (!amount || amount <= 0) return showToast('Enter valid amount to top up', 'error');
-      try {
-        const res = await api('/api/wallet/topup', {
-          method: 'POST',
-          body: JSON.stringify({ amount })
-        });
-        showToast(res.message);
-        topupInput.value = '';
+    if (walletBtn) {
+      walletBtn.onclick = async () => {
         await refreshWalletUI();
-      } catch (e) {}
-    };
+        if (walletModal) walletModal.style.display = 'flex';
+      };
+    }
+
+    if (walletClose) {
+      walletClose.onclick = () => { if (walletModal) walletModal.style.display = 'none'; };
+    }
+
+    if (topupBtn && topupInput) {
+      topupBtn.onclick = async () => {
+        const amount = parseFloat(topupInput.value);
+        if (!amount || amount <= 0) return showToast('Enter valid amount to top up', 'error');
+        try {
+          const res = await api('/api/wallet/topup', {
+            method: 'POST',
+            body: JSON.stringify({ amount })
+          });
+          showToast(res.message);
+          topupInput.value = '';
+          await refreshWalletUI();
+        } catch (e) {}
+      };
+    }
   }
 
   async function refreshWalletUI() {
     try {
       const res = await api('/api/wallet/balance');
       const data = res.data;
-      if ($('#header-wallet-val')) $('#header-wallet-val').textContent = `₹${Math.round(data.balance)} Wallet`;
-      if ($('#wallet-modal-balance')) $('#wallet-modal-balance').textContent = `₹${data.balance.toFixed(2)}`;
+      if ($('#header-wallet-val') && data) $('#header-wallet-val').textContent = `₹${Math.round(data.balance || 0)} Wallet`;
+      if ($('#wallet-modal-balance') && data) $('#wallet-modal-balance').textContent = `₹${(data.balance || 0).toFixed(2)}`;
       
       const txList = $('#wallet-tx-list');
-      if (txList && data.transactions) {
+      if (txList && data && data.transactions) {
         txList.innerHTML = data.transactions.map(t => `
           <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:var(--radius-sm); font-size:0.8rem;">
             <div>
@@ -1534,57 +2353,68 @@
     const nutriModal = $('#nutrition-modal-overlay');
     const nutriClose = $('#nutrition-close');
 
-    if (!nutriBtn) return;
+    if (nutriBtn) {
+      nutriBtn.onclick = async () => {
+        if (nutriModal) nutriModal.style.display = 'flex';
+        const items = (state.cart.items && state.cart.items.length > 0) ? state.cart.items : state.products.slice(0, 3).map(p => ({ productId: p.id, quantity: 1 }));
+        try {
+          const res = await api('/api/nutrition/analyze', {
+            method: 'POST',
+            body: JSON.stringify({ items, allergies: ['lactose'] })
+          });
+          const data = res.data;
+          if (!data) return;
 
-    nutriBtn.onclick = async () => {
-      nutriModal.style.display = 'flex';
-      const items = state.cart.items.length > 0 ? state.cart.items : state.products.slice(0, 3).map(p => ({ productId: p.id, quantity: 1 }));
-      try {
-        const res = await api('/api/nutrition/analyze', {
-          method: 'POST',
-          body: JSON.stringify({ items, allergies: ['lactose'] })
-        });
-        const data = res.data;
+          const gradeVal = $('#nutri-grade-val');
+          if (gradeVal) {
+            gradeVal.textContent = data.nutriScore;
+            gradeVal.style.color = data.badgeColor;
+          }
+          const ratVal = $('#nutri-rating-val');
+          if (ratVal) ratVal.textContent = `Health Score: ${data.healthRating}/100`;
 
-        $('#nutri-grade-val').textContent = data.nutriScore;
-        $('#nutri-grade-val').style.color = data.badgeColor;
-        $('#nutri-rating-val').textContent = `Health Score: ${data.healthRating}/100`;
+          if (data.totals) {
+            if ($('#nutri-cal-val')) $('#nutri-cal-val').textContent = `${data.totals.calories} kcal`;
+            if ($('#nutri-prot-val')) $('#nutri-prot-val').textContent = `${data.totals.protein}g`;
+            if ($('#nutri-fib-val')) $('#nutri-fib-val').textContent = `${data.totals.fiber}g`;
+            if ($('#nutri-carb-val')) $('#nutri-carb-val').textContent = `${data.totals.carbs}g`;
+          }
 
-        $('#nutri-cal-val').textContent = `${data.totals.calories} kcal`;
-        $('#nutri-prot-val').textContent = `${data.totals.protein}g`;
-        $('#nutri-fib-val').textContent = `${data.totals.fiber}g`;
-        $('#nutri-carb-val').textContent = `${data.totals.carbs}g`;
-
-        const alertsBox = $('#allergen-alerts-box');
-        if (data.allergenWarnings && data.allergenWarnings.length > 0) {
-          alertsBox.innerHTML = `
-            <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:10px; border-radius:var(--radius-sm); font-size:0.82rem; color:#f87171;">
-              ${data.allergenWarnings.map(w => `<div>${w}</div>`).join('')}
-            </div>
-          `;
-        } else {
-          alertsBox.innerHTML = '<div style="color:var(--green-400); font-size:0.82rem;">✅ Zero Allergen Conflicts Detected in Current Basket</div>';
-        }
-
-        const subsBox = $('#smart-subs-box');
-        if (data.smartSubstitutions && data.smartSubstitutions.length > 0) {
-          subsBox.innerHTML = `
-            <small style="color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">✨ AI Healthier Substitutions:</small>
-            ${data.smartSubstitutions.map(s => `
-              <div style="background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:var(--radius-sm); margin-bottom:6px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                  <strong>${s.suggested.name}</strong> (for ${s.forProduct})
-                  <small style="display:block; color:var(--text-dim);">${s.suggested.reason}</small>
+          const alertsBox = $('#allergen-alerts-box');
+          if (alertsBox) {
+            if (data.allergenWarnings && data.allergenWarnings.length > 0) {
+              alertsBox.innerHTML = `
+                <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:10px; border-radius:var(--radius-sm); font-size:0.82rem; color:#f87171;">
+                  ${data.allergenWarnings.map(w => `<div>${w}</div>`).join('')}
                 </div>
-                <span class="ai-pill" style="font-size:0.68rem;">Health Swap</span>
-              </div>
-            `).join('')}
-          `;
-        }
-      } catch (e) {}
-    };
+              `;
+            } else {
+              alertsBox.innerHTML = '<div style="color:var(--green-400); font-size:0.82rem;">✅ Zero Allergen Conflicts Detected in Current Basket</div>';
+            }
+          }
 
-    nutriClose.onclick = () => { nutriModal.style.display = 'none'; };
+          const subsBox = $('#smart-subs-box');
+          if (subsBox && data.smartSubstitutions && data.smartSubstitutions.length > 0) {
+            subsBox.innerHTML = `
+              <small style="color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">✨ AI Healthier Substitutions:</small>
+              ${data.smartSubstitutions.map(s => `
+                <div style="background:rgba(0,0,0,0.25); padding:8px 12px; border-radius:var(--radius-sm); margin-bottom:6px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <strong>${s.suggested.name}</strong> (for ${s.forProduct})
+                    <small style="display:block; color:var(--text-dim);">${s.suggested.reason}</small>
+                  </div>
+                  <span class="ai-pill" style="font-size:0.68rem;">Health Swap</span>
+                </div>
+              `).join('')}
+            `;
+          }
+        } catch (e) {}
+      };
+    }
+
+    if (nutriClose) {
+      nutriClose.onclick = () => { if (nutriModal) nutriModal.style.display = 'none'; };
+    }
   }
 
   // ----------------------------------------------------
@@ -1597,28 +2427,32 @@
     const createBtn = $('#create-group-btn');
     const groupNameInput = $('#new-group-name');
 
-    if (!groupBtn) return;
-
-    groupBtn.onclick = async () => {
-      await refreshGroupLobbiesUI();
-      groupModal.style.display = 'flex';
-    };
-
-    groupClose.onclick = () => { groupModal.style.display = 'none'; };
-
-    createBtn.onclick = async () => {
-      const communityName = groupNameInput.value.trim();
-      if (!communityName) return showToast('Enter apartment or society name', 'error');
-      try {
-        const res = await api('/api/group-orders/create', {
-          method: 'POST',
-          body: JSON.stringify({ communityName, hostName: state.user ? state.user.name : 'You' })
-        });
-        showToast(res.message);
-        groupNameInput.value = '';
+    if (groupBtn) {
+      groupBtn.onclick = async () => {
         await refreshGroupLobbiesUI();
-      } catch (e) {}
-    };
+        if (groupModal) groupModal.style.display = 'flex';
+      };
+    }
+
+    if (groupClose) {
+      groupClose.onclick = () => { if (groupModal) groupModal.style.display = 'none'; };
+    }
+
+    if (createBtn && groupNameInput) {
+      createBtn.onclick = async () => {
+        const communityName = groupNameInput.value.trim();
+        if (!communityName) return showToast('Enter apartment or society name', 'error');
+        try {
+          const res = await api('/api/group-orders/create', {
+            method: 'POST',
+            body: JSON.stringify({ communityName, hostName: state.user ? state.user.name : 'You' })
+          });
+          showToast(res.message);
+          groupNameInput.value = '';
+          await refreshGroupLobbiesUI();
+        } catch (e) {}
+      };
+    }
   }
 
   async function refreshGroupLobbiesUI() {
@@ -1697,14 +2531,16 @@
     const presetBtns = document.querySelectorAll('.fridge-preset-btn');
     const addAllBtn = $('#fridge-add-all-btn');
 
-    if (!fridgeBtn || !fridgeModal) return;
+    if (fridgeBtn) {
+      fridgeBtn.onclick = () => {
+        if (fridgeModal) fridgeModal.style.display = 'flex';
+        runFridgeScan('breakfast_depleted');
+      };
+    }
 
-    fridgeBtn.onclick = () => {
-      fridgeModal.style.display = 'flex';
-      runFridgeScan('breakfast_depleted');
-    };
-
-    fridgeClose.onclick = () => { fridgeModal.style.display = 'none'; };
+    if (fridgeClose) {
+      fridgeClose.onclick = () => { if (fridgeModal) fridgeModal.style.display = 'none'; };
+    }
 
     presetBtns.forEach(btn => {
       btn.onclick = () => {
@@ -1731,7 +2567,7 @@
           addToCart(item.id, 1);
         });
         showToast(`⚡ Added ${currentFridgeData.missingEssentials.length} missing essentials to cart with 10% AI bundle discount!`);
-        fridgeModal.style.display = 'none';
+        if (fridgeModal) fridgeModal.style.display = 'none';
         openCart();
       };
     }
@@ -2036,13 +2872,463 @@
     }, 900);
   }
 
+  // ----------------------------------------------------
+  // Wishlist / Favorites Feature Module
+  // ----------------------------------------------------
+  function updateWishlistBadge() {
+    const badge = $('#wishlist-badge');
+    if (badge) {
+      badge.textContent = state.wishlist ? state.wishlist.length : 0;
+    }
+  }
+
+  function toggleWishlist(productId) {
+    if (!state.wishlist) state.wishlist = [];
+    const idx = state.wishlist.indexOf(productId);
+    if (idx >= 0) {
+      state.wishlist.splice(idx, 1);
+      showToast('Removed from Wishlist');
+    } else {
+      state.wishlist.push(productId);
+      showToast('Added to Wishlist ❤️');
+    }
+    localStorage.setItem('freshcart_wishlist', JSON.stringify(state.wishlist));
+    updateWishlistBadge();
+    renderProductsGrid();
+    renderRecommendationsGrid();
+  }
+
+  function openWishlistModal() {
+    const modal = $('#wishlist-modal-overlay');
+    const container = $('#wishlist-items-container');
+    if (!modal || !container) return;
+
+    if (!state.wishlist || state.wishlist.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px; color:var(--text-muted);">
+          <span style="font-size:2.5rem; display:block; margin-bottom:8px;">🤍</span>
+          <h4>Your Wishlist is Empty</h4>
+          <p style="font-size:0.85rem;">Click the heart icon on any product to save items for later.</p>
+        </div>
+      `;
+    } else {
+      const items = state.wishlist.map(id => state.products.find(p => p.id === id) || { id, name: 'Saved Product', emoji: '🛒', price: 99, category: 'Grocery' });
+      container.innerHTML = items.map(p => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:8px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="wishlist-item-img-container">
+              <img class="wishlist-item-img" src="${p.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(p.name)}" onerror="handleImageError(this, '')">
+            </div>
+            <div>
+              <strong style="color:var(--text-main); font-size:0.9rem;">${escapeHtml(p.name)}</strong>
+              <small style="display:block; color:var(--text-dim);">₹${p.price} • ${p.category}</small>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-primary" style="padding:6px 12px; font-size:0.8rem;" onclick="app.addToCart('${p.id}')">+ Add to Cart</button>
+            <button class="btn-secondary" style="padding:6px 10px; font-size:0.8rem;" onclick="app.toggleWishlist('${p.id}'); app.openWishlistModal();">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  function closeWishlistModal() {
+    const modal = $('#wishlist-modal-overlay');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function clearWishlist() {
+    state.wishlist = [];
+    localStorage.removeItem('freshcart_wishlist');
+    updateWishlistBadge();
+    openWishlistModal();
+    renderProductsGrid();
+    renderRecommendationsGrid();
+    showToast('Wishlist cleared');
+  }
+
+  function addAllWishlistToCart() {
+    if (!state.wishlist || state.wishlist.length === 0) {
+      showToast('Wishlist is empty', 'error');
+      return;
+    }
+    state.wishlist.forEach(id => addToCart(id, 1));
+    showToast(`Added ${state.wishlist.length} wishlisted items to cart!`);
+    closeWishlistModal();
+    openCart();
+  }
+
+  // ----------------------------------------------------
+  // Product Comparison Matrix Module
+  // ----------------------------------------------------
+  function updateCompareBadge() {
+    const badge = $('#compare-badge');
+    if (badge) {
+      badge.textContent = state.compareList ? state.compareList.length : 0;
+    }
+  }
+
+  function toggleCompare(productId) {
+    if (!state.compareList) state.compareList = [];
+    const idx = state.compareList.indexOf(productId);
+    if (idx >= 0) {
+      state.compareList.splice(idx, 1);
+      showToast('Removed from Comparison');
+    } else {
+      if (state.compareList.length >= 4) {
+        showToast('Maximum 4 products can be compared at once', 'error');
+        return;
+      }
+      state.compareList.push(productId);
+      showToast('Added to Comparison ⚖️');
+    }
+    localStorage.setItem('freshcart_compare', JSON.stringify(state.compareList));
+    updateCompareBadge();
+    renderProductsGrid();
+    renderRecommendationsGrid();
+  }
+
+  async function openCompareModal() {
+    const modal = $('#compare-modal-overlay');
+    const content = $('#compare-matrix-content');
+    if (!modal || !content) return;
+
+    if (!state.compareList || state.compareList.length === 0) {
+      content.innerHTML = `
+        <div style="text-align:center; padding:30px; color:var(--text-muted);">
+          <span style="font-size:2.5rem; display:block; margin-bottom:8px;">⚖️</span>
+          <h4>No Products Selected for Comparison</h4>
+          <p style="font-size:0.85rem;">Click the ⚖️ Compare icon on up to 4 product cards to evaluate side-by-side specs, price per unit, and ratings.</p>
+        </div>
+      `;
+      modal.style.display = 'flex';
+      return;
+    }
+
+    try {
+      const res = await api('/api/recommendations/compare', {
+        method: 'POST',
+        body: JSON.stringify({ productIds: state.compareList })
+      });
+
+      if (!res.products || res.products.length === 0) {
+        content.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Could not load product comparison details.</p>';
+      } else {
+        const prods = res.products;
+        content.innerHTML = `
+          <div style="background:rgba(16,185,129,0.08); border:1px solid var(--border-active); padding:12px 16px; border-radius:var(--radius-md); margin-bottom:14px; font-size:0.88rem;">
+            <strong>🧠 AI Summary Verdict:</strong>
+            <span style="color:var(--green-400);">${res.aiVerdict}</span>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Attribute</th>
+                ${prods.map(p => `
+                  <td class="compare-product-col-header">
+                    <div class="cart-item-img-container" style="margin:0 auto 8px; width:52px; height:52px;">
+                      <img class="cart-item-img" src="${p.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(p.name)}" onerror="handleImageError(this, '')">
+                    </div>
+                    <strong style="display:block; font-size:0.95rem;">${escapeHtml(p.name)}</strong>
+                    ${p.id === res.highlights?.bestValueId ? '<span class="compare-highlight-badge badge-best-value">🏆 Best Value</span>' : ''}
+                    ${p.id === res.highlights?.topRatedId ? '<span class="compare-highlight-badge badge-top-rated">⭐ Top Rated</span>' : ''}
+                  </td>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Price & Unit</th>
+                ${prods.map(p => `<td><strong style="color:var(--green-400); font-size:1.05rem;">₹${p.price}</strong> / ${p.unit}</td>`).join('')}
+              </tr>
+              <tr>
+                <th>Customer Rating</th>
+                ${prods.map(p => `<td>⭐ ${p.rating} / 5.0</td>`).join('')}
+              </tr>
+              <tr>
+                <th>Category</th>
+                ${prods.map(p => `<td>${p.category}</td>`).join('')}
+              </tr>
+              <tr>
+                <th>Stock Status</th>
+                ${prods.map(p => `<td>${p.stock > 0 ? `<span style="color:var(--green-400);">✅ In Stock (${p.stock})</span>` : '<span style="color:#ef4444;">❌ Out of Stock</span>'}</td>`).join('')}
+              </tr>
+              <tr>
+                <th>Dietary Tags</th>
+                ${prods.map(p => `<td>${(p.tags || []).slice(0, 3).map(t => `<span style="background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px; font-size:0.75rem; margin-right:4px;">${t}</span>`).join('') || 'Standard'}</td>`).join('')}
+              </tr>
+              <tr>
+                <th>Action</th>
+                ${prods.map(p => `
+                  <td>
+                    <button class="btn-primary" style="padding:6px 12px; font-size:0.8rem; width:100%;" onclick="app.addToCart('${p.id}')">+ Add to Cart</button>
+                  </td>
+                `).join('')}
+              </tr>
+            </tbody>
+          </table>
+        `;
+      }
+      modal.style.display = 'flex';
+    } catch (e) {
+      showToast('Failed to load comparison: ' + e.message, 'error');
+    }
+  }
+
+  function closeCompareModal() {
+    const modal = $('#compare-modal-overlay');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function clearCompareList() {
+    state.compareList = [];
+    localStorage.removeItem('freshcart_compare');
+    updateCompareBadge();
+    openCompareModal();
+    renderProductsGrid();
+    renderRecommendationsGrid();
+    showToast('Comparison cleared');
+  }
+
+  // ----------------------------------------------------
+  // Autocomplete Live Search Suggestions Module with Substring Highlighting & Keyboard Nav
+  // ----------------------------------------------------
+  function highlightSearchMatch(text, query) {
+    if (!query || !text) return escapeHtml(text || '');
+    const safeText = escapeHtml(text);
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safeQuery})`, 'gi');
+    return safeText.replace(regex, '<mark class="search-match">$1</mark>');
+  }
+
+  function setupSearchAutocomplete() {
+    const searchInput = $('#search-input');
+    const dropdown = $('#smart-search-dropdown');
+    const clearBtn = $('#search-clear');
+    if (!searchInput || !dropdown) return;
+
+    let debounceTimer = null;
+    let selectedIndex = -1;
+    let currentSuggestions = [];
+
+    function updateActiveSuggestion() {
+      const items = dropdown.querySelectorAll('.search-suggestion-item');
+      items.forEach((it, idx) => {
+        if (idx === selectedIndex) {
+          it.classList.add('active-suggestion');
+          it.scrollIntoView({ block: 'nearest' });
+        } else {
+          it.classList.remove('active-suggestion');
+        }
+      });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      clearTimeout(debounceTimer);
+      selectedIndex = -1;
+      if (clearBtn) clearBtn.style.display = val ? 'block' : 'none';
+
+      if (val.length < 2) {
+        dropdown.style.display = 'none';
+        currentSuggestions = [];
+        if (val.length === 0 && state.searchQuery) {
+          state.searchQuery = '';
+          loadProducts(1);
+        }
+        return;
+      }
+
+      debounceTimer = setTimeout(async () => {
+        try {
+          const res = await api(`/api/search/suggestions?q=${encodeURIComponent(val)}&limit=6`);
+          if (res && res.data && res.data.length > 0) {
+            currentSuggestions = res.data;
+            selectedIndex = -1;
+            dropdown.innerHTML = res.data.map((s, idx) => `
+              <div class="search-suggestion-item" data-idx="${idx}" onclick="app.applySearchSuggestion('${escapeHtml(s.query || s.text)}', '${s.productId || ''}')">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  ${s.image_url ? `<img class="search-suggestion-thumb" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:rgba(255,255,255,0.05); padding:2px;" src="${s.image_url}" alt="${escapeHtml(s.text)}" onerror="handleImageError(this, '')">` : `<span style="font-size:1.2rem;">${s.emoji || '🔍'}</span>`}
+                  <div>
+                    <strong style="font-size:0.88rem; color:var(--text-main);">${highlightSearchMatch(s.text, val)}</strong>
+                    <small style="display:block; color:var(--text-dim); text-transform:capitalize;">${s.type} ${s.category ? '• ' + s.category : ''}</small>
+                  </div>
+                </div>
+                ${s.price ? `<span style="font-weight:700; color:var(--green-400); font-size:0.88rem; font-variant-numeric:tabular-nums;">₹${s.price}</span>` : '<span style="color:var(--text-dim);">↗</span>'}
+              </div>
+            `).join('');
+            dropdown.style.display = 'block';
+          } else {
+            dropdown.style.display = 'none';
+            currentSuggestions = [];
+          }
+        } catch (err) {
+          dropdown.style.display = 'none';
+          currentSuggestions = [];
+        }
+      }, 120);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      const items = dropdown.querySelectorAll('.search-suggestion-item');
+      if (dropdown.style.display === 'block' && items.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedIndex = (selectedIndex + 1) % items.length;
+          updateActiveSuggestion();
+          return;
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+          updateActiveSuggestion();
+          return;
+        } else if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          selectedIndex = -1;
+          return;
+        }
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (dropdown.style.display === 'block' && selectedIndex >= 0 && currentSuggestions[selectedIndex]) {
+          const sel = currentSuggestions[selectedIndex];
+          applySearchSuggestion(sel.query || sel.text, sel.productId || '');
+          return;
+        }
+        const val = searchInput.value.trim();
+        dropdown.style.display = 'none';
+        state.searchQuery = val;
+        loadProducts(1);
+        const catalogSec = $('#catalog-section');
+        if (catalogSec) catalogSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+        currentSuggestions = [];
+        state.searchQuery = '';
+        loadProducts(1);
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+        selectedIndex = -1;
+      }
+    });
+  }
+
+  function applySearchSuggestion(query, productId) {
+    const input = $('#search-input');
+    const dropdown = $('#smart-search-dropdown');
+    if (input) input.value = query;
+    if (dropdown) dropdown.style.display = 'none';
+
+    if (productId) {
+      trackRecentlyViewed(productId);
+      openProductDetail(productId);
+    } else {
+      state.searchQuery = query;
+      loadProducts(1);
+    }
+  }
+
+  // ----------------------------------------------------
+  // Stockout & Price-Drop Alert Module
+  // ----------------------------------------------------
+  let activeAlertProductId = null;
+
+  function openStockAlertModal(productId) {
+    activeAlertProductId = productId;
+    const p = state.products.find(x => x.id === productId);
+    const modal = $('#stock-alert-overlay');
+    if (!modal) return;
+
+    if ($('#stock-alert-title')) $('#stock-alert-title').textContent = p ? `Set Alert for ${p.name}` : 'Set Stock & Price Alert';
+    if ($('#stock-alert-desc')) $('#stock-alert-desc').textContent = p ? `Receive an instant alert when ${p.name} is restocked or when price drops.` : 'Set your restock notification.';
+    modal.style.display = 'flex';
+  }
+
+  function closeStockAlertModal() {
+    const modal = $('#stock-alert-overlay');
+    if (modal) modal.style.display = 'none';
+    activeAlertProductId = null;
+  }
+
+  function saveStockAlert() {
+    const contact = $('#alert-contact-input')?.value;
+
+    if (!contact) {
+      showToast('Please enter your mobile or email', 'error');
+      return;
+    }
+
+    const p = state.products.find(x => x.id === activeAlertProductId);
+    showToast(`🔔 Alert activated for ${p ? p.name : 'product'}! We will notify ${contact} on restock.`);
+    closeStockAlertModal();
+  }
+
+  // ----------------------------------------------------
+  // Smart Bundle 1-Click Cart Addition
+  // ----------------------------------------------------
+  function addBundleToCart(bundleId) {
+    const bundle = (state.smartBundles || []).find(b => b.bundleId === bundleId);
+    if (!bundle || !bundle.items) {
+      showToast('Adding combo pack to cart...');
+      addToCart('p3', 1);
+      addToCart('p7', 1);
+      return;
+    }
+
+    bundle.items.forEach(item => {
+      addToCart(item.id, 1);
+    });
+
+    showToast(`🎉 Added ${bundle.bundleName} to cart with 15% bundled savings of ₹${bundle.savingsAmount}!`);
+    openCart();
+  }
+
   // Expose global methods
   window.app = {
+    switchView,
+    showToast,
     addToCart,
     updateCartQty,
+    clearCart,
+    openCart,
+    closeCart,
+    openCheckout,
     selectSearchResult,
     addBundleToCart,
-    openProductDetail,
+    openProductDetail: (pId) => {
+      trackRecentlyViewed(pId);
+      openProductDetail(pId);
+    },
+    openInvoiceModal,
+    toggleWishlist,
+    openWishlistModal,
+    closeWishlistModal,
+    clearWishlist,
+    addAllWishlistToCart,
+    toggleCompare,
+    openCompareModal,
+    closeCompareModal,
+    clearCompareList,
+    applySearchSuggestion,
+    openStockAlertModal,
+    closeStockAlertModal,
+    saveStockAlert,
+    clearRecentlyViewed,
     simulateUPIApp: (appName) => {
       showToast(`📱 Redirecting to ${appName} App intent...`);
       setTimeout(() => {
@@ -2072,6 +3358,52 @@
       addToCart('p7', 1);
       openCart();
     },
+    goToPage: (page) => {
+      const target = Math.max(1, Math.min(page, state.totalPages || 1));
+      loadProducts(target);
+      const section = $('#catalog-section');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    },
+    handlePageJump: (customVal) => {
+      const input = $('#catalog-jump-input');
+      const val = customVal !== undefined ? customVal : (input ? input.value : '');
+      const targetPage = parseInt(val, 10);
+      if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= (state.totalPages || 417)) {
+        app.goToPage(targetPage);
+      } else {
+        showToast(`Please enter a valid page number (1 to ${state.totalPages || 417})`, 'error');
+      }
+    },
+    promptMobileJump: () => {
+      const input = prompt(`Enter page number (1 to ${state.totalPages || 417}):`, state.currentPage);
+      if (input !== null && input.trim() !== '') {
+        app.handlePageJump(input.trim());
+      }
+    },
+    selectCategory: (cat) => {
+      state.currentCategory = cat || 'all';
+      loadProducts(1);
+    },
+    selectDepartment: (deptId) => {
+      state.currentDepartment = deptId;
+      renderCategorySelector();
+    },
+    openCategoryMegaModal: () => {
+      openCategoryMegaModal();
+    },
+    closeCategoryMegaModal: () => {
+      closeCategoryMegaModal();
+    },
+    filterMegaCategories: (val) => {
+      renderMegaCategories(val);
+    },
+    selectCategoryFromMega: (catId) => {
+      state.currentCategory = catId;
+      closeCategoryMegaModal();
+      loadProducts(1);
+      const catalogSec = $('#catalog-section');
+      if (catalogSec) catalogSec.scrollIntoView({ behavior: 'smooth' });
+    },
     openFBTModal: async (productId) => {
       try {
         const res = await api(`/api/recommendations/frequently-bought/${productId}`);
@@ -2086,10 +3418,12 @@
             <div style="margin-bottom:12px;">Customers who bought <strong>${p ? p.name : 'this item'}</strong> also frequently buy:</div>
             ${res.data.map(item => `
               <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:8px;">
-                <div>
-                  <span style="font-size:1.2rem;">${item.emoji}</span>
-                  <strong>${item.name}</strong>
-                  <small style="color:var(--text-dim); display:block;">₹${item.price} • Lift: ${item.lift}x (${item.confidence}% confidence)</small>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img class="combo-thumb" src="${item.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(item.name)}" onerror="handleImageError(this, '')">
+                  <div>
+                    <strong>${escapeHtml(item.name)}</strong>
+                    <small style="color:var(--text-dim); display:block;">₹${item.price} • Lift: ${item.lift}x (${item.confidence}% confidence)</small>
+                  </div>
                 </div>
                 <button class="btn-add-cart" style="padding:6px 12px; font-size:0.8rem;" onclick="app.addToCart('${item.id}'); $('#fbt-overlay').style.display='none';">+ Add</button>
               </div>
@@ -2101,12 +3435,14 @@
       } catch (e) {}
     }
   };
+  window.switchAppView = switchView;
 
   // Boot Application
   async function init() {
     setupPWA();
     setupEventListeners();
     setupVoiceSearch();
+    setupSearchAutocomplete();
     setupSpinWheel();
     setupScratchCard();
     setupFreshBot();
@@ -2115,13 +3451,20 @@
     setupGroupOrders();
     setupSmartFridgeScanner();
     setupPaymentGateway();
+    updateWishlistBadge();
+    updateCompareBadge();
     await checkAuth();
+    handleHashRouting();
     await Promise.all([
-      loadProducts(),
+      loadCategories(),
+      loadProducts(1),
       loadRecommendations(),
+      loadBuyAgain(),
+      loadSmartBundles(),
       loadCart(),
       refreshWalletUI()
     ]);
+    renderRecentlyViewed();
   }
 
   if (document.readyState === 'loading') {

@@ -96,31 +96,36 @@ function twoOpt(route, distMatrix) {
 /**
  * Optimizes a batch of delivery orders starting and ending at the Central Hub
  */
-function optimizeDeliveryDispatch(batchSize = 8) {
-  const db = getDb();
-  const recentOrders = db.prepare(`
-    SELECT id, customer_name, address, phone, total, created_at
-    FROM orders
-    ORDER BY created_at DESC
-    LIMIT ?
-  `).all(batchSize);
+function optimizeDeliveryDispatch(input = 8) {
+  let recentOrders;
+  if (Array.isArray(input)) {
+    recentOrders = input;
+  } else {
+    const db = getDb();
+    const limit = typeof input === 'number' ? input : (input?.limit || 8);
+    recentOrders = db.prepare(`
+      SELECT id, customer_name, address, phone, total, created_at
+      FROM orders
+      ORDER BY created_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
 
-  if (recentOrders.length === 0) {
+  if (!recentOrders || recentOrders.length === 0) {
     return { success: false, message: 'No orders available to optimize' };
   }
 
-  // Assign simulated GPS coordinates to each delivery stop
+  // Assign GPS coordinates to each delivery stop
   const stops = [
     { ...WAREHOUSE_HUB, isHub: true, index: 0 },
     ...recentOrders.map((o, idx) => {
       const coord = NEIGHBORHOOD_COORDS[idx % NEIGHBORHOOD_COORDS.length];
-      // Add slight jitter for realism
-      const lat = coord.lat + (Math.sin(idx * 11) * 0.005);
-      const lng = coord.lng + (Math.cos(idx * 7) * 0.005);
+      const lat = typeof o.lat === 'number' ? o.lat : (coord.lat + (Math.sin(idx * 11) * 0.005));
+      const lng = typeof o.lng === 'number' ? o.lng : (coord.lng + (Math.cos(idx * 7) * 0.005));
       return {
-        orderId: o.id,
-        customerName: o.customer_name,
-        address: o.address,
+        orderId: o.id || o.orderId,
+        customerName: o.customer_name || o.customerName || `Customer #${idx + 1}`,
+        address: o.address || coord.name,
         area: coord.name,
         phone: o.phone,
         total: o.total,
@@ -178,9 +183,10 @@ function optimizeDeliveryDispatch(batchSize = 8) {
   const fuelSavedPct = naiveDist > 0 ? Math.max(0, Math.round(((naiveDist - totalDistance) / naiveDist) * 100)) : 0;
   const estimatedTimeMins = Math.round((totalDistance / 25) * 60) + (recentOrders.length * 5); // 25 km/h avg speed + 5 min per stop
 
-  // Build sequential stop roadmap
   const itinerary = [];
   let cumDistance = 0;
+  let cumMinutes = 0;
+  const now = new Date();
 
   for (let step = 0; step < optimizedRoute.length; step++) {
     const stopIdx = optimizedRoute[step];
@@ -191,7 +197,12 @@ function optimizeDeliveryDispatch(batchSize = 8) {
       const prevIdx = optimizedRoute[step - 1];
       legDist = distMatrix[prevIdx][stopIdx];
       cumDistance += legDist;
+      const legMinutes = Math.round((legDist / 25) * 60) + 3; // transit time + 3 min drop-off
+      cumMinutes += legMinutes;
     }
+
+    const etaDate = new Date(now.getTime() + cumMinutes * 60000);
+    const etaClock = etaDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
     itinerary.push({
       stepNumber: step + 1,
@@ -202,6 +213,8 @@ function optimizeDeliveryDispatch(batchSize = 8) {
       lng: stopInfo.lng,
       legDistanceKm: legDist,
       cumulativeDistanceKm: Math.round(cumDistance * 100) / 100,
+      estimatedArrivalMinutes: cumMinutes,
+      estimatedArrivalClock: etaClock,
       isHub: !!stopInfo.isHub
     });
   }

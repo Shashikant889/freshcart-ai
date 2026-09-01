@@ -9,6 +9,10 @@ const {
   getFrequentlyBoughtTogether,
   getSmartCartSuggestions,
   getTrendingProducts,
+  findProductSubstitutes,
+  getBuyAgainProducts,
+  getSmartBundles,
+  compareProducts,
   evaluateRecommendationMetrics
 } = require('../ml/recommendation-engine');
 
@@ -66,6 +70,38 @@ router.get('/personal', optionalAuth, async (req, res) => {
   }
 });
 
+// GET /api/recommendations/buy-again - Reorder past purchased items
+router.get('/buy-again', optionalAuth, (req, res) => {
+  const userId = req.user ? req.user.id : null;
+  const limit = parseInt(req.query.limit) || 6;
+  const items = getBuyAgainProducts(userId, limit);
+  res.json({
+    success: true,
+    algorithm: 'Customer Lifetime Frequency & Recency Purchase Extractor',
+    count: items.length,
+    data: items
+  });
+});
+
+// GET /api/recommendations/smart-bundles - Dynamic Curated Meal Kits & Combos
+router.get('/smart-bundles', (req, res) => {
+  const limit = parseInt(req.query.limit) || 4;
+  const bundles = getSmartBundles(limit);
+  res.json({
+    success: true,
+    algorithm: 'Cross-Category Complementary Bundle Solver with 15% Dynamic Savings',
+    count: bundles.length,
+    data: bundles
+  });
+});
+
+// POST /api/recommendations/compare - Side-by-Side Product Comparison
+router.post('/compare', (req, res) => {
+  const { productIds = [] } = req.body;
+  const comparison = compareProducts(productIds);
+  res.json(comparison);
+});
+
 // GET /api/recommendations/similar/:productId - Content-Based Similar Products
 router.get('/similar/:productId', (req, res) => {
   const limit = parseInt(req.query.limit) || 4;
@@ -105,6 +141,19 @@ router.get('/trending', (req, res) => {
   const limit = parseInt(req.query.limit) || 6;
   const trending = getTrendingProducts(limit);
   res.json({ success: true, data: trending });
+});
+
+// GET /api/recommendations/substitutes/:productId - Intelligent Product Substitution
+router.get('/substitutes/:productId', (req, res) => {
+  const limit = parseInt(req.query.limit) || 3;
+  const substitutes = findProductSubstitutes(req.params.productId, limit);
+  res.json({
+    success: true,
+    algorithm: 'Multi-Factor Product Substitution (Category, Price Proximity, Rating, Content Cosine)',
+    productId: req.params.productId,
+    count: substitutes.length,
+    data: substitutes
+  });
 });
 
 // GET /api/recommendations/metrics - Precision@K & Recall@K

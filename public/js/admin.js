@@ -22,9 +22,24 @@
 
   const token = localStorage.getItem('freshcart_token') || null;
 
-  // API helper with admin auth
+  // In-memory cache for admin analytics data
+  const adminApiCache = new Map();
+
+  // API helper with admin auth & TTL caching
   async function api(endpoint, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    const useCache = options.useCache !== false && method === 'GET';
     const curToken = localStorage.getItem('freshcart_token') || token;
+    const cacheKey = `${endpoint}::${curToken || 'anon'}`;
+
+    if (useCache && adminApiCache.has(cacheKey)) {
+      const cached = adminApiCache.get(cacheKey);
+      if (Date.now() - cached.timestamp < (options.ttl || 25000)) {
+        return cached.data;
+      }
+      adminApiCache.delete(cacheKey);
+    }
+
     const headers = {
       'Content-Type': 'application/json',
       ...(curToken ? { 'Authorization': `Bearer ${curToken}` } : {}),
@@ -32,13 +47,22 @@
     };
     const res = await fetch(endpoint, { ...options, headers });
     const data = await res.json();
+
+    if (useCache && res.ok) {
+      adminApiCache.set(cacheKey, { data, timestamp: Date.now() });
+    }
     return data;
   }
+
+  let isNavSetup = false;
 
   // ----------------------------------------------------
   // Tab Switching
   // ----------------------------------------------------
   function setupNavigation() {
+    if (isNavSetup) return;
+    isNavSetup = true;
+
     $$('.nav-item').forEach(btn => {
       btn.addEventListener('click', () => {
         $$('.nav-item').forEach(b => b.classList.remove('active'));
@@ -50,12 +74,23 @@
         if (pane) pane.classList.add('active');
 
         // Trigger chart resizes & dynamic loaders
-        if (btn.dataset.tab === 'forecasting' && forecastChart) forecastChart.resize();
-        if (btn.dataset.tab === 'segmentation' && elbowChart) elbowChart.resize();
+        if (btn.dataset.tab === 'forecasting') { if (forecastChart) forecastChart.resize(); }
+        if (btn.dataset.tab === 'segmentation') { loadCustomerSegments(); if (elbowChart) elbowChart.resize(); }
         if (btn.dataset.tab === 'warehouse-picker') loadWarehousePickerRoute();
         if (btn.dataset.tab === 'dispatch-routes') loadDispatchRoutes();
+        if (btn.dataset.tab === 'stock-alerts') loadStockAlerts();
       });
     });
+
+    const backBtn = $('.btn-back-store');
+    if (backBtn) {
+      backBtn.addEventListener('click', (e) => {
+        if (window.switchAppView) {
+          e.preventDefault();
+          window.switchAppView('store');
+        }
+      });
+    }
   }
 
   // ----------------------------------------------------
@@ -99,7 +134,10 @@
   }
 
   function renderSalesTrendChart(trends) {
-    const ctx = $('#salesTrendChart').getContext('2d');
+    if (typeof Chart === 'undefined') return;
+    const canvas = $('#salesTrendChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (salesChart) salesChart.destroy();
 
     const labels = trends.map(t => t.date.slice(5)); // MM-DD
@@ -145,7 +183,10 @@
   }
 
   function renderCategoryRevenueChart(cats) {
-    const ctx = $('#categoryRevenueChart').getContext('2d');
+    if (typeof Chart === 'undefined') return;
+    const canvas = $('#categoryRevenueChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (categoryChart) categoryChart.destroy();
 
     categoryChart = new Chart(ctx, {
@@ -172,7 +213,7 @@
   // ----------------------------------------------------
   async function loadForecastingProducts() {
     const select = $('#forecast-product-select');
-    const prodsRes = await api('/api/products');
+    const prodsRes = await api('/api/products?limit=50');
     const products = prodsRes.data || [];
 
     select.innerHTML = products.map(p => `
@@ -225,16 +266,21 @@
   }
 
   function renderForecastChart(f) {
-    const ctx = $('#demandForecastChart').getContext('2d');
+    if (typeof Chart === 'undefined') return;
+    const canvas = $('#demandForecastChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (forecastChart) forecastChart.destroy();
 
-    const historyLabels = f.recentSalesHistory.map(h => h.date.slice(5));
-    const historyData = f.recentSalesHistory.map(h => h.quantity_sold);
+    const salesHistory = f.recentSalesHistory || f.historicalSales || f.history || [];
+    const historyLabels = salesHistory.map(h => (h.date || '').slice(5));
+    const historyData = salesHistory.map(h => h.quantity_sold || h.quantity || 0);
 
-    const forecastLabels = f.dailyForecast.map(df => `${df.day} (${df.date.slice(5)})`);
-    const forecastData = f.dailyForecast.map(df => df.predictedQuantity);
-    const upperBounds = f.dailyForecast.map(df => df.upperBound);
-    const lowerBounds = f.dailyForecast.map(df => df.lowerBound);
+    const dailyForecast = f.dailyForecast || f.forecast || [];
+    const forecastLabels = dailyForecast.map(df => `${df.day || ''} (${(df.date || '').slice(5)})`);
+    const forecastData = dailyForecast.map(df => df.predictedQuantity || 0);
+    const upperBounds = dailyForecast.map(df => df.upperBound || df.predictedQuantity || 0);
+    const lowerBounds = dailyForecast.map(df => df.lowerBound || df.predictedQuantity || 0);
 
     const combinedLabels = [...historyLabels, ...forecastLabels];
     const actualDataPadded = [...historyData, ...new Array(forecastLabels.length).fill(null)];
@@ -328,7 +374,10 @@
   }
 
   function renderElbowChart(elbowData) {
-    const ctx = $('#elbowCurveChart').getContext('2d');
+    if (typeof Chart === 'undefined') return;
+    const canvas = $('#elbowCurveChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (elbowChart) elbowChart.destroy();
 
     elbowChart = new Chart(ctx, {
@@ -358,22 +407,149 @@
   }
 
   // ----------------------------------------------------
-  // Tab 4: Stock Alerts
+  // Tab 4: Stock Alerts, ABC Analysis & Inventory Intelligence
   // ----------------------------------------------------
   async function loadStockAlerts() {
-    const res = await api('/api/analytics/stock-alerts');
-    const tableBody = $('#stock-alerts-table tbody');
-    tableBody.innerHTML = (res.data || []).map(a => `
-      <tr>
-        <td><strong>${a.emoji} ${a.name}</strong></td>
-        <td><span class="badge-tag">${a.category}</span></td>
-        <td>${a.currentStock} units</td>
-        <td style="color:var(--green-400); font-weight:700;">${a.predicted7DayDemand} units</td>
-        <td><strong>${a.daysOfStock} Days</strong></td>
-        <td><span class="badge-risk badge-${a.riskLevel}">${a.status}</span></td>
-        <td style="font-size:0.82rem; color:var(--blue-400);">${a.recommendedAction}</td>
-      </tr>
-    `).join('');
+    try {
+      const [alertsRes, turnoverRes, abcRes] = await Promise.all([
+        api('/api/analytics/stock-alerts'),
+        api('/api/supplier/inventory-turnover'),
+        api('/api/supplier/abc-analysis')
+      ]);
+
+      const tableBody = $('#stock-alerts-table tbody');
+      if (tableBody) {
+        tableBody.innerHTML = (alertsRes.data || []).map(a => `
+          <tr>
+            <td><strong>${a.emoji} ${a.name}</strong></td>
+            <td><span class="badge-tag">${a.category}</span></td>
+            <td>${a.currentStock} units</td>
+            <td style="color:var(--green-400); font-weight:700;">${a.predicted7DayDemand} units</td>
+            <td><strong>${a.daysOfStock} Days</strong></td>
+            <td><span class="badge-risk badge-${a.riskLevel}">${a.status}</span></td>
+            <td style="font-size:0.82rem; color:var(--blue-400);">${a.recommendedAction}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Render Inventory Intelligence Overview Container if present
+      let intelContainer = $('#inventory-intelligence-overview');
+      if (!intelContainer) {
+        const table = $('#stock-alerts-table');
+        if (table) {
+          intelContainer = document.createElement('div');
+          intelContainer.id = 'inventory-intelligence-overview';
+          intelContainer.style.marginBottom = '20px';
+          table.parentNode.insertBefore(intelContainer, table);
+        }
+      }
+
+      if (intelContainer && turnoverRes.summary) {
+        const s = turnoverRes.summary;
+        const abcSummary = abcRes.summary || {};
+
+        intelContainer.innerHTML = `
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:16px;">
+            <div class="f-metric-box">
+              <div class="f-metric-lbl">Storewide Inventory Turnover</div>
+              <div class="f-metric-val" style="color:var(--green-400); font-size:1.3rem;">${s.storeWideTurnoverRatio}x /yr</div>
+              <small style="color:var(--text-dim); font-size:0.75rem;">COGS: ₹${(s.totalAnnualCogs || 0).toLocaleString('en-IN')}</small>
+            </div>
+            <div class="f-metric-box">
+              <div class="f-metric-lbl">Total Inventory Valuation</div>
+              <div class="f-metric-val" style="color:var(--blue-400); font-size:1.3rem;">₹${(s.totalInventoryValuation || 0).toLocaleString('en-IN')}</div>
+              <small style="color:var(--text-dim); font-size:0.75rem;">Across ${s.totalSkusEvaluated} SKUs</small>
+            </div>
+            <div class="f-metric-box">
+              <div class="f-metric-lbl">Pareto ABC Breakdown</div>
+              <div class="f-metric-val" style="font-size:1.1rem; color:var(--amber-400);">
+                A: ${abcSummary.classACount || 0} | B: ${abcSummary.classBCount || 0} | C: ${abcSummary.classCCount || 0}
+              </div>
+              <small style="color:var(--text-dim); font-size:0.75rem;">Class A generates 70% revenue</small>
+            </div>
+            <div class="f-metric-box">
+              <div class="f-metric-lbl">Stock Velocity Health</div>
+              <div class="f-metric-val" style="font-size:1.1rem;">
+                <span style="color:var(--green-400);">🚀 ${s.fastMovingCount} Fast</span> • <span style="color:var(--red-400);">💀 ${s.deadStockCount} Dead</span>
+              </div>
+              <small style="color:var(--text-dim); font-size:0.75rem;">${s.slowMovingCount} Slow-moving SKUs</small>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.06); border:1px solid var(--border-active); padding:12px 18px; border-radius:var(--radius-md); margin-bottom:16px;">
+            <div>
+              <strong style="color:var(--green-400);">📦 Automated EOQ Purchase Order Generator</strong>
+              <small style="display:block; color:var(--text-muted); font-size:0.8rem;">Optimizes lot sizing via Wilson formula: EOQ = √(2DS/H)</small>
+            </div>
+            <button class="btn-primary" style="padding:8px 16px; font-size:0.85rem;" onclick="adminApp.generateEOQPurchaseOrder()">
+              ⚡ Generate Draft PO
+            </button>
+          </div>
+          <div id="generated-po-container" style="display:none; margin-bottom:18px;"></div>
+        `;
+      }
+    } catch (e) {
+      console.warn('Error loading stock alerts & inventory intel:', e);
+    }
+  }
+
+  async function generateEOQPurchaseOrder() {
+    try {
+      const res = await api('/api/supplier/generate-po', {
+        method: 'POST',
+        body: JSON.stringify({ category: 'all' })
+      });
+
+      const poContainer = $('#generated-po-container');
+      if (!poContainer || !res.data) return;
+
+      const d = res.data;
+      poContainer.innerHTML = `
+        <div style="background:var(--bg-card); border:1px solid var(--border-active); border-radius:var(--radius-md); padding:16px; box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:10px; margin-bottom:12px;">
+            <div>
+              <span class="badge-tag" style="background:rgba(16,185,129,0.2); color:var(--green-400);">${d.poNumber}</span>
+              <strong style="margin-left:8px; font-size:1.05rem;">${d.supplierName}</strong>
+            </div>
+            <div style="text-align:right;">
+              <strong style="color:var(--green-400); font-size:1.2rem;">₹${d.totalPoAmount.toLocaleString('en-IN')}</strong>
+              <small style="display:block; color:var(--text-dim); font-size:0.75rem;">Expected Arrival: ${d.expectedDeliveryDate}</small>
+            </div>
+          </div>
+          <div style="max-height:160px; overflow-y:auto; font-size:0.82rem; margin-bottom:10px;">
+            <table style="width:100%;">
+              <thead>
+                <tr style="color:var(--text-muted); text-align:left;">
+                  <th>Item</th>
+                  <th>Current Stock</th>
+                  <th>Suggested EOQ Qty</th>
+                  <th>Unit Wholesale</th>
+                  <th>Line Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(d.items || []).map(i => `
+                  <tr>
+                    <td>${i.emoji} ${i.name}</td>
+                    <td>${i.currentStock}</td>
+                    <td><strong style="color:var(--green-400);">${i.suggestedEoqQty} units</strong></td>
+                    <td>₹${i.wholesaleUnitPrice}</td>
+                    <td>₹${i.lineTotal.toLocaleString('en-IN')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px;">
+            <button class="btn-secondary" style="padding:4px 10px; font-size:0.78rem;" onclick="$('#generated-po-container').style.display='none';">Close PO</button>
+            <button class="btn-primary" style="padding:4px 14px; font-size:0.78rem;" onclick="alert('Purchase Order ${d.poNumber} dispatched to ${d.supplierName} EDI gateway!'); $('#generated-po-container').style.display='none';">Transmit to Supplier EDI 📡</button>
+          </div>
+        </div>
+      `;
+      poContainer.style.display = 'block';
+    } catch (e) {
+      alert('Error generating PO: ' + e.message);
+    }
   }
 
   // ----------------------------------------------------
@@ -424,50 +600,11 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
   }
 
   // ----------------------------------------------------
-  // Tab 6: Products CRUD Management
-  // ----------------------------------------------------
-  async function loadProductsCRUD() {
-    const res = await api('/api/admin/products');
-    const tableBody = $('#crud-products-table tbody');
-
-    tableBody.innerHTML = (res.data || []).map(p => `
-      <tr>
-        <td><strong>${p.emoji} ${p.name}</strong></td>
-        <td><span class="badge-tag">${p.category}</span></td>
-        <td>per ${p.unit}</td>
-        <td>
-          ₹<input type="number" class="table-input" id="price-${p.id}" value="${p.price}">
-        </td>
-        <td>
-          <input type="number" class="table-input" id="stock-${p.id}" value="${p.stock}">
-        </td>
-        <td>
-          <button class="table-btn-save" onclick="adminApp.updateProduct('${p.id}')">Save Changes</button>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  async function updateProduct(productId) {
-    const price = parseFloat($(`#price-${productId}`).value);
-    const stock = parseInt($(`#stock-${productId}`).value);
-
-    try {
-      await api(`/api/admin/products/${productId}`, {
-        method: 'PUT',
-        body: JSON.stringify({ price, stock })
-      });
-      alert('Product updated successfully!');
-      loadOverview();
-    } catch (e) {}
-  }
-
-  // ----------------------------------------------------
   // Tab: Dynamic Pricing & Price Elasticity Simulator
   // ----------------------------------------------------
   async function loadPricingSimulator() {
     const select = $('#pricing-product-select');
-    const prodsRes = await api('/api/products');
+    const prodsRes = await api('/api/products?limit=50');
     const products = prodsRes.data || [];
 
     select.innerHTML = products.map(p => `
@@ -528,19 +665,91 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
       </div>
     `;
 
+    const stepsHtml = (d.explanationSteps || []).map(s => `<li style="margin-bottom:6px; color:var(--text-main); font-size:0.85rem;">${s}</li>`).join('');
+
     $('#pricing-recommendation-box').innerHTML = `
-      <strong>AI Strategy Insight:</strong> ${d.strategyRecommendation}
+      <div style="margin-bottom:10px;"><strong>AI Strategy Insight:</strong> ${d.strategyRecommendation}</div>
+      ${stepsHtml ? `
+        <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:12px 16px; border-radius:var(--radius-md); margin-top:10px;">
+          <strong style="color:var(--green-400); font-size:0.88rem; display:block; margin-bottom:8px;">📐 Step-by-Step Microeconomic Rationale:</strong>
+          <ul style="padding-left:18px; margin:0;">
+            ${stepsHtml}
+          </ul>
+        </div>
+      ` : ''}
+      <div style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;"><em>${d.disclaimer || 'Economic simulation model based on historical elasticity.'}</em></div>
     `;
+  }
+
+  // ----------------------------------------------------
+  // Tab 6: Products CRUD Management
+  // ----------------------------------------------------
+  let currentAdminProdPage = 1;
+  async function loadProductsCRUD(page = 1) {
+    currentAdminProdPage = page;
+    const res = await api(`/api/admin/products?page=${page}&limit=25`);
+    const tableBody = $('#crud-products-table tbody');
+
+    tableBody.innerHTML = (res.data || []).map(p => `
+      <tr>
+        <td><strong>${p.emoji} ${p.name}</strong></td>
+        <td><span class="badge-tag">${p.category}</span></td>
+        <td>per ${p.unit}</td>
+        <td>
+          ₹<input type="number" class="table-input" id="price-${p.id}" value="${p.price}">
+        </td>
+        <td>
+          <input type="number" class="table-input" id="stock-${p.id}" value="${p.stock}">
+        </td>
+        <td>
+          <button class="table-btn-save" onclick="adminApp.updateProduct('${p.id}')">Save Changes</button>
+        </td>
+      </tr>
+    `).join('');
+
+    let pagEl = $('#admin-products-pag');
+    if (!pagEl) {
+      const table = $('#crud-products-table');
+      if (table) {
+        pagEl = document.createElement('div');
+        pagEl.id = 'admin-products-pag';
+        pagEl.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:12px; margin-top:16px;';
+        table.parentNode.insertBefore(pagEl, table.nextSibling);
+      }
+    }
+    if (pagEl && res.totalPages > 1) {
+      pagEl.innerHTML = `
+        <button class="btn-secondary" style="padding:4px 10px; font-size:0.78rem;" ${page <= 1 ? 'disabled' : ''} onclick="adminApp.loadProductsPage(${page - 1})">◀ Prev</button>
+        <span style="font-size:0.85rem; color:var(--text-muted);">Page ${page} of ${res.totalPages} (${res.total.toLocaleString()} products)</span>
+        <button class="btn-secondary" style="padding:4px 10px; font-size:0.78rem;" ${page >= res.totalPages ? 'disabled' : ''} onclick="adminApp.loadProductsPage(${page + 1})">Next ▶</button>
+      `;
+    }
+  }
+
+  async function updateProduct(productId) {
+    const price = parseFloat($(`#price-${productId}`).value);
+    const stock = parseInt($(`#stock-${productId}`).value);
+
+    try {
+      await api(`/api/admin/products/${productId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ price, stock })
+      });
+      alert('Product updated successfully!');
+      loadOverview();
+    } catch (e) {}
   }
 
   // ----------------------------------------------------
   // Tab 7: Orders Feed & Fraud Risk Scoring
   // ----------------------------------------------------
-  async function loadOrdersFeed() {
-    const res = await api('/api/admin/orders');
+  let currentAdminOrderPage = 1;
+  async function loadOrdersFeed(page = 1) {
+    currentAdminOrderPage = page;
+    const res = await api(`/api/admin/orders?page=${page}&limit=25`);
     const tableBody = $('#orders-feed-table tbody');
 
-    tableBody.innerHTML = (res.data || []).slice(0, 30).map(o => {
+    tableBody.innerHTML = (res.data || []).map(o => {
       const risk = o.fraudRisk || { riskScore: 10, riskLevel: 'low', badge: '🛡️ Low Risk', color: '#10b981', flags: [] };
       return `
         <tr>
@@ -564,6 +773,24 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
         </tr>
       `;
     }).join('');
+
+    let pagEl = $('#admin-orders-pag');
+    if (!pagEl) {
+      const table = $('#orders-feed-table');
+      if (table) {
+        pagEl = document.createElement('div');
+        pagEl.id = 'admin-orders-pag';
+        pagEl.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:12px; margin-top:16px;';
+        table.parentNode.insertBefore(pagEl, table.nextSibling);
+      }
+    }
+    if (pagEl && res.totalPages > 1) {
+      pagEl.innerHTML = `
+        <button class="btn-secondary" style="padding:4px 10px; font-size:0.78rem;" ${page <= 1 ? 'disabled' : ''} onclick="adminApp.loadOrdersPage(${page - 1})">◀ Prev</button>
+        <span style="font-size:0.85rem; color:var(--text-muted);">Page ${page} of ${res.totalPages} (${res.total.toLocaleString()} orders)</span>
+        <button class="btn-secondary" style="padding:4px 10px; font-size:0.78rem;" ${page >= res.totalPages ? 'disabled' : ''} onclick="adminApp.loadOrdersPage(${page + 1})">Next ▶</button>
+      `;
+    }
   }
 
   async function updateOrderStatus(orderId, status) {
@@ -964,12 +1191,23 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
     }
   }
 
+  function switchTab(tabName) {
+    const btn = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+    if (btn) btn.click();
+  }
+
   // Expose global adminApp methods
   window.adminApp = {
     updateProduct,
     updateOrderStatus,
-    checkAiServiceHealth
+    checkAiServiceHealth,
+    switchTab,
+    generateEOQPurchaseOrder,
+    loadProductsPage: loadProductsCRUD,
+    loadOrdersPage: loadOrdersFeed
   };
+  window.initAdminDashboard = init;
+  window.adminSwitchTab = switchTab;
 
   // Boot Admin
   async function init() {
@@ -989,10 +1227,13 @@ Synonym Dictionary: 20+ bilingual Hindi/English grocery terms (seb -> apple, dah
     ]);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Only auto-run if standalone admin.html is active
+  if (document.querySelector('body > .admin-layout')) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   }
 })();
 

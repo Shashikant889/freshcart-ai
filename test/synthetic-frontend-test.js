@@ -57,7 +57,12 @@ function runSyntheticFrontendTests() {
       'coins-btn',
       'wallet-btn',
       'nutrition-btn',
-      'group-buy-btn'
+      'group-buy-btn',
+      'wishlist-btn',
+      'compare-btn',
+      'smart-search-dropdown',
+      'buy-again-section',
+      'recently-viewed-section'
     ];
 
     for (const id of requiredIds) {
@@ -65,7 +70,7 @@ function runSyntheticFrontendTests() {
     }
   });
 
-  test('index.html contains all 11 core overlay and panel containers', () => {
+  test('index.html contains all core overlay and panel containers', () => {
     const overlays = [
       'cart-sidebar',
       'checkout-overlay',
@@ -79,7 +84,10 @@ function runSyntheticFrontendTests() {
       'confirmation-overlay',
       'wallet-modal-overlay',
       'nutrition-modal-overlay',
-      'group-modal-overlay'
+      'group-modal-overlay',
+      'wishlist-modal-overlay',
+      'compare-modal-overlay',
+      'stock-alert-overlay'
     ];
 
     for (const m of overlays) {

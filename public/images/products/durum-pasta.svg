@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="pastaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+    <linearGradient id="pastaBoxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <filter id="shadowPasta" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#pastaBg)"/>
+  <g filter="url(#shadowPasta)">
+    <!-- Italian Pasta Box -->
+    <rect x="58" y="45" width="84" height="120" rx="10" fill="url(#pastaBoxGrad)"/>
+    <!-- Top Italian Tricolore stripe -->
+    <rect x="58" y="45" width="28" height="8" fill="#16a34a"/>
+    <rect x="86" y="45" width="28" height="8" fill="#ffffff"/>
+    <rect x="114" y="45" width="28" height="8" fill="#dc2626"/>
+    <!-- Cellophane Window showing Golden Penne Pasta -->
+    <rect x="70" y="70" width="60" height="55" rx="12" fill="#fef9c3" stroke="#fcd34d" stroke-width="2"/>
+    <!-- Penne Pasta tubes -->
+    <path d="M78 80 L92 90 L88 95 L74 85 Z" fill="#f59e0b"/>
+    <path d="M96 78 L114 86 L110 92 L92 84 Z" fill="#fbbf24"/>
+    <path d="M76 100 L95 106 L92 112 L73 106 Z" fill="#f59e0b"/>
+    <path d="M102 96 L118 108 L114 114 L98 102 Z" fill="#fbbf24"/>
+    <!-- Product Label -->
+    <rect x="66" y="136" width="68" height="18" rx="4" fill="#ffffff"/>
+    <text x="100" y="149" font-size="9.5" font-weight="900" fill="#047857" text-anchor="middle" font-family="sans-serif">DURUM PASTA</text>
+  </g>
+</svg>

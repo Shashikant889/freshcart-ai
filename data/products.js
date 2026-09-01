@@ -23,7 +23,7 @@ const products = [
   { id: 'd5', name: 'Salted Butter', emoji: '🧈', category: 'dairy', price: 249, unit: '250g', description: 'Premium European-style butter', stock: 35, rating: 4.7 },
 
   // Bakery
-  { id: 'b1', name: 'Sourdough Loaf', emoji: '🍞', category: 'bakery', price: 199, unit: 'loaf', description: 'Artisan sourdough bread', stock: 25, rating: 4.8 },
+  { id: 'b1', name: 'Artisan Sourdough Bread', emoji: '🍞', category: 'bakery', price: 199, unit: 'loaf', description: 'Artisan sourdough bread loaf', stock: 25, rating: 4.8 },
   { id: 'b2', name: 'Butter Croissants', emoji: '🥐', category: 'bakery', price: 249, unit: '4-pack', description: 'Flaky French-style croissants', stock: 30, rating: 4.9 },
   { id: 'b3', name: 'Bagels', emoji: '🥯', category: 'bakery', price: 199, unit: '6-pack', description: 'New York style plain bagels', stock: 35, rating: 4.5 },
   { id: 'b4', name: 'Chocolate Cake', emoji: '🍰', category: 'bakery', price: 599, unit: 'each', description: 'Rich dark chocolate layer cake', stock: 15, rating: 4.9 },

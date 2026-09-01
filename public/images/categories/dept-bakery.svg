@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/><stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <ellipse cx="100" cy="115" rx="60" ry="38" fill="#b45309"/>
+     <ellipse cx="100" cy="112" rx="56" ry="34" fill="#d97706"/>
+     <!-- Sourdough score cuts -->
+     <path d="M70,105 Q100,92 130,105" stroke="#78350f" stroke-width="3.5" fill="none"/>
+     <path d="M60,118 Q100,105 140,118" stroke="#78350f" stroke-width="3" fill="none"/>
+  </g>
+</svg>

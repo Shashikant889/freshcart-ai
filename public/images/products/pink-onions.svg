@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fce7f3"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <ellipse cx="100" cy="120" rx="46" ry="42" fill="#9d174d"/>
+     <path d="M100,78 C100,60 102,48 104,44 L96,44 C98,48 100,60 100,78 Z" fill="#831843"/>
+     <!-- Stripes -->
+     <path d="M75,95 C75,120 85,150 95,158" stroke="#be185d" stroke-width="3" fill="none" opacity="0.6"/>
+     <path d="M125,95 C125,120 115,150 105,158" stroke="#be185d" stroke-width="3" fill="none" opacity="0.6"/>
+     <path d="M100,80 L100,162" stroke="#be185d" stroke-width="3" fill="none" opacity="0.6"/>
+     <!-- Root -->
+     <path d="M96,162 L94,170 M100,162 L100,172 M104,162 L106,170" stroke="#78350f" stroke-width="2"/>
+  </g>
+</svg>

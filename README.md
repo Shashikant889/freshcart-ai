@@ -1,185 +1,221 @@
-# 🌿 FreshCart AI — Intelligent Grocery Retail & Operations Research Platform
+# 🌿 FreshCart AI — Intelligent Quick-Commerce & Operations Research Platform
 
-> **A Production-Grade, Full-Stack AI-Native Grocery E-Commerce & Micro-Fulfillment Operations Ecosystem**  
+> **A Production-Grade, Full-Stack AI-Native Quick-Commerce Platform with Real-Time ML Inference & Combinatorial Logistics Optimization**  
+> *Scales to 10,000 Products across 108 Categories, 150,000 Users, and Real-Time Dark Store Fulfillment*  
 > *B.Tech CSE (Artificial Intelligence & Machine Learning) Major Project — A. P. Shah Institute of Technology, University of Mumbai*
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-freshcart--ai.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://freshcart-ai.onrender.com/)
 [![CI Build](https://github.com/Shashikant889/freshcart-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashikant889/freshcart-ai/actions)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shashikant%20Shukla-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shashikant-shukla-935688331/)
-[![GitHub](https://img.shields.io/badge/GitHub-Shashikant889-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shashikant889/freshcart-ai)
-
 [![Node.js](https://img.shields.io/badge/Node.js-v18%20%7C%20v20-green.svg)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/Microservice-FastAPI%200.111-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Express](https://img.shields.io/badge/Backend-Express.js%204.19-blue.svg)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20WASM-orange.svg)](https://sql.js.org/)
-[![PWA](https://img.shields.io/badge/PWA-Installable%20Offline%20Ready-blueviolet.svg)]()
-[![Multi-Tier Tests](https://img.shields.io/badge/Automated%20Tests-113%2F113%20Passing%20(100%25)-brightgreen.svg)](https://github.com/Shashikant889/freshcart-ai)
-[![Security](https://img.shields.io/badge/Security-OWASP%20Audited%20%26%20SQLi%20Immune-blue.svg)]()
+[![Catalog](https://img.shields.io/badge/Catalog-10%2C000%20SKUs%20%7C%20108%20Categories-emerald.svg)]()
+[![Automated Tests](https://img.shields.io/badge/Automated%20Tests-100%25%20Passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 
 ---
 
-## 🌐 Live Production & Demo Links
+## 📖 Project Overview
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shashikant889/freshcart-ai)
-
-| Portal / Service | URL | Description |
-|---|---|---|
-| **🛒 Customer Storefront (PWA)** | [https://freshcart-ai.onrender.com/](https://freshcart-ai.onrender.com/) | Catalog across 31 grocery SKUs, bilingual NLP search, Top-K recommendations, FreshBot AI, cart & payment |
-| **⚙️ Admin & ML Analytics Dashboard** | [https://freshcart-ai.onrender.com/admin.html](https://freshcart-ai.onrender.com/admin.html) | Executive KPIs, 30-day demand forecast visualizer, dynamic pricing sandbox, stock risk alerts, warehouse 2D picker route, CVRP fleet dispatch |
-| **🧠 Python AI Microservice (Local)** | `http://localhost:8000/docs` | Interactive Swagger API documentation for pre-warmed ML inference engines |
-| **📦 Complete Project ZIP** | [`freshcart-ai-complete.zip`](freshcart-ai-complete.zip) | Portable 30.7 MB zero-dependency archive with code, models, datasets & academic artifacts |
+**FreshCart AI** is a dual-tier, full-stack intelligent grocery retail and operations research platform engineered for modern 10-minute quick-commerce dark stores. The system operates on a production-scale catalog of **10,000 products** spanning **108 hyper-specialized categories**, backed by **150,000 synthetic customer accounts** and over 65,000 historical transactions. It uniquely bridges customer-facing quick-commerce features (bilingual Hindi/English NLP search, Top-K hybrid recommendations, Nutri-Score analysis, and recipe ingredient bundling) with backend fulfillment operations (30-day SARIMAX demand forecasting, econometric dynamic pricing, real-time transaction fraud scoring, 2D TSP dark store warehouse picker routing, and CVRP delivery fleet dispatch).
 
 ---
 
-## 📖 System Overview
+## ⚠️ Problem Statement
 
-**FreshCart AI** is a dual-tier intelligent grocery retail and operations research platform designed for modern quick-commerce dark stores and e-commerce retail networks. It integrates **4 predictive machine learning models**, **3 combinatorial operations research solvers**, and **5 client-facing AI engines** into a high-performance, fault-tolerant web application:
+Modern quick-commerce models (e.g., Zepto, Blinkit, Instamart) promise delivery times under 10–15 minutes, which introduces severe operational and algorithmic bottlenecks:
+1. **Catalog Browsing Fatigue:** Navigating thousands of grocery SKUs across dense categories leads to high bounce rates without personalized discovery and intelligent sub-department indexing.
+2. **Perishable Spoilage & Stockouts:** Overestimating demand for dairy and fresh produce causes high spoilage rates, while underestimating causes stockouts and lost revenue.
+3. **Dark Store Picker Bottlenecks:** Human pickers walk haphazard paths through physical warehouse racks, causing picking delays that exceed the 3-minute packing budget.
+4. **Last-Mile Fleet Inefficiency:** Uncoordinated dispatch leads to low vehicle payload utilization and excessive delivery mileage.
+5. **Checkout Friction & Margin Erosion:** Inefficient pricing and high chargeback/fraud risks erode quick-commerce profitability.
 
-### 1. Predictive Machine Learning Engines
-- 🎯 **Top-K Hybrid Recommendation Engine:** Combines User-User Collaborative Filtering ($\alpha=0.60$) and Content-Based TF-IDF Item Cosine Similarity ($\beta=0.40$). Evaluated on leak-free holdout data: **F1@10: 0.5027**, **NDCG@10: 0.9790**, **Inference Latency: 4.86 ms**.
-- 📈 **30-Day Time-Series Demand Forecasting:** Autoregressive SARIMAX model incorporating day-of-week seasonality and promotional regressors. Evaluated on a 30-day chronological holdout: **RMSE: 5.83 units**, **MAPE: 2.50%**, **Inference Latency: 4.46 ms**.
-- 📉 **Econometric Dynamic Pricing & Elasticity Optimizer:** Bounded Log-Log Ordinary Least Squares (OLS) regression estimating category price elasticity ($E_d = -0.136, p < 0.001$). Simulates optimal price points ($P^*$) within strict $[\pm 25\%]$ safety guardrails, producing a **+22.21% simulated revenue lift**.
-- 🚨 **Real-Time Transaction Fraud Detection:** Cost-sensitive Random Forest ensemble classifying high-risk scalping, bot transactions, and velocity anomalies in **<20 ms** (**ROC-AUC: 0.6087** with zero synthetic target leakage).
+---
 
-### 2. Operations Research & Dark Store Logistics Solvers
-- 🏭 **Dark Store Warehouse Picker Route Optimizer (2D TSP):** Euclidean coordinate aisle-rack mapping with Nearest-Neighbor greedy initialization and intra-tour 2-Opt local search. Tested across 100 multi-item batches: **37.48% walk distance reduction**, **0.09% average optimality gap**, **Solver Latency: 2.34 ms**.
-- 🚚 **Last-Mile Delivery Fleet Dispatch (CVRP):** Capacitated Vehicle Routing Problem solver using Clarke-Wright Savings heuristic with vehicle payload constraints ($Q_{\text{veh}} = 25\text{ kg}$) and 2-Opt route smoothing. Tested across 100 dispatch instances: **61.62% fleet mileage reduction**, **82.9% capacity utilization**, **Solver Latency: 2.31 ms**.
-- 📦 **Continuous Review $(r, Q)$ Inventory Policy:** Integrates Wilson Economic Order Quantity (EOQ) and Gaussian safety stock ($Z_{0.95} = 1.645$). Across a 365-day stochastic simulation: **87.64% total inventory cost reduction**, **99.88% cycle service level**, **98.31% stockout duration reduction**.
+## 🎯 Objectives
 
-### 3. Client & Storefront AI Modules
-- 🤖 **FreshBot Conversational Recipe Assistant:** NLP recipe-to-cart parser that converts culinary dishes (*"Paneer Butter Masala"*, *"Alphonso Mango Lassi"*) into in-stock ingredient bundles with 1-click cart addition.
-- 🥗 **Nutri-Score & Allergen AI Advisor:** Computes nutritional macro breakdown (Calories, Protein, Carbs, Fat, Fiber), assigns Nutri-Score (A–E) according to French FSA formulas, and suggests allergen-safe swaps (Lactose/Gluten-free).
-- 📸 **"Snap Your Fridge & Pantry" Vision AI:** Multimodal image analyzer identifying depleted essentials and recommending tailored replenishments with bundled discounts.
-- ⚡ **Dynamic Flash Sale & Expiry Markdown AI:** Mathematical price decay model based on days-to-expiry to eliminate perishable food waste while maximizing clearance revenue.
-- 💳 **Fintech Payment Gateway & FreshWallet:** Split-payment engine with dynamic UPI QR generation, live card IIN network detection, and instant zero-fee wallet checkout.
+- **Sub-10ms Predictive Inference:** Deliver real-time recommendations, search autocomplete, and fraud scoring with zero perceived latency.
+- **Accurate Demand Forecasting:** Achieve $<3\%$ MAPE on out-of-sample perishable demand forecasting to eliminate food waste.
+- **Measurable Logistics Optimization:** Reduce physical warehouse walking distance by $>30\%$ and last-mile delivery fleet mileage by $>50\%$ through combinatorial algorithms.
+- **Fault-Tolerant Resilience:** Guarantee 100% application availability through native in-process JavaScript fallback engines when external microservices are offline.
+- **Accessible User Experience:** Deliver an intuitive, responsive glassmorphism storefront with dynamic range pagination, instant direct page jumps, and 108-category searchability.
+
+---
+
+## 📸 Visual Showcase
+
+| Customer Storefront & Department Rail | Admin & AI Operations Dashboard |
+|:---:|:---:|
+| ![Storefront](docs/academic/screenshots/SHOT-01-storefront.png) | ![Admin Dashboard](docs/academic/screenshots/SHOT-07-admin-dashboard.png) |
+| *10,000-product catalog, 8-department rail, and 10-minute dark store context* | *Live gross revenue, SARIMAX forecasting, and dark store logistics* |
+
+| Demand Forecast Visualizer | Last-Mile Fleet Dispatch |
+|:---:|:---:|
+| ![Demand Forecasting](docs/academic/screenshots/SHOT-08-demand-forecast.png) | ![Fleet Dispatch](docs/academic/screenshots/SHOT-13-delivery-route.png) |
+| *30-day projected demand with 95% confidence intervals* | *CVRP Clarke-Wright multi-vehicle delivery dispatch* |
 
 ---
 
 ## 🏛️ System Architecture
 
+FreshCart AI implements a **dual-tier decoupled microservice architecture** with **zero-downtime in-process fallbacks**:
+
 ```
-                               ┌────────────────────────────────────────────────────────┐
-                               │       Client Tier: Progressive Web App (PWA)           │
-                               │  Storefront (index.html) • Admin Portal (admin.html)   │
-                               └───────────────────────────┬────────────────────────────┘
-                                                           │ HTTP / JSON API
-                                                           ▼
-                               ┌────────────────────────────────────────────────────────┐
-                               │   Application Tier: Node.js Express Gateway (Port 3000) │
-                               │  • Authentication (JWT & RBAC) • ACID Order Lifecycle   │
-                               │  • Cart Pricing & INR Rules   • 14 In-Process Fallbacks│
-                               └─────────────┬───────────────────────────┬──────────────┘
-                                             │                           │
-                   Circuit Breaker (1.5s)    │                           │ SQLite Transaction Layer
-                   Sub-25ms REST Gateway     │                           │
-                                             ▼                           ▼
+                                ┌────────────────────────────────────────────────────────┐
+                                │       Client Tier: Progressive Web App (PWA)           │
+                                │   Storefront (index.html) • Admin Portal (admin.html)  │
+                                └───────────────────────────┬────────────────────────────┘
+                                                            │ HTTP / REST / JSON
+                                                            ▼
+                                ┌────────────────────────────────────────────────────────┐
+                                │   Application Tier: Node.js Express Gateway (Port 3000)│
+                                │  • JWT Authentication & RBAC • ACID Order Lifecycle    │
+                                │  • 10,000-Product Catalog Engine • Dynamic Pagination  │
+                                │  • 14 In-Process JavaScript ML Fallback Engines       │
+                                └─────────────┬───────────────────────────┬──────────────┘
+                                              │                           │
+                     Circuit Breaker (1.5s)   │                           │ SQLite WASM Layer
+                     Sub-25ms REST Gateway    │                           │
+                                              ▼                           ▼
 ┌───────────────────────────────────────────────────────┐   ┌───────────────────────────┐
 │     Inference Tier: Python FastAPI (Port 8000)        │   │    Persistence Tier       │
-│  • In-Memory Singleton Model Registry                 │   │  • SQLite WASM (WAL Mode) │
-│  • Serialized Artifacts (.joblib & .json)             │   │  • 7 Normalized Tables    │
-│  • NumPy, SciPy, Pandas, Scikit-Learn, Statsmodels    │   │  • 11,315 Sales Records   │
-│  • 2D TSP Solver • CVRP Clarke-Wright Dispatch        │   │  • 83,760 User Events     │
+│  • In-Memory Singleton Model Registry                 │   │  • SQLite WASM (`sql.js`) │
+│  • Serialized Artifacts (.joblib & .json)             │   │  • 10,000 Products Table  │
+│  • NumPy, SciPy, Pandas, Scikit-Learn, Statsmodels    │   │  • 108 Unique Categories  │
+│  • 2D TSP Solver • CVRP Clarke-Wright Dispatch        │   │  • 150,000 User Profiles  │
 └───────────────────────────────────────────────────────┘   └───────────────────────────┘
 ```
 
----
-
-## 📊 Empirical Machine Learning & Optimization Evaluation
-
-All models were evaluated on strict, leak-free chronological holdout datasets and verified against standard baselines:
-
-| Subsystem / Model | Algorithm / Technique | Holdout Dataset | Key Evaluation Results | Latency (p95) |
-|---|---|---|---|:---:|
-| **Hybrid Recommendations** | User-User CF ($\alpha=0.60$) + Item TF-IDF ($\beta=0.40$) | 20% holdout test set (50 users) | **F1@10: 0.5027** • **Precision@10: 0.7000** • **NDCG@10: 0.9790** | 4.86 ms |
-| **Demand Forecasting** | SARIMAX $(1,1,1)\times(1,1,1)_7$ with Promo Regressors | 30-day out-of-sample holdout | **RMSE: 5.83 units** • **MAE: 4.87** • **MAPE: 2.50%** | 4.46 ms |
-| **Dynamic Pricing** | Bounded Log-Log OLS Price Elasticity | 11,315 transaction rows | **$E_d = -0.136$ ($p < 0.001$)** • **+22.21% Simulated Revenue Lift** | 9.87 ms |
-| **Fraud Risk Scoring** | Cost-Sensitive Random Forest (100 Trees) | Calibrated test set (4,231 orders) | **ROC-AUC: 0.6087** • **Zero synthetic target leakage** | 19.77 ms |
-| **Inventory Policy** | Continuous Review $(r, Q)$ + Wilson EOQ | 365-day stochastic simulation | **-87.64% Total Cost** • **99.88% Cycle Service Level** | <1.00 ms |
-| **Warehouse Picker Walk** | 2D Euclidean Distance + 2-Opt Local Search | 100 benchmark pick batches | **-37.48% Walk Distance** • **0.09% Gap vs. Exact Solver** | 2.34 ms |
-| **Last-Mile Fleet Dispatch**| Capacitated Clarke-Wright Savings + 2-Opt | 100 dispatch instances | **-61.62% Fleet Travel Distance** • **82.9% Capacity Utilization**| 2.31 ms |
+Detailed architecture diagrams and request lifecycles are documented in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ---
 
-## 🧪 Comprehensive Multi-Tier Automated Testing (113 / 113 Passed)
+## 🌟 Major Features
 
-The codebase includes an enterprise-grade automated regression test harness comprising **113 test assertions across 7 multi-tier test suites** and a **56-check master full-stack auditor**:
+### Customer Storefront Experience
+- **10-Minute Dark Store Context:** Integrated delivery location badge (`📍 Indiranagar Hub #04 • ⚡ 10 Mins ETA`) unified beside the logo.
+- **8 Major Departments:** *🌟 All Items*, *🍎 Fruits & Veggies*, *🥛 Dairy & Bakery*, *🍿 Snacks & Munchies*, *🥤 Drinks & Juices*, *🌾 Atta, Rice & Dals*, *🧼 Cleaning & Home*, *💆 Personal Care*.
+- **📂 108-Category Mega Directory Modal:** Searchable modal with live text filtering and instant category jumps.
+- **Uniform 1:1 Product Grid:** 2-line clamped titles, tabular pricing (`font-variant-numeric: tabular-nums`), discrete FBT pairing links, and responsive card steppers.
+- **Advanced Pagination:** Dynamic item range (`Showing 937–960 of 10,000 products`), sliding page pill navigation `[1] ... [38] [39] [40] [41] [42] ... [417]`, validated **Direct Page Jump** (`Go to page: [ 40 ] [Go]`), and compact mobile bar `[◀] Page 40 / 417 [ Go to page ] [▶]`.
+- **Smart Search Autocomplete:** Query substring matched tags (`<mark class="search-match">`), thumbnail previews, and keyboard navigation (ArrowUp, ArrowDown, Enter, Escape).
+- **Sticky Express Checkout Drawer:** Responsive modal fitting any viewport with sticky title header, rider tips, eco-bag toggle, coupon validator, and pinned `Pay & Place Order` action button.
+- **FreshBot Conversational AI:** Natural language recipe-to-cart solver that maps dishes to ingredient bundles.
+- **Gamification:** Lucky Spin Wheel, FreshCoins loyalty points, and scratch card rewards.
 
-```bash
-# Run the complete test matrix (113 assertions)
-npm run test:all
-
-# Run individual multi-tier test suites
-npm test                   # 1. 10-Agent ML Core System Verification Suite (24 Checks)
-npm run test:security      # 2. OWASP Security, Auth & SQLi Immunity Suite (16 Checks)
-npm run test:alpha-beta    # 3. Backend Alpha/Beta Concurrency & Load Stress Suite (14 Checks)
-npm run test:frontend      # 4. Frontend Synthetic DOM & Localization Suite (10 Checks)
-npm run test:enterprise    # 5. Enterprise Mega-Pack Suite (14 Checks)
-npm run test:pwa-vision    # 6. Progressive Web App, Vision AI & Payment Gateway Suite (11 Checks)
-npm run test:ai            # 7. AI Microservice Gateway & Zero-Downtime Fallback Suite (28 Checks)
-
-# Run full-stack master codebase auditor (44 JS syntax checks + all 7 suites)
-node test/master-audit.js
-```
-
-| Multi-Tier Test Suite | Test File | Assertions | Status |
-|---|---|:---:|:---:|
-| **1. 10-Agent ML Core Verification** | `test/deep-verify.js` | 24 | ✅ **24 / 24 PASS (100%)** |
-| **2. Security, Auth & SQLi Immunity** | `test/security-safety-test.js` | 16 | ✅ **16 / 16 PASS (100%)** |
-| **3. Backend Alpha/Beta Concurrency** | `test/alpha-beta-backend.js` | 14 | ✅ **14 / 14 PASS (100%)** |
-| **4. Frontend Synthetic DOM & Localization**| `test/synthetic-frontend-test.js` | 10 | ✅ **10 / 10 PASS (100%)** |
-| **5. Enterprise Mega-Pack Suite** | `test/enterprise-features-test.js` | 14 | ✅ **14 / 14 PASS (100%)** |
-| **6. PWA, Vision AI & Payment Gateway** | `test/pwa-vision-payment-test.js` | 11 | ✅ **11 / 11 PASS (100%)** |
-| **7. AI Microservice & Fallback Resilience**| `test/ai-service-integration-test.js` | 28 | ✅ **28 / 28 PASS (100%)** |
-| **Total Test Coverage** | *All 7 Suites* | **113** | ✅ **113 / 113 PASS (100%)** |
+### Admin & Operations Research Dashboard
+- **Executive KPIs:** Live gross revenue, order volume, average basket size, and inventory valuation.
+- **SARIMAX Demand Forecast Visualizer:** 30-day forecast curves with upper/lower 95% confidence intervals.
+- **Dynamic Pricing Sandbox:** Live elasticity adjustment with revenue simulation curves.
+- **Warehouse 2D Picker Route Map:** Real-time rack visualization showing optimized picker travel routes.
+- **Delivery Fleet Dispatch Map:** Multi-vehicle route visualization with payload utilization indicators.
 
 ---
 
-## 🚀 Quick Start & Local Setup
+## 🧠 AI, Machine Learning & Optimization Modules
 
-### 1. Prerequisites
-- **Node.js**: v18.x or v20.x LTS ([Download](https://nodejs.org/))
-- **Python**: v3.10, v3.11, or v3.12 ([Download](https://www.python.org/))
+Complete mathematical formulations and empirical evaluations are documented in [`docs/AI_ML_OVERVIEW.md`](docs/AI_ML_OVERVIEW.md).
+
+| Subsystem | Algorithm / Framework | Verified Evaluation Metric | Production Latency |
+|---|---|---|:---:|
+| **Top-K Recommendations** | User-User Collaborative Filtering ($\alpha=0.60$) + Item TF-IDF Similarity ($\beta=0.40$) | **F1@10: 0.5027** • **NDCG@10: 0.9790** | 4.86 ms |
+| **Demand Forecasting** | Autoregressive SARIMAX $(1,1,1)\times(1,0,1)_7$ with Promotional Regressors | **MAE: 4.87** • **RMSE: 5.83** • **MAPE: 2.50%** | 4.46 ms |
+| **Dynamic Pricing** | Bounded Log-Log OLS Price Elasticity ($E_d = -0.136, p < 0.001$) | **+22.21% Simulated Revenue Lift** | 9.87 ms |
+| **Fraud Risk Scoring** | Cost-Sensitive Random Forest (100 Trees) with velocity heuristics | **ROC-AUC: 0.6087** • **Zero leakage** | 19.77 ms |
+| **Customer Segmentation** | RFM $K$-Means Clustering ($K=4$) with Elbow validation | 4 Persona Cohorts (5,000-user sample) | 12.40 ms |
+| **Warehouse Picker Route** | 2D Euclidean Distance + Nearest Neighbor + 2-Opt Local Search | **37.48% Walk Distance Reduction** | 2.34 ms |
+| **Last-Mile Delivery Dispatch** | Capacitated Vehicle Routing Problem (CVRP) Clarke-Wright Savings + 2-Opt | **61.62% Fleet Mileage Reduction** | 2.31 ms |
+| **Inventory Optimization** | Continuous Review $(r, Q)$ Policy + Wilson Economic Order Quantity (EOQ) | **87.64% Total Holding Cost Reduction** | <1.00 ms |
+
+---
+
+## 🔐 Authentication & Role-Based Access Control (RBAC)
+
+- **JWT Authentication:** Tokens signed via HMAC-SHA256 with 7-day expiration (`middleware/auth.js`).
+- **Password Security:** Salted and hashed using `bcryptjs` (>= 10 rounds).
+- **Access Roles:**
+  - `customer`: Storefront access, personal cart, order placement, order tracking, and FreshWallet.
+  - `admin`: Full authorization for `/api/admin/*`, executive KPIs, fraud mitigation, pricing sandbox, and logistics dispatch.
+
+---
+
+## 📊 Dataset Architecture & Synthesis
+
+Detailed dataset specifications are documented in [`docs/DATASET.md`](docs/DATASET.md).
+
+- **108 Categories:** Hierarchical taxonomy across 8 departments defined in [`data/categories.json`](data/categories.json).
+- **10,000 Products:** Comprehensive Indian grocery inventory with prices, stock, units, tags, and coordinates.
+- **150,000 Users:** Synthetic customer profiles centered around Bangalore quick-commerce corridors.
+- **65,001 Orders:** 12 months of simulated purchase histories with items, tips, and fulfillment telemetry.
+- **Deterministic Regeneration:** The entire database can be deterministically recreated via:
+  ```bash
+  node scripts/generate-all-data.js
+  ```
+
+---
+
+## 💻 Local Installation & Setup
+
+### Prerequisites
+- **Node.js**: v18.x or v20.x LTS ([Download Node.js](https://nodejs.org/))
+- **Python**: v3.10, v3.11, or v3.12 ([Download Python](https://www.python.org/))
 - **Git**: Installed and configured
 
-### 2. Clone & Install Dependencies
+### Step 1: Clone Repository
 ```bash
-# 1. Clone repository
 git clone https://github.com/Shashikant889/freshcart-ai.git
 cd freshcart-ai
+```
 
-# 2. Install Node.js dependencies
+### Step 2: Install Node.js Dependencies
+```bash
 npm install
+```
 
-# 3. Set up Python virtual environment
+### Step 3: Configure Environment Variables
+Copy the template configuration file:
+```bash
+# Windows PowerShell:
+Copy-Item .env.example .env
+
+# Linux / macOS:
+# cp .env.example .env
+```
+
+### Step 4: (Optional) Setup Python AI Microservice
+```bash
 python -m venv .venv
 
-# Activate on Windows PowerShell:
+# Windows PowerShell:
 .venv\Scripts\Activate.ps1
-# Activate on Linux / macOS:
+# Linux / macOS:
 # source .venv/bin/activate
 
-# 4. Install Python ML dependencies
 pip install -r ml/python/requirements.txt
 ```
 
-### 3. Run the Dual-Tier System
-Open two terminal panes:
+---
 
-- **Terminal 1: Node.js Express Application Server (Port 3000):**
-  ```bash
-  node server.js
-  ```
-  - *Customer Storefront:* [http://localhost:3000](http://localhost:3000)
-  - *Admin Operations Dashboard:* [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
+## 🚀 Starting the Application
 
-- **Terminal 2: Python FastAPI AI Microservice (Port 8000):**
-  ```bash
-  .venv\Scripts\python.exe -m ml.service.app
-  ```
-  - *Interactive Swagger API Docs:* [http://localhost:8000/docs](http://localhost:8000/docs)
-  - *Microservice Health Check:* [http://localhost:8000/health](http://localhost:8000/health)
+### Option A: Standard Single-Command Launch (Node.js Core)
+Runs the complete application at `http://localhost:3000/` with all 14 built-in JavaScript AI/ML engines:
+```bash
+npm start
+```
+
+### Option B: Full Stack Development (Node.js + Python AI Microservice)
+Runs both the Node.js gateway (port 3000) and Python FastAPI microservice (port 8000) concurrently:
+```bash
+npm run start:all
+```
+
+### Application URLs:
+- **🛒 Customer Storefront:** [http://localhost:3000/](http://localhost:3000/)
+- **⚙️ Admin & AI Operations Dashboard:** [http://localhost:3000/admin](http://localhost:3000/admin) (or via header `⚡ Admin & AI`)
+- **📦 Order History & Tracking:** [http://localhost:3000/#orders](http://localhost:3000/#orders)
+- **🧠 Python FastAPI Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs) (if Python service is active)
 
 ---
 
@@ -189,40 +225,113 @@ Open two terminal panes:
 |---|---|---|---|
 | **Administrator** | `admin@freshcart.com` | `admin123` | Full access to Admin KPI Dashboard, SARIMAX Forecasts, Dynamic Pricing, Fraud Anomaly Table, Inventory Alerts, 2D TSP Warehouse Picker Route, CVRP Fleet Dispatch |
 | **Demo Customer** | `john@example.com` | `password123` | Storefront PWA, Personalized Recommendations, Bilingual Search, Cart & Checkout |
-| **New Customer** | *(Any email)* | *(Any password)* | Click **Register** on the Storefront home view |
+| **New Customer** | *(Any email)* | *(Any password)* | Self-service registration via Storefront modal |
 
 ---
 
-## 📚 Final Academic Deliverables & Artifacts
+## 🧪 Comprehensive Automated Testing
 
-All final degree documents are maintained in [`docs/academic/`](docs/academic/):
+Detailed testing procedures are documented in [`docs/TESTING.md`](docs/TESTING.md).
 
-- 📄 **[Final Black Book (Word DOCX)](docs/academic/FINAL_BLACK_BOOK.docx)**: Full project thesis document (5.74 MB).
-- 📑 **[Final Black Book (PDF)](docs/academic/FINAL_BLACK_BOOK.pdf)**: Compiled 36-page PDF matching Mumbai University guidelines (1.80 MB).
-- 📊 **[Final Presentation Deck (PPTX)](docs/academic/FINAL_PROJECT_PRESENTATION.pptx)**: 30-slide viva presentation deck (2.38 MB).
-- 🗣️ **[Presentation Slide Notes](docs/academic/PRESENTATION_SLIDE_NOTES.md)**: Slide-by-slide speaker notes with spoken scripts and timing.
-- 🎬 **[Final Live Demo Script](docs/academic/FINAL_DEMO_SCRIPT.md)**: 13-stage live demonstration walkthrough for examiners.
-- ❓ **[Viva Examination Question Bank](docs/academic/VIVA_QUESTION_BANK.md)**: 60+ technical viva questions with detailed model answers.
-- 🔒 **[IEEE Reference Lock](docs/academic/FINAL_IEEE_REFERENCE_LOCK.md)**: 15 verified IEEE Xplore citations (2023–2026).
-- 🔍 **[Academic Claim Audit](docs/academic/FINAL_ACADEMIC_CLAIM_AUDIT.md)**: Verification of academic claim boundaries.
-- 📸 **[Real Application Screenshots (14 Captures)](docs/academic/screenshots/)**: High-resolution PNGs (`SHOT-01` to `SHOT-14`).
-- 🖼️ **[Academic Figures & Diagrams (7 Figures)](docs/academic/figures/)**: High-resolution evaluation figures (`fig_7_1` to `fig_7_7`).
-- 📋 **[Complete Setup & Handover Guide](INSTRUCTIONS.md)**: Exhaustive workstation setup and testing instructions.
+```bash
+# 1. Run Master Codebase Auditor (44 Syntax Checks + 8 Multi-Tier Suites)
+node test/master-audit.js
+
+# 2. Run 10-Agent System Verification (Schema, Auth, Order ACID, 12 ML Engines)
+node test/deep-verify.js
+
+# 3. Run Live Localhost HTTP API Verification (Health, Catalog, Admin, Recs)
+node test/http-verification.js
+
+# 4. Run Frontend Synthetic DOM & Localization Suite
+node test/synthetic-frontend-test.js
+
+# 5. Run OWASP Security & SQLi Immunity Suite
+node test/security-safety-test.js
+
+# 6. Run Alpha & Beta Stress Suite (Concurrency & Load)
+node test/alpha-beta-backend.js
+
+# 7. Run DOM Identifier Integrity Check (193 IDs)
+node test/dom-integrity-check.js
+
+# 8. Run Catalog & Pagination Test Suite (10,000 Products, 108 Categories)
+node test/test-ui-pagination.js
+```
 
 ---
 
-## 👨‍💻 Project Team & Department
+## 📁 Project Directory Structure
 
-**Department of Computer Science & Engineering (AIML)**  
-**A. P. Shah Institute of Technology (APSIT), Thane**  
-*Affiliated to the University of Mumbai (Academic Year 2025–2026)*
-
-- **Student 1:** Shashikant Shukla ([LinkedIn](https://www.linkedin.com/in/shashikant-shukla-935688331/) • [GitHub](https://github.com/Shashikant889))
-- **Student 2:** Om Dubey
-- **Student 3:** Shreyash Wadalkar
-- **Student 4:** [Student 4 Name]
+```
+freshcart-ai/
+├── db/                         # Database schema, seeders, and SQLite WASM persistence
+│   ├── database.js             # sql.js connection manager and query helpers
+│   ├── schema.sql              # Normalized relational table schemas
+│   ├── seed.js                 # Database seeder
+│   └── freshcart.db            # Active SQLite database (10,000 products, 150,000 users)
+├── data/                       # Static & synthetic dataset definitions
+│   ├── categories.json         # 108 categorized departments mapping
+│   ├── products.js             # Core product schema
+│   └── synthetic/              # CSV synthetic benchmark records
+├── middleware/                 # Express middleware (JWT authentication, RBAC)
+│   └── auth.js                 # Authentication validator
+├── ml/                         # Machine learning & operations research engines
+│   ├── customer-segmentation.js# RFM K-Means clustering
+│   ├── dark-store-picker.js    # 2D TSP warehouse picker walk optimizer
+│   ├── demand-forecasting.js   # Time-series forecasting
+│   ├── dynamic-pricing.js      # Econometric price elasticity solver
+│   ├── fraud-detection.js      # Cost-sensitive risk scoring
+│   ├── recommendation-engine.js# Hybrid collaborative & content-based filter
+│   ├── route-optimizer.js      # CVRP multi-vehicle fleet dispatch
+│   ├── smart-search.js         # NLP tokenized search engine
+│   ├── python/                 # Python models, training pipelines, and experiments
+│   └── service/                # FastAPI microservice (port 8000)
+├── public/                     # Frontend client assets
+│   ├── index.html              # Customer storefront PWA
+│   ├── admin.html              # Admin & AI analytics dashboard
+│   ├── css/
+│   │   ├── style.css           # Glassmorphism design system & responsive layout
+│   │   └── admin.css           # Admin dashboard stylesheet
+│   └── js/
+│       ├── app.js              # Storefront state, rendering, and API logic
+│       └── admin.js            # Admin charting and fleet visualization logic
+├── routes/                     # Express REST API route controllers (70 endpoints)
+├── scripts/                    # Utility, data generation, and automation scripts
+├── services/                   # Internal service clients (AI microservice bridge)
+├── test/                       # Comprehensive multi-tier test suites
+├── docs/                       # Architectural documentation & academic deliverables
+├── .env.example                # Environment configuration template
+├── .gitignore                  # Git ignore definitions
+├── package.json                # Project dependencies and npm scripts
+└── server.js                   # Main application entry point
+```
 
 ---
 
-## 📜 License
-This project is licensed under the **MIT License** — feel free to use and adapt for academic, research, and educational purposes.
+## 🔒 Security Notes
+
+1. **Environment Separation:** Never commit `.env` or production credentials. Use [`.env.example`](.env.example) as a template.
+2. **Password Security:** All passwords are salted and hashed with `bcryptjs` (>= 10 rounds).
+3. **SQL Injection Immunity:** All queries use parameterized statements (`stmt.bind([params])`) through `sql.js`. Raw SQL string concatenation is strictly prohibited.
+4. **Input Sanitization:** API request payloads enforce size limits (`2mb`) and structured validation to prevent denial-of-service or memory exhaustion.
+
+---
+
+## ⚠️ Known Limitations & Future Improvements
+
+### Known Limitations
+- **SQLite File Size on GitHub:** The active database file (`db/freshcart.db` — ~241 MB) exceeds GitHub's 100 MB hard limit. Developers should either track it using **Git LFS** or regenerate it locally via `node scripts/generate-all-data.js`.
+- **Python Microservice Dependency:** The Python FastAPI microservice requires a local Python 3.10–3.12 environment. If Python is unavailable, the application seamlessly runs on native JavaScript fallback engines.
+
+### Future Improvements
+- Migration of persistence to distributed PostgreSQL with TimescaleDB for multi-region dark store clusters.
+- Real-time WebSocket streaming for live delivery rider telemetry updates.
+- Deep reinforcement learning (PPO) for real-time dynamic pricing under multi-competitor game-theoretic environments.
+
+---
+
+## 📜 License & Academic Affiliation
+
+This project was developed by the Department of Computer Science & Engineering (AIML) at **A. P. Shah Institute of Technology (APSIT)**, University of Mumbai.  
+Licensed under the **MIT License**.

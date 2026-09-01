@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="friesBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="shadowFries" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#friesBg)"/>
+  <g filter="url(#shadowFries)">
+    <!-- Golden Fries Sticks -->
+    <rect x="75" y="40" width="10" height="65" rx="3" fill="#fbbf24" transform="rotate(-10 80 70)"/>
+    <rect x="90" y="32" width="11" height="75" rx="3" fill="#f59e0b"/>
+    <rect x="105" y="38" width="10" height="70" rx="3" fill="#fbbf24" transform="rotate(8 110 70)"/>
+    <rect x="120" y="48" width="9" height="55" rx="3" fill="#d97706" transform="rotate(18 125 75)"/>
+    <rect x="62" y="52" width="9" height="52" rx="3" fill="#f59e0b" transform="rotate(-18 66 78)"/>
+    <!-- Red Carton Holder -->
+    <path d="M60 85 L140 85 L130 160 L70 160 Z" fill="#ef4444"/>
+    <path d="M60 85 Q100 105 140 85 L138 100 Q100 120 62 100 Z" fill="#dc2626"/>
+    <!-- Frost / Snowflake Badge -->
+    <circle cx="100" cy="130" r="16" fill="#ffffff"/>
+    <text x="100" y="135" font-size="14" text-anchor="middle" font-family="sans-serif">❄️</text>
+  </g>
+</svg>

@@ -67,6 +67,7 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'routes/cart.js',
     'routes/dispatch.js',
     'routes/group-orders.js',
+    'routes/health.js',
     'routes/nutrition.js',
     'routes/orders.js',
     'routes/pricing.js',
@@ -75,6 +76,7 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'routes/search.js',
     'routes/supplier.js',
     'routes/visual.js',
+    'scripts/dev-start.js',
     'services/ai-client.js',
     'public/js/app.js',
     'public/js/admin.js',
@@ -86,7 +88,8 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'test/synthetic-frontend-test.js',
     'test/enterprise-features-test.js',
     'test/pwa-vision-payment-test.js',
-    'test/ai-service-integration-test.js'
+    'test/ai-service-integration-test.js',
+    'test/unified-app-hardening-test.js'
   ];
 
   jsFiles.forEach(file => {
@@ -123,9 +126,9 @@ runAuditSection('2. Frontend Assets, PWA Manifest & Design System Tokens:', () =
 });
 
 // -------------------------------------------------------------
-// 3. Execution of All 7 Modular Test Suites
+// 3. Execution of All 8 Modular Test Suites
 // -------------------------------------------------------------
-runAuditSection('3. Executing All 7 Automated Multi-Tier Test Suites (113 Assertions):', () => {
+runAuditSection('3. Executing All 8 Automated Multi-Tier Test Suites (140+ Assertions):', () => {
   const suites = [
     { name: '10-Agent ML Verification Suite', cmd: 'node test/deep-verify.js' },
     { name: 'OWASP Security & SQLi Immunity Suite', cmd: 'node test/security-safety-test.js' },
@@ -133,7 +136,8 @@ runAuditSection('3. Executing All 7 Automated Multi-Tier Test Suites (113 Assert
     { name: 'Frontend Synthetic DOM & Localization Suite', cmd: 'node test/synthetic-frontend-test.js' },
     { name: 'Enterprise Mega-Pack Verification Suite', cmd: 'node test/enterprise-features-test.js' },
     { name: 'PWA, Vision AI & Payment Gateway Suite', cmd: 'node test/pwa-vision-payment-test.js' },
-    { name: 'AI/ML Microservice & Operations Research Integration Suite', cmd: 'node test/ai-service-integration-test.js' }
+    { name: 'AI/ML Microservice & Operations Research Integration Suite', cmd: 'node test/ai-service-integration-test.js' },
+    { name: 'Unified Application Architecture & Engineering Hardening Suite', cmd: 'node test/unified-app-hardening-test.js' }
   ];
 
   suites.forEach(suite => {

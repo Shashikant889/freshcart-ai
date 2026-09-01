@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe4e6"/><stop offset="100%" stop-color="#fecdd3"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <circle cx="100" cy="115" r="48" fill="#be123c"/>
+     <!-- Crown -->
+     <path d="M90,68 L94,54 L100,62 L106,54 L110,68 Z" fill="#9f1239"/>
+     <!-- Cut revealing arils -->
+     <path d="M100,85 C124,85 138,102 135,124 C132,145 110,150 95,142 C82,132 82,95 100,85 Z" fill="#fda4af"/>
+     <circle cx="102" cy="102" r="4" fill="#881337"/>
+     <circle cx="114" cy="106" r="4" fill="#881337"/>
+     <circle cx="124" cy="116" r="4" fill="#881337"/>
+     <circle cx="106" cy="116" r="4" fill="#881337"/>
+     <circle cx="116" cy="126" r="4" fill="#881337"/>
+     <circle cx="100" cy="128" r="4" fill="#881337"/>
+  </g>
+</svg>

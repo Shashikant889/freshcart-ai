@@ -1,0 +1,172 @@
+{
+  "timestamp": "2026-08-30 09:09:33",
+  "total_flows": 26,
+  "passed_flows": 26,
+  "failed_flows": 0,
+  "flow_results": [
+    {
+      "flow_id": 1,
+      "title": "Home/Storefront",
+      "status": "PASS",
+      "details": "Loaded 24 catalog items; Title: 'FreshCart AI \u2014 Intelligent Grocery E-Commerce & 10-Min Quick Delivery'; Overflow: False; Broken images: 0."
+    },
+    {
+      "flow_id": 2,
+      "title": "Category Browsing",
+      "status": "PASS",
+      "details": "Filtered '\ud83c\udf4e Fresh Fruits 99', rendered 24 categorized items with instant DOM transition."
+    },
+    {
+      "flow_id": 3,
+      "title": "Search Flow",
+      "status": "PASS",
+      "details": "Queried 'milk', returned 24 NLP relevant products with instant reactive filter."
+    },
+    {
+      "flow_id": 4,
+      "title": "Search Suggestions",
+      "status": "PASS",
+      "details": "Search dropdown generated 5 real-time auto-suggestions with match percentages."
+    },
+    {
+      "flow_id": 5,
+      "title": "Product Details Modal",
+      "status": "PASS",
+      "details": "Opened modal for '\ud83e\udd50 Butter Croissants' (visible: True); verified storage tips, reviews & nutrition."
+    },
+    {
+      "flow_id": 6,
+      "title": "Product Comparison",
+      "status": "PASS",
+      "details": "Compared 2 items side-by-side (modal open: True); generated AI comparison verdict & highlights."
+    },
+    {
+      "flow_id": 7,
+      "title": "Wishlist",
+      "status": "PASS",
+      "details": "Saved items to Wishlist (badge: 2, modal visible: True); 'Add All to Cart' verified."
+    },
+    {
+      "flow_id": 8,
+      "title": "Recently Viewed",
+      "status": "PASS",
+      "details": "Browsing history tracked dynamically (1 items rendered in session carousel)."
+    },
+    {
+      "flow_id": 9,
+      "title": "Smart Bundles",
+      "status": "PASS",
+      "details": "Curated 3 AI meal kit combos with 1-click bundle savings."
+    },
+    {
+      "flow_id": 10,
+      "title": "Add to Cart",
+      "status": "PASS",
+      "details": "Added 3 items to cart; Cart badge indicator incremented to 4."
+    },
+    {
+      "flow_id": 11,
+      "title": "Cart Updates & Dynamic Pricing",
+      "status": "PASS",
+      "details": "Cart subtotal: \u20b91446.00, Total: \u20b91561.68; Delivery progress: '\ud83c\udf89 FREE Delivery Unlocked! You saved \u20b949.'."
+    },
+    {
+      "flow_id": 12,
+      "title": "Checkout & Payment Gateway",
+      "status": "PASS",
+      "details": "Order confirmed: ORD-6248AF6D; Simulated Razorpay 256-bit SSL authorization & 5% cashback."
+    },
+    {
+      "flow_id": 13,
+      "title": "Live Order Tracker",
+      "status": "PASS",
+      "details": "Live tracker active (ETA: 11 Mins); 4-stage stepper, rider card & canvas map operational."
+    },
+    {
+      "flow_id": 14,
+      "title": "Buy Again",
+      "status": "PASS",
+      "details": "Populated 4 items in Buy Again & Quick Restock tray based on order history."
+    },
+    {
+      "flow_id": 15,
+      "title": "AI Recommendations",
+      "status": "PASS",
+      "details": "Personalized Recommendation engine generated 6 recommendations with Cosine Match badges."
+    },
+    {
+      "flow_id": 16,
+      "title": "Login/Logout Authentication",
+      "status": "PASS",
+      "details": "Customer logged in; Navbar profile: 'Demo (Sign Out)'; Session tokens persisted in localStorage."
+    },
+    {
+      "flow_id": 17,
+      "title": "Admin & AI Overview",
+      "status": "PASS",
+      "details": "Revenue: \u20b96,97,32,142.48; Orders: 65,002; Customers: 149999; Gateway: 'Python AI Online (v2.0.0)'."
+    },
+    {
+      "flow_id": 18,
+      "title": "Analytics & BI",
+      "status": "PASS",
+      "details": "Rendered 6 interactive Chart.js visualizations (30-Day Sales Trend & Category Doughnut)."
+    },
+    {
+      "flow_id": 19,
+      "title": "Demand Forecasting (SARIMAX)",
+      "status": "PASS",
+      "details": "Demand curve for 'Demand Forecast Analysis' plotted 7-day projected units and 95% confidence bounds."
+    },
+    {
+      "flow_id": 20,
+      "title": "Dynamic Pricing Simulator",
+      "status": "PASS",
+      "details": "Elasticity sandbox simulated proposed price \u20b9249; AI Advice: '...'."
+    },
+    {
+      "flow_id": 21,
+      "title": "Delivery Route Optimization (VRP)",
+      "status": "PASS",
+      "details": "2-Opt Capacitated VRP solver plotted delivery GPS dispatch map (0 stops)."
+    },
+    {
+      "flow_id": 22,
+      "title": "Warehouse Picker (2D TSP)",
+      "status": "PASS",
+      "details": "Dark Store 2D TSP solver calculated optimal pick path (9 item pick steps)."
+    },
+    {
+      "flow_id": 23,
+      "title": "Customer Segmentation",
+      "status": "PASS",
+      "details": "K-Means RFM clustering segmented users into 4 behavioral personas with WCSS Elbow Curve."
+    },
+    {
+      "flow_id": 24,
+      "title": "Inventory Optimization",
+      "status": "PASS",
+      "details": "Computed Reorder Points (ROP), Safety Stock & EOQ replenishment for 405 items."
+    },
+    {
+      "flow_id": 25,
+      "title": "ML Evaluation & Defense Reference",
+      "status": "PASS",
+      "details": "Rendered complete mathematical metrics, benchmark comparisons, and dataset profiles (4 evaluation sections)."
+    },
+    {
+      "flow_id": 26,
+      "title": "Live Orders & Fraud Detection",
+      "status": "PASS",
+      "details": "Live order feed displayed 25 orders with Random Forest Z-Score anomaly risk scores."
+    }
+  ],
+  "console_logs": [
+    "[verbose] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o",
+    "[verbose] [DOM] Input elements should have autocomplete attributes (suggested: \"current-password\"): (More info: https://goo.gl/9p2vKq) %o",
+    "[verbose] [DOM] Input elements should have autocomplete attributes (suggested: \"current-password\"): (More info: https://goo.gl/9p2vKq) %o",
+    "[log] \u2705 [PWA] Service Worker registered with scope: http://127.0.0.1:3000/"
+  ],
+  "console_errors": [],
+  "visual_inspections": []
+}

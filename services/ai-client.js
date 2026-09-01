@@ -322,7 +322,7 @@ async function optimizeWarehouse({ productIds = [] } = {}) {
     // Graceful Node fallback
     const { optimizeWarehousePickerRoute } = require('../ml/dark-store-picker');
     const nodeRoute = optimizeWarehousePickerRoute(productIds);
-    const seq = (nodeRoute.pickSequence || nodeRoute.optimalPickSequence || []).filter(s => !!s.id);
+    const seq = (nodeRoute.pickSequence || nodeRoute.optimalPickSequence || []).filter(s => (s.productId || s.id) && s.id !== 'STATION_01');
     return {
       engine: 'node_fallback',
       algorithmUsed: 'Node Manhattan Distance TSP Fallback',
@@ -331,8 +331,9 @@ async function optimizeWarehouse({ productIds = [] } = {}) {
       estimatedPickTimeSeconds: nodeRoute.estimatedPickSeconds || 60,
       pickingSequence: seq.map((s, idx) => ({
         step: idx + 1,
-        product_id: s.id,
-        name: s.name || `Item ${s.id}`,
+        product_id: s.productId || s.id,
+        id: s.productId || s.id,
+        name: s.name || `Item ${s.productId || s.id}`,
         aisle: s.aisle || 'A1',
         rack: s.rack || 1,
         shelf: s.shelf || 1,

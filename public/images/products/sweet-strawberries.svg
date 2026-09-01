@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe4e6"/><stop offset="100%" stop-color="#fecdd3"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bgGrad)"/>
+  <g filter="url(#dropShadow)">
+    <path d="M100,160 C65,130 55,95 72,76 C88,58 112,58 128,76 C145,95 135,130 100,160 Z" fill="#e11d48"/>
+     <!-- Seeds -->
+     <circle cx="85" cy="88" r="2" fill="#fef08a"/>
+     <circle cx="115" cy="88" r="2" fill="#fef08a"/>
+     <circle cx="100" cy="104" r="2" fill="#fef08a"/>
+     <circle cx="82" cy="120" r="2" fill="#fef08a"/>
+     <circle cx="118" cy="120" r="2" fill="#fef08a"/>
+     <circle cx="100" cy="136" r="2" fill="#fef08a"/>
+     <!-- Calyx -->
+     <path d="M100,66 L92,50 L100,56 L108,50 Z" fill="#16a34a"/>
+     <path d="M85,68 L70,58 L82,62 Z" fill="#22c55e"/>
+     <path d="M115,68 L130,58 L118,62 Z" fill="#22c55e"/>
+  </g>
+</svg>

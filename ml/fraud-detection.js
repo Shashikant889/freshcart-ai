@@ -14,11 +14,15 @@ const { getDb } = require('../db/database');
  * @param {Object} orderData - { userId, customerName, total, items, address, phone }
  * @returns {Object} { riskScore, riskLevel, flags, confidence }
  */
-function evaluateOrderRisk(orderData) {
+function evaluateOrderRisk(orderData = {}) {
   const db = getDb();
-  const { userId, total, items = [], phone } = orderData;
+  const userId = orderData.userId;
+  const total = Number(orderData.total !== undefined ? orderData.total : (orderData.amount || 0));
+  const items = orderData.items || [];
+  const phone = orderData.phone || '';
 
   const flags = [];
+  const contributingFactors = [];
   let riskScore = 0; // 0 (Clean) to 100 (High Risk)
 
   // 1. Check User Historical Spend Persona (Z-Score Deviation)
@@ -36,10 +40,14 @@ function evaluateOrderRisk(orderData) {
       const zScore = (total - mean) / stdDev;
 
       if (zScore > 3.0) {
-        flags.push(`Extreme Spend Anomaly: Order total (₹${total}) is ${Math.round(zScore * 10) / 10} standard deviations above user average (₹${Math.round(mean)}).`);
+        const desc = `Extreme Spend Anomaly: Order total (₹${total}) is ${Math.round(zScore * 10) / 10} standard deviations above user historical average (₹${Math.round(mean)}).`;
+        flags.push(desc);
+        contributingFactors.push({ factor: 'Historical Spend Z-Score Outlier', points: 40, detail: desc });
         riskScore += 40;
       } else if (zScore > 2.0) {
-        flags.push(`Moderate Spend Spike: Order total is ${Math.round(zScore * 10) / 10}x standard deviations above usual spending.`);
+        const desc = `Moderate Spend Spike: Order total is ${Math.round(zScore * 10) / 10}x standard deviations above usual spending.`;
+        flags.push(desc);
+        contributingFactors.push({ factor: 'Spend Deviation', points: 20, detail: desc });
         riskScore += 20;
       }
     }
@@ -53,10 +61,14 @@ function evaluateOrderRisk(orderData) {
   `).get(userId || -1, phone || '').count;
 
   if (recentWindowOrders >= 3) {
-    flags.push(`High Velocity Anomaly: ${recentWindowOrders} orders detected from this phone/user in the past 10 minutes.`);
+    const desc = `High Velocity Anomaly: ${recentWindowOrders} orders detected from this account in the past 10 minutes.`;
+    flags.push(desc);
+    contributingFactors.push({ factor: 'Burst Transaction Velocity', points: 45, detail: desc });
     riskScore += 45;
   } else if (recentWindowOrders >= 2) {
-    flags.push(`Rapid Re-order Notice: 2nd order placed within 10 minutes.`);
+    const desc = `Rapid Re-order Notice: 2nd consecutive order placed within 10 minutes.`;
+    flags.push(desc);
+    contributingFactors.push({ factor: 'Rapid Re-order', points: 15, detail: desc });
     riskScore += 15;
   }
 
@@ -65,14 +77,18 @@ function evaluateOrderRisk(orderData) {
   for (const item of items) {
     if (item.quantity > maxItemQty) maxItemQty = item.quantity;
     if (item.quantity >= 10) {
-      flags.push(`Bulk Hoarding Alert: ${item.quantity} units of ${item.name || item.productId} ordered.`);
+      const desc = `Bulk Hoarding Alert: ${item.quantity} units of "${item.name || item.productId}" ordered in a single checkout.`;
+      flags.push(desc);
+      contributingFactors.push({ factor: 'Inventory Scalping Risk', points: 25, detail: desc });
       riskScore += 25;
     }
   }
 
   // 4. Absolute Transaction Value Outlier
   if (total > 8000) {
-    flags.push(`High Value Transaction: Order total exceeds ₹8,000 threshold.`);
+    const desc = `High Value Transaction: Order total of ₹${total} exceeds high-risk audit threshold (₹8,000).`;
+    flags.push(desc);
+    contributingFactors.push({ factor: 'High Ticket Value', points: 15, detail: desc });
     riskScore += 15;
   }
 
@@ -82,15 +98,22 @@ function evaluateOrderRisk(orderData) {
   let riskLevel = 'low';
   let badge = '🛡️ Low Risk (Safe)';
   let color = '#10b981';
+  let decisionExplanation = 'Order metrics fall within standard consumer purchasing distributions.';
 
   if (riskScore >= 60) {
     riskLevel = 'high';
     badge = '🚨 High Risk (Flagged)';
     color = '#ef4444';
+    decisionExplanation = 'Multiple anomalous telemetry signals detected. Manual verification or OTP challenge recommended before dispatch.';
   } else if (riskScore >= 30) {
     riskLevel = 'medium';
     badge = '⚠️ Medium Risk (Review)';
     color = '#f59e0b';
+    decisionExplanation = 'Minor statistical variance in velocity or spending volume. Automated monitoring active.';
+  }
+
+  if (contributingFactors.length === 0) {
+    contributingFactors.push({ factor: 'Baseline Behavioral Health', points: 0, detail: 'Normal order frequency and standard cart size.' });
   }
 
   return {
@@ -98,6 +121,8 @@ function evaluateOrderRisk(orderData) {
     riskLevel,
     badge,
     color,
+    decisionExplanation,
+    contributingFactors,
     flags: flags.length > 0 ? flags : ['Transaction normal within standard customer behavior parameters.'],
     evaluatedAt: new Date().toISOString()
   };

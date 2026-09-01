@@ -1,0 +1,1899 @@
+[
+  {
+    "id": "fruits",
+    "name": "Fresh Fruits",
+    "department": "Fresh Produce",
+    "emoji": "🍎",
+    "description": "Seasonal and everyday fresh farm fruits.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "gluten-free"
+    ],
+    "keywords": [
+      "apple",
+      "banana",
+      "orange",
+      "mango",
+      "fruits",
+      "seb",
+      "kela"
+    ]
+  },
+  {
+    "id": "exotic_fruits",
+    "name": "Exotic & Imported Fruits",
+    "department": "Fresh Produce",
+    "emoji": "🥑",
+    "description": "Premium berries, avocados, dragon fruit, and imported citrus.",
+    "dietary_tags": [
+      "organic",
+      "keto",
+      "vegan"
+    ],
+    "keywords": [
+      "avocado",
+      "blueberry",
+      "kiwi",
+      "dragonfruit",
+      "berries"
+    ]
+  },
+  {
+    "id": "vegetables",
+    "name": "Fresh Vegetables",
+    "department": "Fresh Produce",
+    "emoji": "🥦",
+    "description": "Daily cooking vegetables and fresh farm-grown greens.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "gluten-free",
+      "diabetic"
+    ],
+    "keywords": [
+      "vegetables",
+      "tomato",
+      "potato",
+      "onion",
+      "aloo",
+      "tamatar",
+      "pyaz"
+    ]
+  },
+  {
+    "id": "leafy_greens",
+    "name": "Leafy Greens & Herbs",
+    "department": "Fresh Produce",
+    "emoji": "🥬",
+    "description": "Fresh spinach, coriander, mint, methi, and culinary herbs.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "keto",
+      "diabetic"
+    ],
+    "keywords": [
+      "spinach",
+      "palak",
+      "methi",
+      "coriander",
+      "mint",
+      "pudina"
+    ]
+  },
+  {
+    "id": "root_vegetables",
+    "name": "Root & Tuber Vegetables",
+    "department": "Fresh Produce",
+    "emoji": "🥕",
+    "description": "Carrots, beetroot, radish, sweet potato, and ginger.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "gluten-free"
+    ],
+    "keywords": [
+      "carrot",
+      "beetroot",
+      "gajar",
+      "mooli",
+      "adrak",
+      "ginger"
+    ]
+  },
+  {
+    "id": "organic_produce",
+    "name": "Certified Organic Produce",
+    "department": "Fresh Produce",
+    "emoji": "🌱",
+    "description": "Pesticide-free certified organic fruits and vegetables.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "gluten-free"
+    ],
+    "keywords": [
+      "organic",
+      "jaivik",
+      "natural",
+      "farm-fresh"
+    ]
+  },
+  {
+    "id": "hydroponic_salad",
+    "name": "Hydroponic & Salad Greens",
+    "department": "Fresh Produce",
+    "emoji": "🥗",
+    "description": "Crunchy romaine, butterhead lettuce, rocket, and microgreens.",
+    "dietary_tags": [
+      "organic",
+      "keto",
+      "vegan"
+    ],
+    "keywords": [
+      "lettuce",
+      "salad",
+      "microgreens",
+      "hydroponic",
+      "rocket"
+    ]
+  },
+  {
+    "id": "mushrooms_sprouts",
+    "name": "Mushrooms & Fresh Sprouts",
+    "department": "Fresh Produce",
+    "emoji": "🍄",
+    "description": "Button mushrooms, oyster mushrooms, and protein sprouts.",
+    "dietary_tags": [
+      "organic",
+      "protein",
+      "keto",
+      "vegan"
+    ],
+    "keywords": [
+      "mushroom",
+      "sprouts",
+      "moong",
+      "chana sprouts"
+    ]
+  },
+  {
+    "id": "gourds_squash",
+    "name": "Gourds & Squash",
+    "department": "Fresh Produce",
+    "emoji": "🥒",
+    "description": "Bottle gourd (lauki), bitter gourd (karela), ridge gourd, cucumber.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "diabetic"
+    ],
+    "keywords": [
+      "lauki",
+      "karela",
+      "cucumber",
+      "tori",
+      "kheera"
+    ]
+  },
+  {
+    "id": "peppers_chillies",
+    "name": "Peppers & Fresh Chillies",
+    "department": "Fresh Produce",
+    "emoji": "🌶️",
+    "description": "Green chillies, red bell peppers, yellow capsicum, and jalapenos.",
+    "dietary_tags": [
+      "organic",
+      "keto",
+      "vegan"
+    ],
+    "keywords": [
+      "capsicum",
+      "shimla mirch",
+      "green chilli",
+      "mirchi",
+      "bell pepper"
+    ]
+  },
+  {
+    "id": "citrus_lemons",
+    "name": "Citrus & Lemons",
+    "department": "Fresh Produce",
+    "emoji": "🍋",
+    "description": "Fresh nimbu, sweet lime (mosambi), kinnow, and grapefruits.",
+    "dietary_tags": [
+      "organic",
+      "vegan",
+      "gluten-free"
+    ],
+    "keywords": [
+      "lemon",
+      "nimbu",
+      "lime",
+      "mosambi",
+      "citrus"
+    ]
+  },
+  {
+    "id": "seasonal_specials",
+    "name": "Seasonal & Festival Produce",
+    "department": "Fresh Produce",
+    "emoji": "🥭",
+    "description": "Alphonsos in summer, winter sarson, festive marigold, and raw mangoes.",
+    "dietary_tags": [
+      "organic",
+      "vegan"
+    ],
+    "keywords": [
+      "alphonso",
+      "sarson",
+      "seasonal",
+      "festive"
+    ]
+  },
+  {
+    "id": "dairy",
+    "name": "Fresh Milk & Cream",
+    "department": "Dairy & Eggs",
+    "emoji": "🥛",
+    "description": "Farm fresh cow milk, buffalo milk, toned milk, and rich malai cream.",
+    "dietary_tags": [
+      "protein",
+      "calcium"
+    ],
+    "keywords": [
+      "milk",
+      "doodh",
+      "toned milk",
+      "cream",
+      "malai"
+    ]
+  },
+  {
+    "id": "paneer_tofu",
+    "name": "Paneer & Tofu",
+    "department": "Dairy & Eggs",
+    "emoji": "🧀",
+    "description": "Fresh malai paneer, low-fat paneer, and organic soy tofu.",
+    "dietary_tags": [
+      "protein",
+      "keto",
+      "calcium"
+    ],
+    "keywords": [
+      "paneer",
+      "cottage cheese",
+      "tofu",
+      "soya paneer"
+    ]
+  },
+  {
+    "id": "curd_yogurt",
+    "name": "Curd & Greek Yogurt",
+    "department": "Dairy & Eggs",
+    "emoji": "🥣",
+    "description": "Probiotic dahi, flavored Greek yogurt, and digestive buttermilk/chaas.",
+    "dietary_tags": [
+      "protein",
+      "probiotic",
+      "calcium"
+    ],
+    "keywords": [
+      "dahi",
+      "curd",
+      "yogurt",
+      "chaas",
+      "lassi",
+      "mattha"
+    ]
+  },
+  {
+    "id": "cheese_butter",
+    "name": "Cheese & Table Butter",
+    "department": "Dairy & Eggs",
+    "emoji": "🧈",
+    "description": "Processed cheese cubes, mozzarella, cheddar, and salted butter.",
+    "dietary_tags": [
+      "protein",
+      "keto",
+      "calcium"
+    ],
+    "keywords": [
+      "cheese",
+      "butter",
+      "makhan",
+      "mozzarella",
+      "cheddar"
+    ]
+  },
+  {
+    "id": "ghee_artisanal",
+    "name": "Desi Ghee & White Butter",
+    "department": "Dairy & Eggs",
+    "emoji": "🪔",
+    "description": "Traditional A2 cow ghee, bilona ghee, and country butter.",
+    "dietary_tags": [
+      "keto",
+      "traditional"
+    ],
+    "keywords": [
+      "ghee",
+      "desi ghee",
+      "a2 ghee",
+      "bilona",
+      "white butter"
+    ]
+  },
+  {
+    "id": "eggs",
+    "name": "Fresh Farm Eggs",
+    "department": "Dairy & Eggs",
+    "emoji": "🥚",
+    "description": "Brown eggs, white eggs, omega-3 enriched, and cage-free country eggs.",
+    "dietary_tags": [
+      "protein",
+      "keto"
+    ],
+    "keywords": [
+      "eggs",
+      "anda",
+      "brown eggs",
+      "desi eggs"
+    ]
+  },
+  {
+    "id": "plant_milks",
+    "name": "Plant-Based & Vegan Milk",
+    "department": "Dairy & Eggs",
+    "emoji": "🥥",
+    "description": "Almond milk, oat milk, soy milk, and rich coconut milk.",
+    "dietary_tags": [
+      "vegan",
+      "gluten-free",
+      "lactose-free"
+    ],
+    "keywords": [
+      "almond milk",
+      "oat milk",
+      "soy milk",
+      "coconut milk"
+    ]
+  },
+  {
+    "id": "flavored_milk",
+    "name": "Flavored Milk & Shakes",
+    "department": "Dairy & Eggs",
+    "emoji": "🥤",
+    "description": "Badam milk, kesar elaichi, chocolate milkshake, and cold coffee cans.",
+    "dietary_tags": [
+      "calcium"
+    ],
+    "keywords": [
+      "badam milk",
+      "shake",
+      "chocolate milk",
+      "cold coffee"
+    ]
+  },
+  {
+    "id": "bread_buns",
+    "name": "Daily Breads & Pav",
+    "department": "Bakery",
+    "emoji": "🍞",
+    "description": "Whole wheat bread, white sandwich bread, multigrain loaf, and soft pav.",
+    "dietary_tags": [
+      "fresh"
+    ],
+    "keywords": [
+      "bread",
+      "pav",
+      "roti",
+      "sandwich bread",
+      "multigrain"
+    ]
+  },
+  {
+    "id": "bakery",
+    "name": "Artisanal Bakery & Sourdough",
+    "department": "Bakery",
+    "emoji": "🥖",
+    "description": "European sourdough, baguettes, croissants, and garlic breadsticks.",
+    "dietary_tags": [
+      "fresh",
+      "baked"
+    ],
+    "keywords": [
+      "sourdough",
+      "croissant",
+      "baguette",
+      "garlic bread",
+      "bakery"
+    ]
+  },
+  {
+    "id": "cakes_pastries",
+    "name": "Cakes & Pastries",
+    "department": "Bakery",
+    "emoji": "🍰",
+    "description": "Chocolate truffle cake, red velvet, tea cakes, and brownies.",
+    "dietary_tags": [
+      "dessert"
+    ],
+    "keywords": [
+      "cake",
+      "pastry",
+      "brownie",
+      "muffin",
+      "truffle"
+    ]
+  },
+  {
+    "id": "cookies_rusks",
+    "name": "Cookies, Rusks & Khari",
+    "department": "Bakery",
+    "emoji": "🍪",
+    "description": "Crispy chai rusks, buttery khari, oatmeal cookies, and biscuits.",
+    "dietary_tags": [
+      "snack"
+    ],
+    "keywords": [
+      "rusk",
+      "khari",
+      "cookie",
+      "biscuit",
+      "chai snack"
+    ]
+  },
+  {
+    "id": "buns_pizzabase",
+    "name": "Burger Buns & Pizza Bases",
+    "department": "Bakery",
+    "emoji": "🍔",
+    "description": "Brioche burger buns, hot dog rolls, whole wheat pizza bases.",
+    "dietary_tags": [
+      "baking"
+    ],
+    "keywords": [
+      "burger bun",
+      "pizza base",
+      "roll",
+      "brioche"
+    ]
+  },
+  {
+    "id": "chocolates",
+    "name": "Chocolates & Candy",
+    "department": "Confectionery",
+    "emoji": "🍫",
+    "description": "Dark chocolate bars, milk chocolates, pralines, and chewy candies.",
+    "dietary_tags": [
+      "treat"
+    ],
+    "keywords": [
+      "chocolate",
+      "dark chocolate",
+      "candy",
+      "toffee",
+      "praline"
+    ]
+  },
+  {
+    "id": "indian_mithai",
+    "name": "Traditional Indian Sweets",
+    "department": "Confectionery",
+    "emoji": "🍬",
+    "description": "Kaju katli, gulab jamun, rasgulla, soan papdi, and motichoor ladoo.",
+    "dietary_tags": [
+      "festive",
+      "traditional"
+    ],
+    "keywords": [
+      "mithai",
+      "kaju katli",
+      "gulab jamun",
+      "ladoo",
+      "rasgulla"
+    ]
+  },
+  {
+    "id": "dessert_mixes",
+    "name": "Dessert Mixes & Custard",
+    "department": "Bakery",
+    "emoji": "🍮",
+    "description": "Gulab jamun instant mix, kheer mixes, jelly crystals, and custard powder.",
+    "dietary_tags": [
+      "instant"
+    ],
+    "keywords": [
+      "custard",
+      "jelly",
+      "kheer mix",
+      "falooda",
+      "dessert"
+    ]
+  },
+  {
+    "id": "ice_creams",
+    "name": "Ice Creams & Kulfi",
+    "department": "Frozen Foods",
+    "emoji": "🍨",
+    "description": "Gourmet tubs, matka kulfi, ice cream bars, and cassata slices.",
+    "dietary_tags": [
+      "frozen",
+      "dessert"
+    ],
+    "keywords": [
+      "ice cream",
+      "kulfi",
+      "cone",
+      "tub",
+      "gelato"
+    ]
+  },
+  {
+    "id": "baking_essentials",
+    "name": "Baking Ingredients & Cocoa",
+    "department": "Bakery",
+    "emoji": "🧁",
+    "description": "Baking powder, vanilla extract, dark cocoa powder, and yeast.",
+    "dietary_tags": [
+      "baking"
+    ],
+    "keywords": [
+      "cocoa",
+      "baking powder",
+      "yeast",
+      "vanilla",
+      "sprinkles"
+    ]
+  },
+  {
+    "id": "rice_basmati",
+    "name": "Basmati & Specialty Rice",
+    "department": "Staples & Grains",
+    "emoji": "🍚",
+    "description": "Aged long-grain basmati rice, biryani rice, and daily raw rice.",
+    "dietary_tags": [
+      "gluten-free"
+    ],
+    "keywords": [
+      "basmati",
+      "rice",
+      "chawal",
+      "biryani rice",
+      "sona masoori"
+    ]
+  },
+  {
+    "id": "regional_rice",
+    "name": "Regional Rice & Millets",
+    "department": "Staples & Grains",
+    "emoji": "🌾",
+    "description": "Gobindobhog, Kolam, Brown rice, Foxtail millet, and Ragi grains.",
+    "dietary_tags": [
+      "gluten-free",
+      "fiber"
+    ],
+    "keywords": [
+      "brown rice",
+      "ragi",
+      "millet",
+      "kolam",
+      "jowar"
+    ]
+  },
+  {
+    "id": "wheat_atta",
+    "name": "Atta & Whole Wheat Flour",
+    "department": "Staples & Grains",
+    "emoji": "🌾",
+    "description": "Chakki fresh whole wheat flour, multigrain atta, and MP Sharbati atta.",
+    "dietary_tags": [
+      "fiber"
+    ],
+    "keywords": [
+      "atta",
+      "wheat",
+      "gehu",
+      "multigrain atta",
+      "sharbati"
+    ]
+  },
+  {
+    "id": "specialty_flours",
+    "name": "Specialty Flours & Besan",
+    "department": "Staples & Grains",
+    "emoji": "🥣",
+    "description": "Fine besan, ragi flour, bajra flour, jowar flour, and maida.",
+    "dietary_tags": [
+      "traditional"
+    ],
+    "keywords": [
+      "besan",
+      "maida",
+      "ragi flour",
+      "bajra flour",
+      "rice flour"
+    ]
+  },
+  {
+    "id": "dal_pulses",
+    "name": "Dals & Lentils",
+    "department": "Staples & Grains",
+    "emoji": "🍲",
+    "description": "Toor dal, moong dal, masoor dal, chana dal, and urad dal.",
+    "dietary_tags": [
+      "protein",
+      "gluten-free",
+      "vegan"
+    ],
+    "keywords": [
+      "dal",
+      "toor dal",
+      "moong dal",
+      "masoor",
+      "urad dal",
+      "pulses"
+    ]
+  },
+  {
+    "id": "whole_pulses",
+    "name": "Whole Grains & Beans",
+    "department": "Staples & Grains",
+    "emoji": "🫘",
+    "description": "Kabuli chana, kala chana, rajma chitra, green moong, and lobia.",
+    "dietary_tags": [
+      "protein",
+      "fiber",
+      "vegan"
+    ],
+    "keywords": [
+      "rajma",
+      "chana",
+      "chickpeas",
+      "lobia",
+      "kidney beans"
+    ]
+  },
+  {
+    "id": "cooking_oils",
+    "name": "Cooking Oils & Mustard Oil",
+    "department": "Staples & Grains",
+    "emoji": "🛢️",
+    "description": "Kachi ghani mustard oil, sunflower oil, groundnut oil, and rice bran oil.",
+    "dietary_tags": [
+      "staple"
+    ],
+    "keywords": [
+      "oil",
+      "mustard oil",
+      "sunflower oil",
+      "tel",
+      "sarson tel"
+    ]
+  },
+  {
+    "id": "premium_oils",
+    "name": "Olive Oil & Cold-Pressed Oils",
+    "department": "Staples & Grains",
+    "emoji": "🫒",
+    "description": "Extra virgin olive oil, cold-pressed sesame oil, and virgin coconut oil.",
+    "dietary_tags": [
+      "healthy",
+      "keto"
+    ],
+    "keywords": [
+      "olive oil",
+      "extra virgin",
+      "cold pressed",
+      "sesame oil"
+    ]
+  },
+  {
+    "id": "salt_sugar",
+    "name": "Salt, Sugar & Jaggery",
+    "department": "Staples & Grains",
+    "emoji": "🧂",
+    "description": "Iodized salt, rock salt (sendha namak), sulfur-free sugar, and organic gur.",
+    "dietary_tags": [
+      "staple"
+    ],
+    "keywords": [
+      "salt",
+      "sugar",
+      "jaggery",
+      "gur",
+      "namak",
+      "rock salt"
+    ]
+  },
+  {
+    "id": "sooji_poha",
+    "name": "Poha, Sooji & Vermicelli",
+    "department": "Staples & Grains",
+    "emoji": "🥣",
+    "description": "Thick poha, fine rava/sooji, roasted vermicelli, and sabudana.",
+    "dietary_tags": [
+      "quick-cook"
+    ],
+    "keywords": [
+      "poha",
+      "sooji",
+      "rava",
+      "vermicelli",
+      "sabudana",
+      "seviyan"
+    ]
+  },
+  {
+    "id": "whole_spices",
+    "name": "Whole Spices (Khada Masala)",
+    "department": "Staples & Grains",
+    "emoji": "🌿",
+    "description": "Black pepper, cardamom (elaichi), cloves (laung), cinnamon, and cumin seeds.",
+    "dietary_tags": [
+      "aromatic"
+    ],
+    "keywords": [
+      "jeera",
+      "elaichi",
+      "clove",
+      "cinnamon",
+      "kali mirch",
+      "whole spices"
+    ]
+  },
+  {
+    "id": "powdered_spices",
+    "name": "Ground Spices & Blends",
+    "department": "Staples & Grains",
+    "emoji": "🥘",
+    "description": "Turmeric powder, red chilli powder, garam masala, and sambar masala.",
+    "dietary_tags": [
+      "staple"
+    ],
+    "keywords": [
+      "haldi",
+      "dhaniya",
+      "mirch powder",
+      "garam masala",
+      "masala"
+    ]
+  },
+  {
+    "id": "almonds_cashews",
+    "name": "Almonds, Cashews & Walnuts",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🥜",
+    "description": "California almonds, W240 cashews, Chilean walnut kernels, and pistachios.",
+    "dietary_tags": [
+      "protein",
+      "keto",
+      "healthy-fat"
+    ],
+    "keywords": [
+      "almond",
+      "cashew",
+      "walnut",
+      "badam",
+      "kaju",
+      "akhrot",
+      "pista"
+    ]
+  },
+  {
+    "id": "raisins_dates",
+    "name": "Dates, Raisins & Figs",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🍇",
+    "description": "Medjool dates, Arabian dates, golden raisins (kishmish), and anjeer.",
+    "dietary_tags": [
+      "natural-sweet",
+      "fiber"
+    ],
+    "keywords": [
+      "dates",
+      "khajoor",
+      "raisins",
+      "kishmish",
+      "anjeer",
+      "figs"
+    ]
+  },
+  {
+    "id": "edible_seeds",
+    "name": "Nutritious Super Seeds",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🌱",
+    "description": "Chia seeds, flax seeds, pumpkin seeds, sunflower seeds, and watermelon seeds.",
+    "dietary_tags": [
+      "keto",
+      "superfood",
+      "omega-3"
+    ],
+    "keywords": [
+      "chia",
+      "flaxseed",
+      "pumpkin seed",
+      "sunflower seed"
+    ]
+  },
+  {
+    "id": "makhana_roasted",
+    "name": "Fox Nuts & Roasted Snacks",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🌰",
+    "description": "Plain makhana, peri-peri roasted foxnuts, and lightly salted dry fruit mixes.",
+    "dietary_tags": [
+      "healthy",
+      "gluten-free"
+    ],
+    "keywords": [
+      "makhana",
+      "foxnut",
+      "roasted snack",
+      "trail mix"
+    ]
+  },
+  {
+    "id": "trail_mixes",
+    "name": "Trail Mixes & Fruit Berries",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🫐",
+    "description": "Cranberry nut mixes, berry antioxidant trail packs, and keto nut bars.",
+    "dietary_tags": [
+      "energy",
+      "keto"
+    ],
+    "keywords": [
+      "trail mix",
+      "cranberry",
+      "nut mix",
+      "antioxidant"
+    ]
+  },
+  {
+    "id": "organic_nuts",
+    "name": "Organic Certified Dry Fruits",
+    "department": "Dry Fruits & Nuts",
+    "emoji": "🥥",
+    "description": "Wild organic apricots, raw organic pine nuts, and unpasteurized almonds.",
+    "dietary_tags": [
+      "organic",
+      "raw"
+    ],
+    "keywords": [
+      "organic nuts",
+      "apricot",
+      "pine nuts",
+      "raw almonds"
+    ]
+  },
+  {
+    "id": "snacks",
+    "name": "Traditional Indian Namkeen",
+    "department": "Snacks & Munchies",
+    "emoji": "🥜",
+    "description": "Aloo bhujia, khatta meetha, moong dal, mixture, and murukku.",
+    "dietary_tags": [
+      "crunchy"
+    ],
+    "keywords": [
+      "namkeen",
+      "bhujia",
+      "moong dal",
+      "mixture",
+      "snack",
+      "sev"
+    ]
+  },
+  {
+    "id": "chips_crisps",
+    "name": "Potato Chips & Nachos",
+    "department": "Snacks & Munchies",
+    "emoji": "🥔",
+    "description": "Classic salted potato wafers, cream & onion crisps, and tortilla nachos.",
+    "dietary_tags": [
+      "crunchy"
+    ],
+    "keywords": [
+      "chips",
+      "potato chips",
+      "nachos",
+      "wafers",
+      "crisps",
+      "lays"
+    ]
+  },
+  {
+    "id": "biscuits",
+    "name": "Biscuits & Cookies",
+    "department": "Snacks & Munchies",
+    "emoji": "🍪",
+    "description": "Glucose biscuits, bourbon, Marie, digestive biscuits, and cream wafers.",
+    "dietary_tags": [
+      "chai-time"
+    ],
+    "keywords": [
+      "biscuit",
+      "cookie",
+      "marie",
+      "bourbon",
+      "parle-g",
+      "good day"
+    ]
+  },
+  {
+    "id": "popcorn_puffs",
+    "name": "Gourmet Popcorn & Puffs",
+    "department": "Snacks & Munchies",
+    "emoji": "🍿",
+    "description": "Cheese balls, roasted peanut chaat, butter popcorn, and diet roasted flakes.",
+    "dietary_tags": [
+      "light"
+    ],
+    "keywords": [
+      "popcorn",
+      "cheese balls",
+      "puffs",
+      "roasted chana"
+    ]
+  },
+  {
+    "id": "sweet_snacks",
+    "name": "Candy, Gums & Mints",
+    "department": "Snacks & Munchies",
+    "emoji": "🍬",
+    "description": "Lollipops, chewing gums, mouth fresheners (mukhwas), and sour chews.",
+    "dietary_tags": [
+      "refreshing"
+    ],
+    "keywords": [
+      "mukhwas",
+      "candy",
+      "gum",
+      "mint",
+      "saunf"
+    ]
+  },
+  {
+    "id": "dips_sauces",
+    "name": "Salsa, Dips & Spreads",
+    "department": "Snacks & Munchies",
+    "emoji": "🫙",
+    "description": "Cheesy dips, salsa picante, hummus, guacamole, and mayo dips.",
+    "dietary_tags": [
+      "party"
+    ],
+    "keywords": [
+      "dip",
+      "salsa",
+      "hummus",
+      "mayo",
+      "cheese dip"
+    ]
+  },
+  {
+    "id": "party_combos",
+    "name": "Party Snack Combos",
+    "department": "Snacks & Munchies",
+    "emoji": "🎉",
+    "description": "Jumbo snack party buckets, soda + chip combos, and festive namkeen boxes.",
+    "dietary_tags": [
+      "combo"
+    ],
+    "keywords": [
+      "party pack",
+      "snack combo",
+      "bucket"
+    ]
+  },
+  {
+    "id": "healthy_snacks",
+    "name": "Diet & Millet Snacks",
+    "department": "Snacks & Munchies",
+    "emoji": "🌾",
+    "description": "Baked ragi crisps, quinoa chips, vacuum-fried okra chips, and jowar puffs.",
+    "dietary_tags": [
+      "healthy",
+      "gluten-free"
+    ],
+    "keywords": [
+      "ragi chips",
+      "quinoa",
+      "healthy snack",
+      "diet snack",
+      "baked"
+    ]
+  },
+  {
+    "id": "chikki_gajak",
+    "name": "Chikki, Gajak & Brittles",
+    "department": "Snacks & Munchies",
+    "emoji": "🥜",
+    "description": "Peanut chikki, til patti, dry fruit gajak, and jaggery brittles.",
+    "dietary_tags": [
+      "traditional",
+      "energy"
+    ],
+    "keywords": [
+      "chikki",
+      "gajak",
+      "til patti",
+      "jaggery snack"
+    ]
+  },
+  {
+    "id": "nuts_roasted",
+    "name": "Flavored & Spiced Nuts",
+    "department": "Snacks & Munchies",
+    "emoji": "🌰",
+    "description": "Tandoori cashews, smoked almonds, black pepper peanuts, and wasabi peas.",
+    "dietary_tags": [
+      "party",
+      "keto"
+    ],
+    "keywords": [
+      "salted peanut",
+      "tandoori kaju",
+      "spiced almond",
+      "nuts"
+    ]
+  },
+  {
+    "id": "tea",
+    "name": "Chai, Green Tea & Herbal Infusions",
+    "department": "Beverages",
+    "emoji": "🍵",
+    "description": "Assam CTC tea, Darjeeling long leaf, green tea bags, and chamomile tea.",
+    "dietary_tags": [
+      "antioxidant"
+    ],
+    "keywords": [
+      "tea",
+      "chai",
+      "green tea",
+      "assam tea",
+      "darjeeling",
+      "chamomile"
+    ]
+  },
+  {
+    "id": "beverages",
+    "name": "Coffee & Instant Brews",
+    "department": "Beverages",
+    "emoji": "☕",
+    "description": "South Indian filter coffee, 100% Arabica instant coffee, and espresso beans.",
+    "dietary_tags": [
+      "energizing"
+    ],
+    "keywords": [
+      "coffee",
+      "filter coffee",
+      "instant coffee",
+      "nescafe",
+      "bru"
+    ]
+  },
+  {
+    "id": "packaged_juices",
+    "name": "Fruit Juices & Nectars",
+    "department": "Beverages",
+    "emoji": "🧃",
+    "description": "Pomegranate juice, mixed fruit, tender coconut water, and aam panna.",
+    "dietary_tags": [
+      "refreshing"
+    ],
+    "keywords": [
+      "juice",
+      "fruit juice",
+      "coconut water",
+      "real",
+      "tropicana"
+    ]
+  },
+  {
+    "id": "soft_drinks",
+    "name": "Carbonated Drinks & Sodas",
+    "department": "Beverages",
+    "emoji": "🥤",
+    "description": "Cola, lemon lime soda, ginger ale, tonic water, and sparkling soda.",
+    "dietary_tags": [
+      "refreshing"
+    ],
+    "keywords": [
+      "coke",
+      "pepsi",
+      "sprite",
+      "soda",
+      "tonic water",
+      "cold drink"
+    ]
+  },
+  {
+    "id": "energy_drinks",
+    "name": "Energy & Sports Drinks",
+    "department": "Beverages",
+    "emoji": "⚡",
+    "description": "Electrolyte hydration drinks, isotonic water, and taurine energy cans.",
+    "dietary_tags": [
+      "energy"
+    ],
+    "keywords": [
+      "energy drink",
+      "red bull",
+      "electrolyte",
+      "hydration",
+      "sports drink"
+    ]
+  },
+  {
+    "id": "water_soda",
+    "name": "Mineral & Sparkling Water",
+    "department": "Beverages",
+    "emoji": "💧",
+    "description": "Packaged natural spring water, sparkling mineral water, and alkaline water.",
+    "dietary_tags": [
+      "essential"
+    ],
+    "keywords": [
+      "water",
+      "mineral water",
+      "sparkling water",
+      "pani",
+      "bisleri"
+    ]
+  },
+  {
+    "id": "squash_syrup",
+    "name": "Sharbat, Syrups & Squashes",
+    "department": "Beverages",
+    "emoji": "🍹",
+    "description": "Rooh Afza, khus syrup, lemon squash, and thandai syrup mix.",
+    "dietary_tags": [
+      "traditional"
+    ],
+    "keywords": [
+      "rooh afza",
+      "sharbat",
+      "thandai",
+      "squash",
+      "syrup"
+    ]
+  },
+  {
+    "id": "health_drinks",
+    "name": "Malted Nutrition Drinks",
+    "department": "Beverages",
+    "emoji": "🥛",
+    "description": "Horlicks, Bournvita, Boost, Complan, and nutritional protein milk powders.",
+    "dietary_tags": [
+      "nutrition"
+    ],
+    "keywords": [
+      "horlicks",
+      "bournvita",
+      "boost",
+      "health drink",
+      "malt"
+    ]
+  },
+  {
+    "id": "instant_noodles",
+    "name": "Instant Noodles & Ramen",
+    "department": "Instant & Frozen",
+    "emoji": "🍜",
+    "description": "Masala instant noodles, Korean spicy ramen, Hakka noodles, and vermicelli.",
+    "dietary_tags": [
+      "quick-cook"
+    ],
+    "keywords": [
+      "maggi",
+      "noodles",
+      "ramen",
+      "hakka noodles",
+      "yippee"
+    ]
+  },
+  {
+    "id": "pasta_sauces",
+    "name": "Pasta, Macaroni & Italian Sauces",
+    "department": "Instant & Frozen",
+    "emoji": "🍝",
+    "description": "Durum wheat penne, fusilli, spaghetti, arrabbiata, and white Alfredo sauce.",
+    "dietary_tags": [
+      "italian"
+    ],
+    "keywords": [
+      "pasta",
+      "macaroni",
+      "penne",
+      "pasta sauce",
+      "spaghetti"
+    ]
+  },
+  {
+    "id": "ready_to_eat",
+    "name": "Ready-to-Eat Curries & Meals",
+    "department": "Instant & Frozen",
+    "emoji": "🍛",
+    "description": "Dal makhani heat-and-eat packs, palak paneer pouches, and poha cups.",
+    "dietary_tags": [
+      "instant"
+    ],
+    "keywords": [
+      "ready to eat",
+      "heat and eat",
+      "instant meal",
+      "curry pack"
+    ]
+  },
+  {
+    "id": "ready_to_cook",
+    "name": "Ready-to-Cook Batter & Mixes",
+    "department": "Instant & Frozen",
+    "emoji": "🥞",
+    "description": "Fresh idli/dosa batter, rava idli instant mix, and pancake batter.",
+    "dietary_tags": [
+      "fresh",
+      "quick"
+    ],
+    "keywords": [
+      "dosa batter",
+      "idli batter",
+      "batter",
+      "instant mix"
+    ]
+  },
+  {
+    "id": "ketchup_sauces",
+    "name": "Tomato Ketchup & Hot Sauces",
+    "department": "Instant & Frozen",
+    "emoji": "🍅",
+    "description": "Classic tomato ketchup, sweet & spicy chilli sauce, and Schezwan chutney.",
+    "dietary_tags": [
+      "condiment"
+    ],
+    "keywords": [
+      "ketchup",
+      "tomato sauce",
+      "schezwan",
+      "chilli sauce",
+      "kissan"
+    ]
+  },
+  {
+    "id": "pickles_chutneys",
+    "name": "Achar & Traditional Chutneys",
+    "department": "Instant & Frozen",
+    "emoji": "🥭",
+    "description": "Mango pickle (aam ka achar), lime pickle, mixed achar, and garlic chutney.",
+    "dietary_tags": [
+      "traditional"
+    ],
+    "keywords": [
+      "achar",
+      "pickle",
+      "mango pickle",
+      "chutney",
+      "nimbu achar"
+    ]
+  },
+  {
+    "id": "jams_spreads",
+    "name": "Jams, Honey & Peanut Butter",
+    "department": "Instant & Frozen",
+    "emoji": "🍯",
+    "description": "Mixed fruit jam, 100% natural raw honey, and crunchy peanut butter.",
+    "dietary_tags": [
+      "breakfast"
+    ],
+    "keywords": [
+      "jam",
+      "honey",
+      "peanut butter",
+      "shehed",
+      "spread",
+      "nutella"
+    ]
+  },
+  {
+    "id": "frozen_snacks",
+    "name": "Frozen Snacks & Fries",
+    "department": "Instant & Frozen",
+    "emoji": "🍟",
+    "description": "French fries, cheese nuggets, aloo tikki, vegetable samosas, and momos.",
+    "dietary_tags": [
+      "frozen"
+    ],
+    "keywords": [
+      "french fries",
+      "nuggets",
+      "aloo tikki",
+      "samosa",
+      "mccain",
+      "momos"
+    ]
+  },
+  {
+    "id": "soaps_bodywash",
+    "name": "Soaps, Body Wash & Shower Gels",
+    "department": "Personal Care",
+    "emoji": "🧼",
+    "description": "Moisturizing bath soaps, natural neem bars, and refreshing shower gels.",
+    "dietary_tags": [
+      "hygiene"
+    ],
+    "keywords": [
+      "soap",
+      "body wash",
+      "shower gel",
+      "dove",
+      "dettol",
+      "lux"
+    ]
+  },
+  {
+    "id": "shampoo_haircare",
+    "name": "Shampoos, Conditioners & Hair Oils",
+    "department": "Personal Care",
+    "emoji": "🧴",
+    "description": "Anti-dandruff shampoo, coconut hair oil, bhringraj serum, and conditioners.",
+    "dietary_tags": [
+      "haircare"
+    ],
+    "keywords": [
+      "shampoo",
+      "hair oil",
+      "conditioner",
+      "coconut oil",
+      "serum"
+    ]
+  },
+  {
+    "id": "oral_care",
+    "name": "Toothpaste, Brushes & Mouthwash",
+    "department": "Personal Care",
+    "emoji": "🪥",
+    "description": "Ayurvedic herbal paste, sensitive toothpaste, soft toothbrushes, and floss.",
+    "dietary_tags": [
+      "oral-hygiene"
+    ],
+    "keywords": [
+      "toothpaste",
+      "toothbrush",
+      "colgate",
+      "sensodyne",
+      "mouthwash"
+    ]
+  },
+  {
+    "id": "skin_care",
+    "name": "Facewash, Lotions & Creams",
+    "department": "Personal Care",
+    "emoji": "💆",
+    "description": "Gentle foaming facewash, cold cream, aloe vera gel, and body lotion.",
+    "dietary_tags": [
+      "skincare"
+    ],
+    "keywords": [
+      "facewash",
+      "lotion",
+      "cold cream",
+      "aloe vera",
+      "sunscreen"
+    ]
+  },
+  {
+    "id": "shaving_grooming",
+    "name": "Men’s Grooming & Shaving",
+    "department": "Personal Care",
+    "emoji": "🪒",
+    "description": "Shaving cream, triple-blade razors, aftershave lotion, and beard wash.",
+    "dietary_tags": [
+      "grooming"
+    ],
+    "keywords": [
+      "shaving cream",
+      "razor",
+      "gillette",
+      "beard oil",
+      "aftershave"
+    ]
+  },
+  {
+    "id": "sanitary_hygiene",
+    "name": "Feminine Hygiene & Pads",
+    "department": "Personal Care",
+    "emoji": "🌸",
+    "description": "Ultra-thin sanitary pads, panty liners, intimate wash, and tampons.",
+    "dietary_tags": [
+      "hygiene"
+    ],
+    "keywords": [
+      "sanitary pads",
+      "whisper",
+      "stayfree",
+      "intimate wash"
+    ]
+  },
+  {
+    "id": "deodorants_perfume",
+    "name": "Deodorants & Body Sprays",
+    "department": "Personal Care",
+    "emoji": "✨",
+    "description": "Gas-free body deodorants, pocket perfumes, and luxury body mists.",
+    "dietary_tags": [
+      "fragrance"
+    ],
+    "keywords": [
+      "deodorant",
+      "body spray",
+      "perfume",
+      "axe",
+      "fogg",
+      "nivea"
+    ]
+  },
+  {
+    "id": "handwash_sanitizers",
+    "name": "Handwash & Sanitizers",
+    "department": "Personal Care",
+    "emoji": "🫧",
+    "description": "Antibacterial liquid handwash refills and 70% alcohol hand sanitizers.",
+    "dietary_tags": [
+      "hygiene"
+    ],
+    "keywords": [
+      "handwash",
+      "sanitizer",
+      "lifebuoy",
+      "dettol refill"
+    ]
+  },
+  {
+    "id": "baby_wipes_diapers",
+    "name": "Baby Diapers & Wipes",
+    "department": "Baby Care",
+    "emoji": "👶",
+    "description": "Panty diapers with wetness indicator, organic bamboo baby wipes.",
+    "dietary_tags": [
+      "baby"
+    ],
+    "keywords": [
+      "diapers",
+      "pampers",
+      "baby wipes",
+      "huggies",
+      "mamy poko"
+    ]
+  },
+  {
+    "id": "baby_food_care",
+    "name": "Baby Food & Skincare",
+    "department": "Baby Care",
+    "emoji": "🍼",
+    "description": "Organic cereal puree, baby massage oil, tear-free shampoo, and gripp water.",
+    "dietary_tags": [
+      "baby"
+    ],
+    "keywords": [
+      "cerelac",
+      "baby food",
+      "baby soap",
+      "johnson",
+      "mothercare"
+    ]
+  },
+  {
+    "id": "laundry_detergents",
+    "name": "Detergents & Fabric Care",
+    "department": "Household & Cleaning",
+    "emoji": "🧺",
+    "description": "Liquid detergent, washing machine powder, fabric softener, and stain remover.",
+    "dietary_tags": [
+      "cleaning"
+    ],
+    "keywords": [
+      "detergent",
+      "surf excel",
+      "ariel",
+      "comfort",
+      "rin",
+      "tide"
+    ]
+  },
+  {
+    "id": "dishwashing",
+    "name": "Dishwash Liquids, Bars & Tablets",
+    "department": "Household & Cleaning",
+    "emoji": "🍽️",
+    "description": "Lemon dishwash gel, dishwashing scrub pads, and dishwasher tablets.",
+    "dietary_tags": [
+      "cleaning"
+    ],
+    "keywords": [
+      "dishwash",
+      "vim",
+      "pril",
+      "scrub pad",
+      "scotch brite"
+    ]
+  },
+  {
+    "id": "floor_cleaners",
+    "name": "Floor Cleaners & Disinfectants",
+    "department": "Household & Cleaning",
+    "emoji": "🧹",
+    "description": "Pine disinfectant surface cleaner, phenyl, and citrus multi-surface spray.",
+    "dietary_tags": [
+      "cleaning"
+    ],
+    "keywords": [
+      "lizol",
+      "floor cleaner",
+      "disinfectant",
+      "phenyl",
+      "colin"
+    ]
+  },
+  {
+    "id": "toilet_cleaners",
+    "name": "Toilet & Bathroom Cleaners",
+    "department": "Household & Cleaning",
+    "emoji": "🚽",
+    "description": "Thick blue toilet liquid cleaner, bathroom tile spray, and rim blocks.",
+    "dietary_tags": [
+      "cleaning"
+    ],
+    "keywords": [
+      "harpic",
+      "toilet cleaner",
+      "bathroom cleaner",
+      "bleach"
+    ]
+  },
+  {
+    "id": "mosquito_repellents",
+    "name": "Mosquito & Pest Control",
+    "department": "Household & Cleaning",
+    "emoji": "🦟",
+    "description": "Liquid vaporizer refills, mosquito coils, chalk lines, and cockroach spray.",
+    "dietary_tags": [
+      "pest-control"
+    ],
+    "keywords": [
+      "good knight",
+      "all out",
+      "hit",
+      "mosquito refill",
+      "repellent"
+    ]
+  },
+  {
+    "id": "air_fresheners",
+    "name": "Air Fresheners & Fragrance",
+    "department": "Household & Cleaning",
+    "emoji": "🌸",
+    "description": "Bathroom freshener pockets, automatic room sprays, and scented camphor.",
+    "dietary_tags": [
+      "fragrance"
+    ],
+    "keywords": [
+      "odonil",
+      "air freshener",
+      "godrej aer",
+      "room spray"
+    ]
+  },
+  {
+    "id": "paper_tissues",
+    "name": "Kitchen Rolls, Tissues & Foil",
+    "department": "Household & Cleaning",
+    "emoji": "🧻",
+    "description": "Multi-ply kitchen towel rolls, food wrapping aluminum foil, and napkins.",
+    "dietary_tags": [
+      "disposable"
+    ],
+    "keywords": [
+      "kitchen roll",
+      "aluminum foil",
+      "tissue paper",
+      "cling wrap"
+    ]
+  },
+  {
+    "id": "garbage_bags",
+    "name": "Garbage Bags & Bins",
+    "department": "Household & Cleaning",
+    "emoji": "🗑️",
+    "description": "Oxo-biodegradable trash bags (Medium/Large/XL) and disposal bags.",
+    "dietary_tags": [
+      "disposable"
+    ],
+    "keywords": [
+      "garbage bag",
+      "trash bag",
+      "dustbin bag",
+      "biodegradable"
+    ]
+  },
+  {
+    "id": "cleaning_tools",
+    "name": "Mops, Brooms & Scrubbers",
+    "department": "Household & Cleaning",
+    "emoji": "🪣",
+    "description": "Microfiber spin mops, grass brooms (jhadu), wiper squeegees, and duster cloth.",
+    "dietary_tags": [
+      "tools"
+    ],
+    "keywords": [
+      "mop",
+      "broom",
+      "jhadu",
+      "wiper",
+      "microfiber cloth"
+    ]
+  },
+  {
+    "id": "shoe_care",
+    "name": "Shoe Care & Battery Hardware",
+    "department": "Household & Cleaning",
+    "emoji": "🔋",
+    "description": "Black shoe polish wax, sponge shiners, AA/AAA batteries, and glue.",
+    "dietary_tags": [
+      "hardware"
+    ],
+    "keywords": [
+      "duracell",
+      "battery",
+      "shoe polish",
+      "cherry blossom",
+      "fevikwik"
+    ]
+  },
+  {
+    "id": "organic_staples",
+    "name": "Organic Dals, Rice & Spices",
+    "department": "Specialty & Wellness",
+    "emoji": "🌱",
+    "description": "100% certified organic unpolished dals, heirloom rice, and cold-ground spices.",
+    "dietary_tags": [
+      "organic",
+      "healthy"
+    ],
+    "keywords": [
+      "organic dal",
+      "organic rice",
+      "organic spices",
+      "pure"
+    ]
+  },
+  {
+    "id": "protein_foods",
+    "name": "Protein Bars, Powders & Supplements",
+    "department": "Specialty & Wellness",
+    "emoji": "💪",
+    "description": "Whey isolate protein, plant protein powder, and crunchy peanut protein bars.",
+    "dietary_tags": [
+      "protein",
+      "gym"
+    ],
+    "keywords": [
+      "protein bar",
+      "whey protein",
+      "energy bar",
+      "isolate"
+    ]
+  },
+  {
+    "id": "gluten_free",
+    "name": "Gluten-Free Essentials",
+    "department": "Specialty & Wellness",
+    "emoji": "🌾",
+    "description": "Gluten-free multigrain atta, almond flour, quinoa pasta, and buckwheat.",
+    "dietary_tags": [
+      "gluten-free",
+      "celiac-safe"
+    ],
+    "keywords": [
+      "gluten-free",
+      "almond flour",
+      "quinoa pasta",
+      "buckwheat"
+    ]
+  },
+  {
+    "id": "keto_lowcarb",
+    "name": "Keto & Low-Carb Products",
+    "department": "Specialty & Wellness",
+    "emoji": "🥑",
+    "description": "Keto flour, coconut flour, sugar-free stevia drops, and MCT oil.",
+    "dietary_tags": [
+      "keto",
+      "low-carb"
+    ],
+    "keywords": [
+      "keto",
+      "stevia",
+      "coconut flour",
+      "mct oil",
+      "low carb"
+    ]
+  },
+  {
+    "id": "diabetic_safe",
+    "name": "Diabetic Friendly & Sugar-Free",
+    "department": "Specialty & Wellness",
+    "emoji": "🩺",
+    "description": "Diabetic atta with low GI, bitter gourd juice, and sugar-free sweeteners.",
+    "dietary_tags": [
+      "diabetic",
+      "low-gi"
+    ],
+    "keywords": [
+      "sugar free",
+      "diabetic atta",
+      "karela jamun",
+      "low gi"
+    ]
+  },
+  {
+    "id": "vegan_specialties",
+    "name": "Vegan Specialties & Mock Meat",
+    "department": "Specialty & Wellness",
+    "emoji": "🌿",
+    "description": "Plant-based mock chicken nuggets, vegan mayo, and nutritional yeast.",
+    "dietary_tags": [
+      "vegan",
+      "cruelty-free"
+    ],
+    "keywords": [
+      "vegan",
+      "mock meat",
+      "plant based",
+      "nutritional yeast"
+    ]
+  },
+  {
+    "id": "ayurvedic_wellness",
+    "name": "Ayurvedic Herbs & Immunity",
+    "department": "Specialty & Wellness",
+    "emoji": "🏺",
+    "description": "Chyawanprash, pure amla juice, giloy tulsi juice, ashwagandha, and triphala.",
+    "dietary_tags": [
+      "ayurveda",
+      "immunity"
+    ],
+    "keywords": [
+      "chyawanprash",
+      "amla juice",
+      "dabur",
+      "ashwagandha",
+      "giloy"
+    ]
+  },
+  {
+    "id": "healthy_oils_ghee",
+    "name": "A2 Vedic Cultured Ghee",
+    "department": "Specialty & Wellness",
+    "emoji": "🪔",
+    "description": "Hand-churned A2 Gir cow bilona ghee and cold-pressed extra virgin oils.",
+    "dietary_tags": [
+      "a2-vedic",
+      "premium"
+    ],
+    "keywords": [
+      "a2 cow ghee",
+      "bilona ghee",
+      "gir cow",
+      "vedic ghee"
+    ]
+  },
+  {
+    "id": "south_indian",
+    "name": "South Indian Specialties",
+    "department": "Regional Foods",
+    "emoji": "🥥",
+    "description": "Filter coffee decoction, appalam papads, gunpowder (podi), and sambar paste.",
+    "dietary_tags": [
+      "south-indian",
+      "traditional"
+    ],
+    "keywords": [
+      "filter coffee",
+      "appalam",
+      "podi",
+      "gunpowder",
+      "idli podi"
+    ]
+  },
+  {
+    "id": "north_indian",
+    "name": "North & Punjabi Specialties",
+    "department": "Regional Foods",
+    "emoji": "🫓",
+    "description": "Amritsari wadiyan, Makki atta, kasuri methi, and Punjabi chole masala.",
+    "dietary_tags": [
+      "punjabi",
+      "traditional"
+    ],
+    "keywords": [
+      "amritsari wadi",
+      "makki atta",
+      "kasuri methi",
+      "chole masala"
+    ]
+  },
+  {
+    "id": "gujarati_marwari",
+    "name": "Gujarati & Marwari Specialties",
+    "department": "Regional Foods",
+    "emoji": "🥟",
+    "description": "Khakhra crisps, thepla packs, methi sambharo, and papad mung.",
+    "dietary_tags": [
+      "gujarati",
+      "traditional"
+    ],
+    "keywords": [
+      "khakhra",
+      "thepla",
+      "gathiya",
+      "papad"
+    ]
+  },
+  {
+    "id": "bengali_east",
+    "name": "Bengali & Eastern Specialties",
+    "department": "Regional Foods",
+    "emoji": "🐟",
+    "description": "Kashundi mustard paste, Panch Phoron spice, Gobindobhog rice, and mishti doi.",
+    "dietary_tags": [
+      "bengali",
+      "traditional"
+    ],
+    "keywords": [
+      "kasundi",
+      "panch phoron",
+      "gobindobhog",
+      "mishti doi"
+    ]
+  },
+  {
+    "id": "pet_food_care",
+    "name": "Pet Food & Treats",
+    "department": "Pet Supplies",
+    "emoji": "🐾",
+    "description": "Dog food kibbles (Pedigree, Drools), cat food pouches (Whiskas), and chew bones.",
+    "dietary_tags": [
+      "pets"
+    ],
+    "keywords": [
+      "dog food",
+      "cat food",
+      "pedigree",
+      "whiskas",
+      "drools",
+      "pet treats"
+    ]
+  },
+  {
+    "id": "pooja_essentials",
+    "name": "Pooja Essentials & Agarbatti",
+    "department": "Pooja Essentials",
+    "emoji": "🪔",
+    "description": "Fragrant agarbatti sticks, dhoop cones, pure puja camphor, and brass diya wicks.",
+    "dietary_tags": [
+      "spiritual"
+    ],
+    "keywords": [
+      "agarbatti",
+      "dhoop",
+      "camphor",
+      "kapoor",
+      "diya oil",
+      "cycle agarbatti"
+    ]
+  }
+]

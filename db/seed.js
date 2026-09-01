@@ -23,9 +23,10 @@ async function seed() {
 
   // --- 1. Seed Products ---
   console.log('📦 Seeding 32 products...');
+  const { resolveProductImage } = require('../services/image-resolver');
   const insertProduct = db.prepare(`
-    INSERT INTO products (id, name, emoji, category, price, unit, description, stock, rating, tags)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO products (id, name, emoji, category, price, unit, description, stock, rating, tags, image_key, image_url, image_alt, brand, mrp, discount)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const productTags = {
@@ -39,7 +40,27 @@ async function seed() {
 
   const insertProducts = db.transaction(() => {
     for (const p of products) {
-      insertProduct.run(p.id, p.name, p.emoji, p.category, p.price, p.unit, p.description, p.stock, p.rating, productTags[p.category] || '[]');
+      const resolved = resolveProductImage(p);
+      const mrp = Math.round(p.price * 1.2 * 100) / 100;
+      const discount = Math.round(((mrp - p.price) / mrp) * 100);
+      insertProduct.run(
+        p.id,
+        p.name,
+        p.emoji,
+        p.category,
+        p.price,
+        p.unit,
+        p.description,
+        p.stock,
+        p.rating,
+        productTags[p.category] || '[]',
+        resolved.image_key,
+        resolved.image_url,
+        p.name,
+        'FreshCart',
+        mrp,
+        discount
+      );
     }
   });
   insertProducts();
