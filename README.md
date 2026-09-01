@@ -16,6 +16,21 @@
 
 ---
 
+## 📚 Documentation Sitemap & Technical Specifications
+
+For in-depth architectural and mathematical references, consult the dedicated documentation deliverables:
+
+| Document | File Link | Focus & Coverage |
+|---|---|---|
+| 🏛️ **System Architecture** | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Dual-tier microservice architecture, complete request/data flow, circuit breaker, and directory roles |
+| 🧠 **AI / ML & Operations Research** | [`docs/AI_ML_OVERVIEW.md`](docs/AI_ML_OVERVIEW.md) | Mathematical formulas, algorithms, fallback logic, and verified empirical evaluation metrics |
+| 🔌 **REST API Reference** | [`docs/API.md`](docs/API.md) | Full documentation for all **70 HTTP REST endpoints** across 17 controllers |
+| 📊 **Dataset & Schema Architecture** | [`docs/DATASET.md`](docs/DATASET.md) | 10,000 products, 108 categories, 150,000 users, relational schema, and seed-42 generation |
+| 🧪 **Comprehensive Testing Guide** | [`docs/TESTING.md`](docs/TESTING.md) | Multi-tier test harness, commands, test targets, and 100% pass verification logs |
+| 🛡️ **Repository Audit & Safety** | [`docs/GITHUB_READINESS_AUDIT.md`](docs/GITHUB_READINESS_AUDIT.md) | 10-category repository classification, large-file handling, and secret scan results |
+
+---
+
 ## 📖 Project Overview
 
 **FreshCart AI** is a dual-tier, full-stack intelligent grocery retail and operations research platform engineered for modern 10-minute quick-commerce dark stores. The system operates on a production-scale catalog of **10,000 products** spanning **108 hyper-specialized categories**, backed by **150,000 synthetic customer accounts** and over 65,000 historical transactions. It uniquely bridges customer-facing quick-commerce features (bilingual Hindi/English NLP search, Top-K hybrid recommendations, Nutri-Score analysis, and recipe ingredient bundling) with backend fulfillment operations (30-day SARIMAX demand forecasting, econometric dynamic pricing, real-time transaction fraud scoring, 2D TSP dark store warehouse picker routing, and CVRP delivery fleet dispatch).
@@ -87,16 +102,22 @@ FreshCart AI implements a **dual-tier decoupled microservice architecture** with
 └───────────────────────────────────────────────────────┘   └───────────────────────────┘
 ```
 
-Detailed architecture diagrams and request lifecycles are documented in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
 ---
 
 ## 🌟 Major Features
 
 ### Customer Storefront Experience
 - **10-Minute Dark Store Context:** Integrated delivery location badge (`📍 Indiranagar Hub #04 • ⚡ 10 Mins ETA`) unified beside the logo.
-- **8 Major Departments:** *🌟 All Items*, *🍎 Fruits & Veggies*, *🥛 Dairy & Bakery*, *🍿 Snacks & Munchies*, *🥤 Drinks & Juices*, *🌾 Atta, Rice & Dals*, *🧼 Cleaning & Home*, *💆 Personal Care*.
-- **📂 108-Category Mega Directory Modal:** Searchable modal with live text filtering and instant category jumps.
+- **8 Major Departments:**
+  1. *🌟 All Items* (10,000 SKUs)
+  2. *🍎 Fruits & Veggies* (Fresh vegetables, exotic fruits, organic herbs)
+  3. *🥛 Dairy & Bakery* (Farm milk, sourdough, paneer, artisanal butter)
+  4. *🍿 Snacks & Munchies* (Namkeen, chips, roasted makhana, cookies)
+  5. *🥤 Drinks & Juices* (Cold brew, sparkling water, cold-pressed juices)
+  6. *🌾 Atta, Rice & Dals* (Basmati rice, whole wheat atta, organic pulses)
+  7. *🧼 Cleaning & Home* (Detergents, cleaners, home essentials)
+  8. *💆 Personal Care* (Soaps, shampoos, skincare, oral hygiene)
+- **📂 108-Category Mega Directory Modal:** Searchable modal with live text filtering and instant category jumps across 108 categories.
 - **Uniform 1:1 Product Grid:** 2-line clamped titles, tabular pricing (`font-variant-numeric: tabular-nums`), discrete FBT pairing links, and responsive card steppers.
 - **Advanced Pagination:** Dynamic item range (`Showing 937–960 of 10,000 products`), sliding page pill navigation `[1] ... [38] [39] [40] [41] [42] ... [417]`, validated **Direct Page Jump** (`Go to page: [ 40 ] [Go]`), and compact mobile bar `[◀] Page 40 / 417 [ Go to page ] [▶]`.
 - **Smart Search Autocomplete:** Query substring matched tags (`<mark class="search-match">`), thumbnail previews, and keyboard navigation (ArrowUp, ArrowDown, Enter, Escape).
@@ -105,7 +126,7 @@ Detailed architecture diagrams and request lifecycles are documented in [`docs/A
 - **Gamification:** Lucky Spin Wheel, FreshCoins loyalty points, and scratch card rewards.
 
 ### Admin & Operations Research Dashboard
-- **Executive KPIs:** Live gross revenue, order volume, average basket size, and inventory valuation.
+- **Executive KPIs:** Live gross revenue (₹6.97 Cr+), order volume (65,000+), average basket size, and inventory valuation.
 - **SARIMAX Demand Forecast Visualizer:** 30-day forecast curves with upper/lower 95% confidence intervals.
 - **Dynamic Pricing Sandbox:** Live elasticity adjustment with revenue simulation curves.
 - **Warehouse 2D Picker Route Map:** Real-time rack visualization showing optimized picker travel routes.
@@ -229,9 +250,9 @@ npm run start:all
 
 ---
 
-## 🧪 Comprehensive Automated Testing
+## 🧪 Comprehensive Automated Testing Suite
 
-Detailed testing procedures are documented in [`docs/TESTING.md`](docs/TESTING.md).
+Detailed testing procedures and pass logs are documented in [`docs/TESTING.md`](docs/TESTING.md).
 
 ```bash
 # 1. Run Master Codebase Auditor (44 Syntax Checks + 8 Multi-Tier Suites)
@@ -246,16 +267,31 @@ node test/http-verification.js
 # 4. Run Frontend Synthetic DOM & Localization Suite
 node test/synthetic-frontend-test.js
 
-# 5. Run OWASP Security & SQLi Immunity Suite
+# 5. Run Final QA Edge & Concurrency Audit (25 concurrent mixed flows)
+node test/final-qa-edge-concurrency-test.js
+
+# 6. Run Advanced Features & Microeconomics Verification Suite
+node test/advanced-features-test.js
+
+# 7. Run Product Image Metadata & Vector Integrity Suite
+node test/product-image-integrity-test.js
+
+# 8. Run Unified Architecture & Hardening Suite
+node test/unified-app-hardening-test.js
+
+# 9. Run Dataset Schema & Referential Integrity Auditor
+node scripts/validate-dataset.js
+
+# 10. Run OWASP Security & SQLi Immunity Suite
 node test/security-safety-test.js
 
-# 6. Run Alpha & Beta Stress Suite (Concurrency & Load)
+# 11. Run Alpha & Beta Stress Suite (Concurrency & Load)
 node test/alpha-beta-backend.js
 
-# 7. Run DOM Identifier Integrity Check (193 IDs)
+# 12. Run DOM Identifier Integrity Check (193 interactive IDs)
 node test/dom-integrity-check.js
 
-# 8. Run Catalog & Pagination Test Suite (10,000 Products, 108 Categories)
+# 13. Run Catalog & Pagination Test Suite (10,000 Products, 108 Categories)
 node test/test-ui-pagination.js
 ```
 
@@ -269,10 +305,11 @@ freshcart-ai/
 │   ├── database.js             # sql.js connection manager and query helpers
 │   ├── schema.sql              # Normalized relational table schemas
 │   ├── seed.js                 # Database seeder
-│   └── freshcart.db            # Active SQLite database (10,000 products, 150,000 users)
+│   └── freshcart.db            # Active SQLite database (10,000 products, 150,000 users) [LOCAL ONLY]
 ├── data/                       # Static & synthetic dataset definitions
 │   ├── categories.json         # 108 categorized departments mapping
 │   ├── products.js             # Core product schema
+│   ├── product-image-manifest.json # Vector icon and image mappings
 │   └── synthetic/              # CSV synthetic benchmark records
 ├── middleware/                 # Express middleware (JWT authentication, RBAC)
 │   └── auth.js                 # Authentication validator
@@ -293,12 +330,13 @@ freshcart-ai/
 │   ├── css/
 │   │   ├── style.css           # Glassmorphism design system & responsive layout
 │   │   └── admin.css           # Admin dashboard stylesheet
-│   └── js/
-│       ├── app.js              # Storefront state, rendering, and API logic
-│       └── admin.js            # Admin charting and fleet visualization logic
+│   ├── js/
+│   │   ├── app.js              # Storefront state, rendering, and API logic
+│   │   └── admin.js            # Admin charting and fleet visualization logic
+│   └── images/                 # 97 lightweight SVG category & product icons
 ├── routes/                     # Express REST API route controllers (70 endpoints)
 ├── scripts/                    # Utility, data generation, and automation scripts
-├── services/                   # Internal service clients (AI microservice bridge)
+├── services/                   # Internal service clients (AI microservice bridge, image resolver)
 ├── test/                       # Comprehensive multi-tier test suites
 ├── docs/                       # Architectural documentation & academic deliverables
 ├── .env.example                # Environment configuration template
