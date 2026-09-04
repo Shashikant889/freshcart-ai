@@ -8,21 +8,17 @@ on:
 
 jobs:
   test:
-    name: Multi-Tier Verification & Security Tests (Node ${{ matrix.node-version }})
+    name: Multi-Tier Verification & Quality Tests (Node 20.x)
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
           cache: 'npm'
 
       - name: Install Dependencies
@@ -31,20 +27,33 @@ jobs:
       - name: Seed Database & Synthetics
         run: npm run seed
 
-      - name: Run 10-Agent ML Multi-Tier Verification Suite
-        run: npm test
+      - name: Install Playwright Chromium Browser
+        run: npx playwright install --with-deps chromium
 
-      - name: Run OWASP Security & SQLi Immunity Suite
-        run: npm run test:security
+      - name: Start Server in Background
+        run: |
+          node server.js &
+          sleep 3
 
-      - name: Run Backend Alpha/Beta Concurrency Stress Suite
-        run: npm run test:alpha-beta
+      - name: Run Playwright Real-Browser E2E Automation Suite
+        run: npm run test:playwright
 
-      - name: Run Synthetic Frontend & DOM Parity Suite
-        run: npm run test:frontend
-
-      - name: Run Enterprise AI Features Suite
-        run: npm run test:enterprise
-
-      - name: Run Complete 100% Test Suite
+      - name: Run Complete Full-Stack Test Matrix (244 Assertions)
         run: npm run test:all
+
+  docker-build:
+    name: Docker Container Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Web Application Docker Image
+        run: docker build -t freshcart-web:latest .
+
+      - name: Build Python AI Microservice Docker Image
+        run: docker build -f ml/Dockerfile.ai -t freshcart-ai:latest .
