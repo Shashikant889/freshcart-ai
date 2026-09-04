@@ -190,3 +190,31 @@ class DeliveryOptimizationResponse(BaseModel):
     routes: List[VehicleRoute]
     algorithm_used: str
     is_fallback: bool = False
+
+# 8. Deep Learning Demand Forecasting Schemas
+class DeepDemandResponse(BaseModel):
+    success: bool = True
+    model_architecture: str = "2-Layer Multivariate PyTorch LSTM"
+    horizon_days: int = 7
+    total_forecasted_units: float
+    daily_forecasts: List[DailyForecastPoint]
+    confidence_interval_95: Dict[str, List[float]]
+    holdout_metrics: Dict[str, float]
+    training_loss_history: List[Dict[str, Any]]
+    is_neural: bool = True
+
+# 9. Local RAG Retrieval-Augmented Generation Schemas
+class RAGQueryRequest(BaseModel):
+    query: str = Field(..., min_length=2, description="Natural language user question")
+    max_tokens: Optional[int] = Field(default=250, description="Max response length")
+
+class RAGQueryResponse(BaseModel):
+    success: bool = True
+    query: str
+    answer: str
+    grounded: bool
+    abstained: bool
+    citations: List[str]
+    confidence: float
+    evidence_chunks: List[Dict[str, Any]]
+

@@ -1,4 +1,4 @@
-# FreshCart AI: 8-Month Academic Project Planning & Gantt Chart
+# AI-Driven Intelligent Grocery Retail System: 8-Month Academic Project Planning & Gantt Chart
 
 This document outlines the systematic 8-month development roadmap, Work Breakdown Structure (WBS), and Gantt chart milestones for the **Final-Year Major Capstone Project** (Mumbai University / APSIT Academic Year 2025–2026).
 

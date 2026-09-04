@@ -67,4 +67,29 @@ router.get('/all', (req, res) => {
   res.json({ success: true, count: profiles.length, data: profiles });
 });
 
+// GET /api/pricing/bandit-promo - Multi-Armed Bandit Dynamic Storefront Promotion
+router.get('/bandit-promo', async (req, res) => {
+  try {
+    const context = req.query.context || 'storefront_hero';
+    const result = await aiClient.sampleBanditArm({ context });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/pricing/bandit-feedback - Reward feedback for bandit promo interaction
+router.post('/bandit-feedback', async (req, res) => {
+  try {
+    const { arm_id, reward } = req.body;
+    const result = await aiClient.recordBanditFeedback({
+      armId: arm_id,
+      reward: reward !== undefined ? Number(reward) : 1.0
+    });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

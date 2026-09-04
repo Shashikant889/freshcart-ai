@@ -1,4 +1,4 @@
-# FreshCart AI: Final IEEE Reference Lock & Bibliographic Authority
+# AI-Driven Intelligent Grocery Retail System: Final IEEE Reference Lock & Bibliographic Authority
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (Artificial Intelligence & Machine Learning)  

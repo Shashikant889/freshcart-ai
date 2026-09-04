@@ -10,10 +10,10 @@
 
 ## 1. Existing Project Structure
 
-The project currently resides in `c:\Users\shash\demo1` with a monolithic Node.js/Express backend, in-process mathematical and ML routines, a vanilla HTML/CSS/JS frontend SPA, and a WebAssembly-based SQLite database.
+The project resides in `c:\Users\shash\AI-Driven Intelligent Grocery Retail System Using Machine Learning` (formerly `demo1`) with a monolithic Node.js/Express backend, in-process mathematical and ML routines, a vanilla HTML/CSS/JS frontend SPA, and a WebAssembly-based SQLite database.
 
 ```
-demo1/
+AI-Driven Intelligent Grocery Retail System Using Machine Learning/
 ├── .git/                               # Git repository metadata (LOCAL ONLY — do not touch)
 ├── .gitignore                          # Standard node_modules & db file exclusion
 ├── Dockerfile                          # Alpine Node.js 18 container configuration

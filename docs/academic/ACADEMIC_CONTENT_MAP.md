@@ -1,4 +1,4 @@
-# FreshCart AI: Master Academic Content & Submission Blueprint
+# AI-Driven Intelligent Grocery Retail System Using Machine Learning: Master Academic Content & Submission Blueprint
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Degree Program:** Bachelor of Engineering in Computer Science & Engineering (Artificial Intelligence & Machine Learning)  
@@ -11,7 +11,7 @@
 
 ## 1. Executive Overview & Purpose
 
-This document serves as the **Master Academic Content Map** synthesizing all verified source code, empirical experiments, mathematical formulations, and architectural diagrams of the **FreshCart AI** platform into the official academic submission guidelines required by **A.P. Shah Institute of Technology (APSIT)** and the **University of Mumbai**.
+This document serves as the **Master Academic Content Map** synthesizing all verified source code, empirical experiments, mathematical formulations, and architectural diagrams of the **AI-Driven Intelligent Grocery Retail System Using Machine Learning** platform into the official academic submission guidelines required by **A.P. Shah Institute of Technology (APSIT)** and the **University of Mumbai**.
 
 ### Core Academic Documents Mapped:
 1. **Major Project Black Book (Final Dissertation Report)** $\to$ Detailed in [docs/academic/BLACK_BOOK_MAP.md](file:///c:/Users/shash/demo1/docs/academic/BLACK_BOOK_MAP.md).

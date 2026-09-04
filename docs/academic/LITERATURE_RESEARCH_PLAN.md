@@ -1,4 +1,4 @@
-# FreshCart AI: Comprehensive Literature Research Plan & Survey Matrix
+# AI-Driven Intelligent Grocery Retail System: Comprehensive Literature Research Plan & Survey Matrix
 
 > [!NOTE]
 > This literature plan establishes the academic foundation required by the APSIT Black Book and Semester-7 Project guidelines (minimum 10–15 papers). In accordance with academic honesty guidelines, only verified published papers or rigorous academic placeholders (`[RESEARCH REQUIRED]`) are included.

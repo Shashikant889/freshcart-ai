@@ -1,4 +1,4 @@
-# FreshCart AI: Empirical Latency & Performance Benchmark Report
+# AI-Driven Intelligent Grocery Retail System: Empirical Latency & Performance Benchmark Report
 
 This document records the empirical latency, throughput, and inference execution profiles measured across the Node.js application server and Python FastAPI AI inference microservice in a local environment.
 

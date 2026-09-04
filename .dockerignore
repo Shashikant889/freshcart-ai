@@ -1,0 +1,28 @@
+# Git & IDE
+.git
+.gitignore
+.gemini
+.idea
+.vscode
+*.log
+
+# Dependencies & Environments
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary test & scratch artifacts
+.nyc_output/
+coverage/
+scratch/
+test-results/
+playwright-report/
+blob-report/
+
+# OS specific files
+.DS_Store
+Thumbs.db

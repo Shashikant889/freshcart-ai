@@ -1,4 +1,4 @@
-# FreshCart AI: Team & Institutional Information Placeholders
+# AI-Driven Intelligent Grocery Retail System: Team & Institutional Information Placeholders
 
 > [!IMPORTANT]
 > **STRICT COMPLIANCE RULE:** To maintain academic integrity, no student names, Moodle roll numbers, guide names, or administrative identities are invented or fabricated. The following placeholders must be filled in with official institutional records prior to final Black Book and slide generation.

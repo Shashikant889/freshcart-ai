@@ -1,4 +1,4 @@
-# FreshCart AI: Major Project Black Book Master Blueprint & Chapter Map
+# AI-Driven Intelligent Grocery Retail System Using Machine Learning: Major Project Black Book Master Blueprint & Chapter Map
 
 **Institution:** A.P. Shah Institute of Technology (APSIT), Thane  
 **Affiliation:** University of Mumbai  

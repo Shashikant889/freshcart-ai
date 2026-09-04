@@ -31,6 +31,7 @@ function createApp() {
   app.use('/api/group-orders', require('./routes/group-orders'));
   app.use('/api/supplier', require('./routes/supplier'));
   app.use('/api/health', require('./routes/health'));
+  app.use('/api/bda', require('./routes/bda'));
 
   // Serve Admin Dashboard page
   app.get('/admin', (req, res) => {
@@ -62,8 +63,8 @@ async function start(port = process.env.PORT || 3000) {
     const app = createApp();
     return new Promise((resolve) => {
       const server = app.listen(port, () => {
-        console.log(`\n  🛒  FreshCart AI-Powered Grocery E-Commerce & Recommendation System`);
-        console.log(`  ================================================================`);
+        console.log(`\n  🛒  AI-Driven Intelligent Grocery Retail System Using Machine Learning`);
+        console.log(`  ======================================================================`);
         console.log(`  ✅  Server running at http://localhost:${port}`);
         console.log(`  📊  Admin & AI Dashboard: http://localhost:${port}/admin`);
         console.log(`  🧠  AI Recommendations API: http://localhost:${port}/api/recommendations/personal`);

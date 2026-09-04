@@ -1,4 +1,4 @@
-# FreshCart AI: Local Development & Multi-Service Setup Guide
+# AI-Driven Intelligent Grocery Retail System: Local Development & Multi-Service Setup Guide
 
 This guide explains how to start and manage both the **Node.js Application Server** and the **Python AI & Optimization Inference Microservice** for local development.
 

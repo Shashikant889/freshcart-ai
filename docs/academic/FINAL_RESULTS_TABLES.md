@@ -1,4 +1,4 @@
-# FreshCart AI: Master Empirical Results & Benchmark Tables
+# AI-Driven Intelligent Grocery Retail System: Master Empirical Results & Benchmark Tables
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

@@ -1,4 +1,4 @@
-# FreshCart AI: API Integration Guide & Schema Reference
+# AI-Driven Intelligent Grocery Retail System: API Integration Guide & Schema Reference
 
 This document details the RESTful API contracts connecting the Node.js application server with the Python FastAPI AI & Optimization microservice.
 
@@ -13,7 +13,7 @@ Returns the operational health of the inference microservice and status of all i
 ```json
 {
   "status": "healthy",
-  "service": "FreshCart AI Inference Service",
+  "service": "AI-Driven Intelligent Grocery Retail Inference Service",
   "version": "2.0.0",
   "models_loaded": {
     "recommendation": true,

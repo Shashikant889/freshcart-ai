@@ -4,7 +4,7 @@
 
 ## 1. Document Purpose
 
-This document serves as the definitive, master technical reference and architectural blueprint for the **FreshCart AI** intelligent grocery e-commerce, predictive analytics, and operations research platform. It is authored directly from the verified source code, mathematical scripts, REST routing structures, and empirical test suites of the project repository.
+This document serves as the definitive, master technical reference and architectural blueprint for the **AI-Driven Intelligent Grocery Retail System Using Machine Learning** platform. It is authored directly from the verified source code, mathematical scripts, REST routing structures, and empirical test suites of the project repository.
 
 ### Classification of Capabilities
 To ensure complete academic and technical integrity, all features, models, and operational modules discussed in this document are strictly delineated into four categories:

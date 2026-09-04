@@ -18,7 +18,7 @@ const AI_PORT = process.env.AI_SERVICE_PORT || 8000;
 const DB_PATH = path.join(__dirname, '..', 'db', 'freshcart.db');
 
 console.log('\x1b[32m%s\x1b[0m', '================================================================');
-console.log('\x1b[32m%s\x1b[0m', '🌿 FreshCart AI — Enterprise Quick-Commerce & ML Platform');
+console.log('\x1b[32m%s\x1b[0m', '🌿 AI-Driven Intelligent Grocery Retail System Using Machine Learning');
 console.log('\x1b[32m%s\x1b[0m', '================================================================');
 console.log(`[1/4] Checking database at ${DB_PATH}...`);
 
@@ -31,6 +31,8 @@ if (!fs.existsSync(DB_PATH) || fs.statSync(DB_PATH).size < 1024) {
 }
 
 console.log(`[2/4] Checking internal Python AI Microservice on port ${AI_PORT}...`);
+
+const { spawn } = require('child_process');
 
 function checkPythonService() {
   return new Promise((resolve) => {
@@ -50,10 +52,64 @@ function checkPythonService() {
   });
 }
 
+function spawnPythonService() {
+  return new Promise((resolve) => {
+    const venvPython = path.join(__dirname, '..', '.venv', 'Scripts', 'python.exe');
+    const pythonExe = fs.existsSync(venvPython) ? venvPython : 'python';
+    
+    console.log(`[2/4] 🚀 Spawning Python AI Microservice on port ${AI_PORT} using ${pythonExe}...`);
+    
+    const pyProcess = spawn(pythonExe, ['-m', 'uvicorn', 'ml.service.app:app', '--host', '127.0.0.1', '--port', String(AI_PORT)], {
+      cwd: path.join(__dirname, '..'),
+      env: { ...process.env, PYTHONPATH: path.join(__dirname, '..') },
+      stdio: 'pipe'
+    });
+
+    pyProcess.stdout.on('data', (data) => {
+      const msg = data.toString();
+      if (msg.includes('Application startup complete') || msg.includes('Uvicorn running')) {
+        console.log(`[2/4] ✅ Python AI Microservice started successfully on port ${AI_PORT}`);
+      }
+    });
+
+    pyProcess.stderr.on('data', (data) => {
+      const msg = data.toString();
+      if (msg.includes('Application startup complete') || msg.includes('Uvicorn running')) {
+        console.log(`[2/4] ✅ Python AI Microservice started successfully on port ${AI_PORT}`);
+      }
+    });
+
+    // Clean up child process on exit
+    const cleanup = () => {
+      try {
+        pyProcess.kill();
+      } catch (e) {}
+    };
+    process.on('exit', cleanup);
+    process.on('SIGINT', () => { cleanup(); process.exit(); });
+    process.on('SIGTERM', () => { cleanup(); process.exit(); });
+
+    // Poll until /health returns 200
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts++;
+      const isLive = await checkPythonService();
+      if (isLive) {
+        clearInterval(interval);
+        resolve(true);
+      } else if (attempts >= 15) {
+        clearInterval(interval);
+        console.log('[2/4] ⚠️ Python microservice startup timed out. Falling back to in-process Node ML engines.');
+        resolve(false);
+      }
+    }, 500);
+  });
+}
+
 async function startServer() {
-  const isPythonRunning = await checkPythonService();
+  let isPythonRunning = await checkPythonService();
   if (!isPythonRunning) {
-    console.log('[2/4] ℹ️ Python service not running on port 8000. In-process Node.js ML fallback engines ACTIVE.');
+    isPythonRunning = await spawnPythonService();
   }
 
   console.log(`[3/4] Launching Node.js Express Application Server on port ${PORT}...`);
@@ -61,7 +117,7 @@ async function startServer() {
 
   setTimeout(() => {
     console.log('\x1b[36m%s\x1b[0m', '----------------------------------------------------------------');
-    console.log('\x1b[1m\x1b[32m%s\x1b[0m', '🚀 FreshCart AI Unified Platform is RUNNING LOCALLY:');
+    console.log('\x1b[1m\x1b[32m%s\x1b[0m', '🚀 AI-Driven Intelligent Grocery Retail System is RUNNING LOCALLY:');
     console.log('\x1b[1m\x1b[37m%s\x1b[0m', `   👉 Single Application Entry URL : http://localhost:${PORT}/`);
     console.log('\x1b[36m%s\x1b[0m', '----------------------------------------------------------------');
     console.log('   📦 Customer Storefront           : http://localhost:3000/#store');

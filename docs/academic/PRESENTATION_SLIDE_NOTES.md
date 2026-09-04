@@ -1,4 +1,4 @@
-# FreshCart AI: Final Presentation Speaker Notes & Spoken Script
+# AI-Driven Intelligent Grocery Retail System: Final Presentation Speaker Notes & Spoken Script
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Target Event:** B.E. Final Year Major Project Review / External Viva Examination  

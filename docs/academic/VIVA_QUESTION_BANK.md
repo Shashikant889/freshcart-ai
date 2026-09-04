@@ -1,4 +1,4 @@
-# FreshCart AI: Comprehensive Viva Voce Question Bank (110 Questions)
+# AI-Driven Intelligent Grocery Retail System: Comprehensive Viva Voce Question Bank (110 Questions)
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Target Examination:** B.E. CSE (AIML) Final Year Viva Voce & Project Review  

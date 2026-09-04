@@ -1,4 +1,4 @@
-# FreshCart AI: Literature-to-Project Mapping Framework (Recent IEEE Grounded)
+# AI-Driven Intelligent Grocery Retail System: Literature-to-Project Mapping Framework (Recent IEEE Grounded)
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

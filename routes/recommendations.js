@@ -156,6 +156,24 @@ router.get('/substitutes/:productId', (req, res) => {
   });
 });
 
+// GET & POST /api/recommendations/sequential - SASRec Multi-Head Self-Attention Sequential Recommendation
+router.all('/sequential', async (req, res) => {
+  try {
+    const rawSeq = req.method === 'POST' ? req.body.sequence : req.query.sequence;
+    let sequence = [1, 2, 4];
+    if (Array.isArray(rawSeq)) {
+      sequence = rawSeq.map(n => parseInt(n)).filter(n => !isNaN(n));
+    } else if (typeof rawSeq === 'string') {
+      sequence = rawSeq.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+    }
+    const limit = parseInt(req.query.limit || req.body?.limit) || 4;
+    const result = await aiClient.predictSequentialNextPick({ sequence, topK: limit });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/recommendations/metrics - Precision@K & Recall@K
 router.get('/metrics', (req, res) => {
   const k = parseInt(req.query.k) || 5;

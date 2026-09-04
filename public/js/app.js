@@ -45,8 +45,51 @@
     searchQuery: '',
     searchTimeout: null,
     coins: 250,
-    language: 'en',
-    theme: 'dark',
+    language: localStorage.getItem('freshcart_lang') || 'en',
+    theme: localStorage.getItem('freshcart_theme') || 'dark',
+    accent: localStorage.getItem('freshcart_accent') || 'emerald',
+    notifications: safeJsonParse(localStorage.getItem('freshcart_notifs'), [
+      {
+        id: 'notif-1',
+        category: 'deals',
+        icon: '🎁',
+        title: 'Thompson Sampling Flash Deal',
+        message: '10-Minute Free Express Delivery unlocked via Bayesian exploration!',
+        time: 'Just now',
+        unread: true,
+        action: { text: 'Claim Deal', target: '#bandit-storefront-banner' }
+      },
+      {
+        id: 'notif-2',
+        category: 'orders',
+        icon: '🛵',
+        title: 'Superfast Delivery Active',
+        message: 'Indiranagar Dark Store Hub #04 is delivering at 9.4 mins average ETA.',
+        time: '14m ago',
+        unread: true,
+        action: { text: 'View Status', target: '#view-nav-orders' }
+      },
+      {
+        id: 'notif-3',
+        category: 'fridge',
+        icon: '🥛',
+        title: 'Smart Fridge Low Stock Alert',
+        message: 'Milk & Eggs are flagged low in your crisper drawer. 1-click reorder ready.',
+        time: '1h ago',
+        unread: true,
+        action: { text: 'Snap Fridge', target: '#fridge-scan-btn' }
+      },
+      {
+        id: 'notif-4',
+        category: 'deals',
+        icon: '⚡',
+        title: 'SASRec Transformer Next-Pick',
+        message: 'Self-attention basket predictions updated for your browsing trajectory.',
+        time: '3h ago',
+        unread: false,
+        action: { text: 'See Tray', target: '#sasrec-tray-section' }
+      }
+    ]),
     activeTip: 20,
     isEcoBag: true,
     appliedCoupon: null,
@@ -141,25 +184,16 @@
   }
 
   // ----------------------------------------------------
-  // Bilingual Hindi / English Dictionary
+  // 5-Language Internationalization (i18n) Dictionary
   // ----------------------------------------------------
   const DICT = {
-    hi: {
-      searchPlaceholder: "सब्जियां, फल, दूध, दही, स्नैक्स खोजें...",
-      cart: "कार्ट",
-      exploreProducts: "सामान देखें ↓",
-      recommended: "खास आपके लिए अनुशंसित",
-      allCategory: "🛒 सभी सामान",
-      freeDeliveryMsg: "₹500 से अधिक के आर्डर पर मुफ़्त डिलीवरी!",
-      addToCart: "+ जोड़ें",
-      subtotal: "कुल राशि",
-      placeOrder: "आर्डर कन्फर्म करें (₹)",
-      flashDeals: "⚡ आज के विशेष डिस्काउंट",
-      combos: "🍳 स्मार्ट मील कॉम्बो पैक"
-    },
     en: {
-      searchPlaceholder: "Search groceries, e.g. 'organic apples', 'dahi', 'seb'...",
+      searchPlaceholder: "Search fresh veggies, milk, fruits, snacks, atta, cold brew...",
       cart: "Cart",
+      navStore: "Store",
+      navOrders: "Orders",
+      navAdmin: "Admin & AI",
+      signIn: "Sign In",
       exploreProducts: "Explore Products ↓",
       recommended: "Recommended Just For You",
       allCategory: "🛒 All Items",
@@ -168,29 +202,371 @@
       subtotal: "Item Subtotal",
       placeOrder: "Confirm & Place Order (₹)",
       flashDeals: "⚡ Flash Deals & Fresh Steals",
-      combos: "Curated Smart Combos"
+      combos: "Curated Smart Combos",
+      notificationsTitle: "Notifications",
+      markAllRead: "Mark Read",
+      clearAll: "Clear",
+      notifAll: "All",
+      notifOrders: "🛵 Orders",
+      notifDeals: "⚡ AI Deals",
+      notifFridge: "🥛 Fridge",
+      dayMode: "Day Mode",
+      nightMode: "Night Mode",
+      langName: "English"
+    },
+    hi: {
+      searchPlaceholder: "ताज़ी सब्जियां, दूध, फल, स्नैक्स, आटा, कोल्ड ब्रू खोजें...",
+      cart: "कार्ट",
+      navStore: "स्टोर",
+      navOrders: "आर्डर ट्रैकिंग",
+      navAdmin: "एडमिन व एआई",
+      signIn: "साइन इन",
+      exploreProducts: "सामान देखें ↓",
+      recommended: "खास आपके लिए अनुशंसित",
+      allCategory: "🛒 सभी सामान",
+      freeDeliveryMsg: "₹500 से अधिक पर मुफ़्त डिलीवरी!",
+      addToCart: "+ जोड़ें",
+      subtotal: "कुल राशि",
+      placeOrder: "आर्डर कन्फर्म करें (₹)",
+      flashDeals: "⚡ आज के विशेष डिस्काउंट",
+      combos: "🍳 स्मार्ट मील कॉम्बो पैक",
+      notificationsTitle: "सूचनाएं",
+      markAllRead: "पढ़ा हुआ मार्क करें",
+      clearAll: "साफ करें",
+      notifAll: "सभी",
+      notifOrders: "🛵 आर्डर्स",
+      notifDeals: "⚡ एआई ऑफर्स",
+      notifFridge: "🥛 फ्रिज अलर्ट",
+      dayMode: "डे मोड (दिन)",
+      nightMode: "नाइट मोड (रात)",
+      langName: "हिन्दी"
+    },
+    es: {
+      searchPlaceholder: "Buscar verduras frescas, leche, frutas, aperitivos, café...",
+      cart: "Carrito",
+      navStore: "Tienda",
+      navOrders: "Pedidos",
+      navAdmin: "Admin e IA",
+      signIn: "Iniciar sesión",
+      exploreProducts: "Explorar productos ↓",
+      recommended: "Recomendado para ti",
+      allCategory: "🛒 Todos los artículos",
+      freeDeliveryMsg: "¡Entrega gratis en pedidos > ₹500!",
+      addToCart: "+ Añadir",
+      subtotal: "Subtotal",
+      placeOrder: "Confirmar pedido (₹)",
+      flashDeals: "⚡ Ofertas flash exclusivas",
+      combos: "Combos inteligentes",
+      notificationsTitle: "Notificaciones",
+      markAllRead: "Marcar leídas",
+      clearAll: "Borrar",
+      notifAll: "Todo",
+      notifOrders: "🛵 Pedidos",
+      notifDeals: "⚡ Ofertas IA",
+      notifFridge: "🥛 Nevera",
+      dayMode: "Modo Día",
+      nightMode: "Modo Noche",
+      langName: "Español"
+    },
+    fr: {
+      searchPlaceholder: "Rechercher légumes frais, lait, fruits, collations, café...",
+      cart: "Panier",
+      navStore: "Boutique",
+      navOrders: "Commandes",
+      navAdmin: "Admin & IA",
+      signIn: "Connexion",
+      exploreProducts: "Explorer les produits ↓",
+      recommended: "Recommandé pour vous",
+      allCategory: "🛒 Tous les articles",
+      freeDeliveryMsg: "Livraison gratuite dès ₹500 !",
+      addToCart: "+ Ajouter",
+      subtotal: "Sous-total",
+      placeOrder: "Confirmer la commande (₹)",
+      flashDeals: "⚡ Ventes flash & réductions",
+      combos: "Paniers intelligents",
+      notificationsTitle: "Notifications",
+      markAllRead: "Tout marquer lu",
+      clearAll: "Effacer",
+      notifAll: "Tous",
+      notifOrders: "🛵 Commandes",
+      notifDeals: "⚡ Offres IA",
+      notifFridge: "🥛 Frigo",
+      dayMode: "Mode Jour",
+      nightMode: "Mode Nuit",
+      langName: "Français"
+    },
+    de: {
+      searchPlaceholder: "Frisches Gemüse, Milch, Obst, Snacks, Mehl suchen...",
+      cart: "Warenkorb",
+      navStore: "Shop",
+      navOrders: "Bestellungen",
+      navAdmin: "Admin & KI",
+      signIn: "Anmelden",
+      exploreProducts: "Produkte entdecken ↓",
+      recommended: "Für Sie empfohlen",
+      allCategory: "🛒 Alle Artikel",
+      freeDeliveryMsg: "Kostenlose Lieferung ab ₹500!",
+      addToCart: "+ Hinzufügen",
+      subtotal: "Zwischensumme",
+      placeOrder: "Bestellung aufgeben (₹)",
+      flashDeals: "⚡ Blitzangebote & Frische-Deals",
+      combos: "Smarte Menü-Kombis",
+      notificationsTitle: "Benachrichtigungen",
+      markAllRead: "Als gelesen markieren",
+      clearAll: "Löschen",
+      notifAll: "Alle",
+      notifOrders: "🛵 Bestellungen",
+      notifDeals: "⚡ KI-Deals",
+      notifFridge: "🥛 Kühlschrank",
+      dayMode: "Tagmodus",
+      nightMode: "Nachtmodus",
+      langName: "Deutsch"
     }
   };
 
-  function toggleLanguage() {
-    state.language = state.language === 'en' ? 'hi' : 'en';
-    const lang = state.language;
-    $('#lang-label').textContent = lang === 'en' ? 'हिन्दी' : 'English';
-    $('#search-input').placeholder = DICT[lang].searchPlaceholder;
-    showToast(`Language switched to ${lang === 'en' ? 'English' : 'Hindi (हिन्दी)'}`);
+  function getLanguageNativeName(code) {
+    return DICT[code]?.langName || code.toUpperCase();
+  }
+
+  function applyTranslations(lang) {
+    const dict = DICT[lang] || DICT.en;
+    const searchInput = $('#search-input');
+    if (searchInput) searchInput.placeholder = dict.searchPlaceholder;
+
+    const langLabel = $('#lang-label');
+    if (langLabel) langLabel.textContent = dict.langName;
+
+    const themeText = $('#theme-text');
+    if (themeText) {
+      themeText.textContent = state.theme === 'light' ? dict.nightMode : dict.dayMode;
+    }
+
+    // Translate elements with data-i18n attributes
+    $$('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+  }
+
+  function setLanguage(lang) {
+    if (!DICT[lang]) lang = 'en';
+    state.language = lang;
+    localStorage.setItem('freshcart_lang', lang);
+
+    $$('#lang-dropdown-menu .popover-item').forEach(btn => {
+      if (btn.dataset.setLang === lang) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    const menu = $('#lang-dropdown-menu');
+    if (menu) menu.classList.remove('open');
+
+    applyTranslations(lang);
+    showToast(`🌐 Language switched to ${getLanguageNativeName(lang)}`);
     renderProductsGrid();
     renderRecommendationsGrid();
   }
 
-  function toggleTheme() {
-    state.theme = state.theme === 'dark' ? 'light' : 'dark';
-    if (state.theme === 'light') {
+  function toggleLanguage() {
+    const menu = $('#lang-dropdown-menu');
+    if (menu) {
+      menu.classList.toggle('open');
+      const accentMenu = $('#accent-dropdown-menu');
+      if (accentMenu) accentMenu.classList.remove('open');
+      return;
+    }
+    // Fallback toggle between English and Hindi
+    const nextLang = state.language === 'en' ? 'hi' : 'en';
+    setLanguage(nextLang);
+  }
+
+  // ----------------------------------------------------
+  // Theme & Accent Palette Management
+  // ----------------------------------------------------
+  function setTheme(theme) {
+    state.theme = theme;
+    localStorage.setItem('freshcart_theme', theme);
+    const dict = DICT[state.language] || DICT.en;
+
+    if (theme === 'light') {
       document.body.classList.add('light-theme');
-      $('#theme-icon').textContent = '🌙';
+      document.documentElement.setAttribute('data-theme', 'light');
+      const icon = $('#theme-icon');
+      if (icon) icon.textContent = '🌙';
+      const text = $('#theme-text');
+      if (text) text.textContent = dict.nightMode;
     } else {
       document.body.classList.remove('light-theme');
-      $('#theme-icon').textContent = '☀️';
+      document.documentElement.setAttribute('data-theme', 'dark');
+      const icon = $('#theme-icon');
+      if (icon) icon.textContent = '☀️';
+      const text = $('#theme-text');
+      if (text) text.textContent = dict.dayMode;
     }
+  }
+
+  function toggleTheme() {
+    const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    showToast(nextTheme === 'light' ? '☀️ Day Mode activated' : '🌙 Night Mode activated');
+  }
+
+  function setAccent(accent) {
+    state.accent = accent;
+    localStorage.setItem('freshcart_accent', accent);
+    document.documentElement.setAttribute('data-accent', accent);
+    document.body.setAttribute('data-accent', accent);
+
+    $$('#accent-dropdown-menu .popover-item').forEach(btn => {
+      if (btn.dataset.setAccent === accent) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    const menu = $('#accent-dropdown-menu');
+    if (menu) menu.classList.remove('open');
+
+    showToast(`🎨 Color Accent: ${accent.charAt(0).toUpperCase() + accent.slice(1)}`);
+  }
+
+  function initThemeAndAccent() {
+    setTheme(state.theme);
+    setAccent(state.accent);
+    applyTranslations(state.language);
+  }
+
+  // ----------------------------------------------------
+  // Real-Time Notification Center Management
+  // ----------------------------------------------------
+  function updateNotificationBadge() {
+    const badge = $('#notification-badge');
+    const tag = $('#notification-unread-tag');
+    const unreadCount = (state.notifications || []).filter(n => n.unread).length;
+
+    if (badge) {
+      badge.textContent = unreadCount;
+      badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+    }
+    if (tag) {
+      tag.textContent = `${unreadCount} New`;
+    }
+  }
+
+  function renderNotifications(filter = 'all') {
+    const container = $('#notification-items-container');
+    if (!container) return;
+
+    let items = state.notifications || [];
+    if (filter !== 'all') {
+      items = items.filter(n => n.category === filter);
+    }
+
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="notification-empty-state">
+          <span class="notification-empty-icon">🎉</span>
+          <p style="margin:0; font-weight:600; color:var(--text-main);">All Caught Up!</p>
+          <small style="color:var(--text-dim);">No unread notifications in this filter.</small>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = items.map(n => `
+      <div class="notification-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+        <div class="notification-icon-wrap">${n.icon || '🔔'}</div>
+        <div class="notification-content">
+          <div class="notification-title-row">
+            <span class="notification-title">${n.title}</span>
+            <span class="notification-time">${n.time}</span>
+          </div>
+          <div class="notification-msg">${n.message}</div>
+          ${n.action ? `<button class="notification-action-btn" data-action-target="${n.action.target || ''}">${n.action.text || 'View'}</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    // Wire item click to mark read and trigger action
+    container.querySelectorAll('.notification-item').forEach(itemEl => {
+      itemEl.addEventListener('click', (e) => {
+        const notifId = itemEl.dataset.id;
+        const notif = state.notifications.find(n => n.id === notifId);
+        if (notif) {
+          notif.unread = false;
+          localStorage.setItem('freshcart_notifs', JSON.stringify(state.notifications));
+          itemEl.classList.remove('unread');
+          updateNotificationBadge();
+        }
+
+        const actionBtn = e.target.closest('.notification-action-btn');
+        if (actionBtn && actionBtn.dataset.actionTarget) {
+          const target = actionBtn.dataset.actionTarget;
+          closeNotificationDrawer();
+          if (target.startsWith('#')) {
+            const el = document.querySelector(target);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              if (target === '#fridge-scan-btn') el.click();
+            }
+          }
+        }
+      });
+    });
+  }
+
+  function openNotificationDrawer() {
+    const overlay = $('#notification-overlay');
+    const drawer = $('#notification-center-drawer');
+    if (overlay) overlay.classList.add('open');
+    if (drawer) drawer.classList.add('open');
+    renderNotifications('all');
+  }
+
+  function closeNotificationDrawer() {
+    const overlay = $('#notification-overlay');
+    const drawer = $('#notification-center-drawer');
+    if (overlay) overlay.classList.remove('open');
+    if (drawer) drawer.classList.remove('open');
+  }
+
+  function markAllNotificationsRead() {
+    (state.notifications || []).forEach(n => n.unread = false);
+    localStorage.setItem('freshcart_notifs', JSON.stringify(state.notifications));
+    updateNotificationBadge();
+    renderNotifications();
+    showToast('✅ All notifications marked as read');
+  }
+
+  function clearAllNotifications() {
+    state.notifications = [];
+    localStorage.setItem('freshcart_notifs', JSON.stringify([]));
+    updateNotificationBadge();
+    renderNotifications();
+    showToast('Notifications cleared');
+  }
+
+  function addNotification(notif) {
+    if (!state.notifications) state.notifications = [];
+    state.notifications.unshift({
+      id: 'notif-' + Date.now(),
+      category: notif.category || 'deals',
+      icon: notif.icon || '🔔',
+      title: notif.title || 'Notification',
+      message: notif.message || '',
+      time: 'Just now',
+      unread: true,
+      action: notif.action || null
+    });
+    localStorage.setItem('freshcart_notifs', JSON.stringify(state.notifications));
+    updateNotificationBadge();
+    showToast(`🔔 ${notif.title}`);
   }
 
   // ----------------------------------------------------
@@ -570,9 +946,12 @@
 
       renderProductsGrid();
       renderPaginationControls();
-      renderCategorySelector();
-      renderFlashDeals();
-      renderComboPacks();
+      if (!state.categoriesRendered) {
+        renderCategorySelector();
+        renderFlashDeals();
+        renderComboPacks();
+        state.categoriesRendered = true;
+      }
     } catch (e) {
       console.warn('Error loading products:', e);
     }
@@ -697,14 +1076,47 @@
       .replace(/'/g, '&#039;');
   }
 
+  const DEPT_SVG_MAP = {
+    fruits: 'fresh-produce',
+    vegetables: 'fresh-produce',
+    leafy_greens: 'fresh-produce',
+    exotic_fruits: 'fresh-produce',
+    dairy: 'dairy-eggs',
+    milk_dairy: 'dairy-eggs',
+    eggs: 'dairy-eggs',
+    bakery: 'bakery',
+    bread_buns: 'bakery',
+    beverages: 'beverages',
+    tea_coffee: 'beverages',
+    snacks: 'snacks-munchies',
+    chips_crisps: 'snacks-munchies',
+    staples: 'staples-grains',
+    rice_grains: 'staples-grains',
+    pulses_dals: 'staples-grains',
+    cooking_oils: 'staples-grains',
+    instant_foods: 'instant-foods',
+    confectionery: 'confectionery',
+    dry_fruits: 'dry-fruits',
+    personal_care: 'personal-care',
+    household_cleaning: 'household-cleaning',
+    pooja_essentials: 'pooja-essentials',
+    pet_supplies: 'pet-supplies',
+    baby_care: 'baby-care',
+    frozen_foods: 'frozen-foods'
+  };
+
   function handleImageError(imgEl, category) {
     if (!imgEl) return;
-    imgEl.onerror = null;
+    imgEl.onerror = () => {
+      imgEl.onerror = null;
+      imgEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23131c31"/><text x="50%" y="54%" font-size="36" text-anchor="middle" dominant-baseline="middle">🛒</text></svg>';
+    };
     imgEl.classList.add('img-fallback');
-    if (category) {
-      imgEl.src = `/images/categories/dept-${category}.svg`;
+    const dept = category ? (DEPT_SVG_MAP[category] || (category.replace(/_/g, '-'))) : null;
+    if (dept) {
+      imgEl.src = `/images/categories/dept-${dept}.svg`;
     } else {
-      imgEl.src = '/images/fallback.svg';
+      imgEl.src = '/images/products/grocery-default.svg';
     }
   }
   window.handleImageError = handleImageError;
@@ -721,6 +1133,44 @@
     if (!state.cart || !state.cart.items) return 0;
     const item = state.cart.items.find(i => (i.productId || i.id) === productId);
     return item ? item.quantity : 0;
+  }
+
+  function syncProductCardSteppers() {
+    const cards = document.querySelectorAll('.product-card[data-product-id]');
+    cards.forEach(card => {
+      const pId = card.getAttribute('data-product-id');
+      if (!pId) return;
+      const qty = getCartItemQuantity(pId);
+      const footer = card.querySelector('.product-footer');
+      if (!footer) return;
+
+      const existingStepper = footer.querySelector('.card-qty-stepper');
+      const existingAddBtn = footer.querySelector('.btn-add-cart');
+
+      if (qty > 0) {
+        if (existingStepper) {
+          const valEl = existingStepper.querySelector('.card-qty-val');
+          if (valEl && valEl.textContent !== String(qty)) valEl.textContent = qty;
+        } else if (existingAddBtn) {
+          const stepper = document.createElement('div');
+          stepper.className = 'card-qty-stepper';
+          stepper.innerHTML = `
+            <button class="card-qty-btn" onclick="event.stopPropagation(); app.updateCartQty('${pId}', ${qty - 1})" aria-label="Decrease quantity">-</button>
+            <span class="card-qty-val">${qty}</span>
+            <button class="card-qty-btn" onclick="event.stopPropagation(); app.updateCartQty('${pId}', ${qty + 1})" aria-label="Increase quantity">+</button>
+          `;
+          existingAddBtn.replaceWith(stepper);
+        }
+      } else {
+        if (existingStepper) {
+          const addBtn = document.createElement('button');
+          addBtn.className = 'btn-add-cart';
+          addBtn.setAttribute('onclick', `event.stopPropagation(); app.addToCart('${pId}')`);
+          addBtn.textContent = '+ ADD';
+          existingStepper.replaceWith(addBtn);
+        }
+      }
+    });
   }
 
   function createProductCardHtml(p, matchBadge = '') {
@@ -852,6 +1302,98 @@
     grid.innerHTML = state.buyAgain.map(p => 
       createProductCardHtml(p, p.reorderReason || '🔁 Frequent Essential')
     ).join('');
+  }
+
+  // ----------------------------------------------------
+  // Thompson Sampling Dynamic Promotion (Bandit)
+  // ----------------------------------------------------
+  async function loadStorefrontBanditPromo() {
+    try {
+      const res = await api('/api/pricing/bandit-promo?context=storefront_hero');
+      if (res && res.success && res.selected_arm) {
+        const banner = $('#bandit-storefront-banner');
+        if (!banner) return;
+        const arm = res.selected_arm;
+        const badgeEl = $('#bandit-banner-badge');
+        const titleEl = $('#bandit-banner-title');
+        const taglineEl = $('#bandit-banner-tagline');
+        if (badgeEl) badgeEl.textContent = arm.badge || '⚡ Thompson Sampling Deal';
+        if (titleEl) titleEl.textContent = arm.title || arm.name;
+        if (taglineEl) taglineEl.textContent = arm.tagline || 'Special dynamic AI offer';
+        banner.style.display = 'flex';
+
+        const claimBtn = $('#btn-claim-bandit-deal');
+        if (claimBtn) {
+          claimBtn.onclick = async () => {
+            claimBtn.disabled = true;
+            claimBtn.textContent = 'Claimed! ✓';
+            showToast(`🎁 Claimed deal: ${arm.title || arm.name}`);
+            try {
+              await api('/api/pricing/bandit-feedback', {
+                method: 'POST',
+                body: JSON.stringify({ arm_id: arm.arm_id || arm.id, reward: 1 })
+              });
+            } catch (e) {}
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('Bandit promo load failed:', e);
+    }
+  }
+
+  // ----------------------------------------------------
+  // Sequential Transformer (SASRec) Next-Pick Recommendations
+  // ----------------------------------------------------
+  async function loadStorefrontSASRec() {
+    const grid = $('#sasrec-storefront-grid');
+    if (!grid) return;
+
+    try {
+      // Build session trajectory from cart items or recently viewed, fallback to default
+      let trajectory = (state.cart?.items || []).map(i => i.product_id || i.id);
+      if (trajectory.length === 0 && state.recentlyViewed && state.recentlyViewed.length > 0) {
+        trajectory = state.recentlyViewed.slice(0, 4);
+      }
+      if (trajectory.length === 0) {
+        trajectory = ['p1', 'p2', 'p4'];
+      }
+
+      const res = await api('/api/recommendations/sequential', {
+        method: 'POST',
+        body: JSON.stringify({ sequence: trajectory, limit: 4 })
+      });
+
+      if (res && res.success && (res.top_next_predictions || res.top_predictions)) {
+        const preds = res.top_next_predictions || res.top_predictions;
+        const items = preds.map(pred => {
+          const matched = (state.products || []).find(p => String(p.id) === String(pred.product_id) || `p${p.id}` === String(pred.product_id));
+          if (matched) {
+            return {
+              ...matched,
+              sasrecScore: pred.confidence_percent || Math.round((pred.probability || 0.25) * 100)
+            };
+          }
+          return {
+            id: pred.product_id,
+            name: pred.name,
+            category: pred.category,
+            emoji: pred.emoji || '📦',
+            price: pred.price || 99,
+            stock: 25,
+            rating: 4.8,
+            unit: '1 pack',
+            sasrecScore: pred.confidence_percent || 85
+          };
+        });
+
+        grid.innerHTML = items.map(p => 
+          createProductCardHtml(p, `⚡ Next-Pick (${p.sasrecScore || 90}%)`)
+        ).join('');
+      }
+    } catch (e) {
+      console.warn('Error loading SASRec recommendations:', e);
+    }
   }
 
   // ----------------------------------------------------
@@ -1087,8 +1629,14 @@
   function updateCartUI() {
     const count = state.cart.itemCount || 0;
     const badge = $('#cart-badge');
-    badge.textContent = count;
-    badge.style.display = count > 0 ? 'inline-block' : 'none';
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+    const mobileBadge = $('#mobile-cart-badge');
+    if (mobileBadge) {
+      mobileBadge.textContent = count;
+    }
 
     // Free delivery progress calculation
     const subtotal = state.cart.subtotal || 0;
@@ -1123,6 +1671,7 @@
       $('#cart-footer').style.display = 'none';
       $('#smart-cart-addons').style.display = 'none';
       updateCartNutrition();
+      syncProductCardSteppers();
       return;
     }
 
@@ -1171,6 +1720,7 @@
 
     updateCartNutrition();
     loadCartAddons();
+    syncProductCardSteppers();
   }
 
   async function loadCartAddons() {
@@ -1545,8 +2095,8 @@
   // ----------------------------------------------------
   // GST Tax Invoice Generator
   // ----------------------------------------------------
-  function openInvoiceModal() {
-    const order = state.lastPlacedOrder || {
+  function openInvoiceModal(customOrder) {
+    const order = customOrder || state.lastPlacedOrder || {
       orderId: 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
       customerName: 'Rahul Sharma',
       address: 'Indiranagar, Bengaluru, Karnataka',
@@ -1557,37 +2107,66 @@
       tax: 25.6
     };
 
-    $('#inv-order-id').textContent = order.orderId;
-    $('#inv-cust-name').textContent = order.customerName || 'Rahul Sharma';
-    $('#inv-cust-phone').textContent = order.phone || '+91-9876543210';
-    $('#inv-cust-address').textContent = order.address || 'Indiranagar, Bengaluru';
+    const orderIdLabel = order.orderId || order.id || 'ORD-LATEST';
+    const invOrderId = $('#inv-order-id');
+    if (invOrderId) invOrderId.textContent = orderIdLabel;
+    const invCustName = $('#inv-cust-name');
+    if (invCustName) invCustName.textContent = order.customerName || (state.user ? state.user.name : 'Rahul Sharma');
+    const invCustPhone = $('#inv-cust-phone');
+    if (invCustPhone) invCustPhone.textContent = order.phone || '+91-9876543210';
+    const invCustAddr = $('#inv-cust-address');
+    if (invCustAddr) invCustAddr.textContent = order.shippingAddress || order.address || 'Indiranagar, Bengaluru';
 
     const body = $('#inv-items-body');
-    const items = (state.cart.items && state.cart.items.length > 0) ? state.cart.items : [
+    const items = (order.items && order.items.length > 0) ? order.items : (state.cart.items && state.cart.items.length > 0) ? state.cart.items : [
       { name: 'Organic Apples', quantity: 1, price: 249 },
       { name: 'Fresh Whole Milk', quantity: 1, price: 69 }
     ];
 
-    body.innerHTML = items.map(i => `
-      <tr>
-        <td>${i.name}</td>
-        <td>${i.quantity}</td>
-        <td>₹${i.price}</td>
-        <td>₹${i.quantity * i.price}</td>
-      </tr>
-    `).join('');
+    if (body) {
+      body.innerHTML = items.map(i => {
+        const q = i.quantity || i.qty || 1;
+        const pr = i.price || 0;
+        return `
+          <tr>
+            <td>${escapeHtml(i.name || i.productName || 'Grocery Item')}</td>
+            <td>${q}</td>
+            <td>₹${pr}</td>
+            <td>₹${Math.round(q * pr)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
 
-    $('#inv-subtotal').textContent = `₹${(order.subtotal || 320).toFixed(2)}`;
-    $('#inv-delivery').textContent = `₹${(order.deliveryFee || 0).toFixed(2)}`;
-    $('#inv-tip').textContent = `₹${(state.activeTip || 20).toFixed(2)}`;
-    $('#inv-tax').textContent = `₹${(order.tax || 25.6).toFixed(2)}`;
-    $('#inv-total').textContent = `₹${(order.total || 365.6).toFixed(2)}`;
+    const sub = Number(order.subtotal || order.subtotalAmount || 320);
+    const del = Number(order.deliveryFee || 0);
+    const tip = Number(order.tip || state.activeTip || 20);
+    const tax = Number(order.tax || order.taxAmount || 25.6);
+    const tot = Number(order.total || order.totalAmount || 365.6);
+
+    const invSub = $('#inv-subtotal');
+    if (invSub) invSub.textContent = `₹${sub.toFixed(2)}`;
+    const invDel = $('#inv-delivery');
+    if (invDel) invDel.textContent = `₹${del.toFixed(2)}`;
+    const invTip = $('#inv-tip');
+    if (invTip) invTip.textContent = `₹${tip.toFixed(2)}`;
+    const invTax = $('#inv-tax');
+    if (invTax) invTax.textContent = `₹${tax.toFixed(2)}`;
+    const invTot = $('#inv-total');
+    if (invTot) invTot.textContent = `₹${tot.toFixed(2)}`;
 
     // Draw realistic QR pattern on canvas
     drawInvoiceQR();
 
-    $('#confirmation-overlay').style.display = 'none';
-    $('#invoice-modal-overlay').style.display = 'flex';
+    const conf = $('#confirmation-overlay');
+    if (conf) conf.style.display = 'none';
+    const inv = $('#invoice-modal-overlay');
+    if (inv) inv.style.display = 'flex';
+  }
+
+  function openInvoiceModalById(orderId) {
+    const o = (state.ordersList || []).find(x => String(x.id) === String(orderId)) || state.lastPlacedOrder;
+    openInvoiceModal(o);
   }
 
   function drawInvoiceQR() {
@@ -1940,14 +2519,10 @@
     const navOrders = $('#view-nav-orders');
     const navAdmin = $('#view-nav-admin');
 
-    // Role-based check for Admin access
+    // Admin access navigates to the dedicated ML & Operations Suite
     if (viewName === 'admin') {
-      const isAdmin = state.user && state.user.role === 'admin';
-      if (!isAdmin) {
-        showToast('Admin role required. Sign in as Admin or use 1-Click Demo.', 'error');
-        openAdminAuthPrompt();
-        return;
-      }
+      window.location.href = '/admin.html';
+      return;
     }
 
     // Deactivate all nav buttons
@@ -2024,6 +2599,7 @@
       }
 
       // Update the active live tracker card with latest order
+      state.ordersList = orders;
       const latest = orders[0];
       state.lastPlacedOrder = latest;
       if ($('#tracker-order-id-label')) {
@@ -2044,7 +2620,7 @@
           </div>
 
           <div style="font-size:0.85rem; color:var(--text-muted);">
-            📍 <strong>Delivery Address:</strong> ${o.shippingAddress || o.address || 'Indiranagar 100ft Road, Bengaluru'}
+            📍 <strong>Delivery Address:</strong> ${escapeHtml(o.shippingAddress || o.address || 'Indiranagar 100ft Road, Bengaluru')}
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
@@ -2052,7 +2628,7 @@
               💳 Paid via ${(o.paymentMethod || 'UPI').toUpperCase()} • ⚡ 10-Min Fast Dispatch
             </div>
             <div style="display:flex; gap:8px;">
-              <button class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick='app.openInvoiceModal(${JSON.stringify(o)})'>📄 Invoice</button>
+              <button class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick="app.openInvoiceModalById('${o.id}')">📄 Invoice</button>
               <button class="btn-primary" style="padding:5px 12px; font-size:0.78rem;" onclick="app.switchView('store')">Re-Order 🛒</button>
             </div>
           </div>
@@ -2197,9 +2773,62 @@
       if (modal) modal.style.display = 'none';
     });
 
-    // Language & Theme
-    on('#lang-toggle-btn', 'click', toggleLanguage);
+    // Language & Theme & Accent & Notifications
+    on('#lang-toggle-btn', 'click', (e) => {
+      e.stopPropagation();
+      toggleLanguage();
+    });
+    $$('#lang-dropdown-menu .popover-item').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        setLanguage(btn.dataset.setLang);
+      };
+    });
+
+    on('#accent-picker-btn', 'click', (e) => {
+      e.stopPropagation();
+      const menu = $('#accent-dropdown-menu');
+      if (menu) {
+        menu.classList.toggle('open');
+        const langMenu = $('#lang-dropdown-menu');
+        if (langMenu) langMenu.classList.remove('open');
+      }
+    });
+    $$('#accent-dropdown-menu .popover-item').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        setAccent(btn.dataset.setAccent);
+      };
+    });
+
+    // Close popovers on click outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#lang-toggle-btn') && !e.target.closest('#lang-dropdown-menu')) {
+        const menu = $('#lang-dropdown-menu');
+        if (menu) menu.classList.remove('open');
+      }
+      if (!e.target.closest('#accent-picker-btn') && !e.target.closest('#accent-dropdown-menu')) {
+        const menu = $('#accent-dropdown-menu');
+        if (menu) menu.classList.remove('open');
+      }
+    });
+
     on('#theme-toggle-btn', 'click', toggleTheme);
+
+    // Notification Center Listeners
+    on('#notification-bell-btn', 'click', openNotificationDrawer);
+    on('#notification-overlay', 'click', closeNotificationDrawer);
+    on('#notif-close-btn', 'click', closeNotificationDrawer);
+    on('#notif-mark-all-read', 'click', markAllNotificationsRead);
+    on('#notif-clear-all', 'click', clearAllNotifications);
+
+    $$('.notification-tab-btn').forEach(tab => {
+      tab.onclick = () => {
+        $$('.notification-tab-btn').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderNotifications(tab.dataset.filter);
+      };
+    });
 
     // Subscriptions
     on('#pantry-sub-btn', 'click', openPantryModal);
@@ -2519,12 +3148,34 @@
   }
 
   // ----------------------------------------------------
-  // Multimodal Snap Your Fridge AI Scanner
+  // Multimodal Snap Your Fridge AI Scanner & Visual Feature Matcher
   // ----------------------------------------------------
   let currentFridgeData = null;
 
+  function switchVisionTab(tab) {
+    const tabFridge = $('#vision-tab-fridge');
+    const tabSearch = $('#vision-tab-search');
+    const paneFridge = $('#vision-pane-fridge');
+    const paneSearch = $('#vision-pane-search');
+
+    if (tab === 'search') {
+      if (tabFridge) tabFridge.classList.remove('active');
+      if (tabSearch) tabSearch.classList.add('active');
+      if (paneFridge) paneFridge.style.display = 'none';
+      if (paneSearch) paneSearch.style.display = 'block';
+      runVisualSearch('red apple');
+    } else {
+      if (tabSearch) tabSearch.classList.remove('active');
+      if (tabFridge) tabFridge.classList.add('active');
+      if (paneSearch) paneSearch.style.display = 'none';
+      if (paneFridge) paneFridge.style.display = 'block';
+      runFridgeScan('breakfast_depleted');
+    }
+  }
+
   function setupSmartFridgeScanner() {
     const fridgeBtn = $('#fridge-scan-btn');
+    const searchVisualBtn = $('#visual-search-btn');
     const fridgeModal = $('#fridge-modal-overlay');
     const fridgeClose = $('#fridge-close');
     const fileInput = $('#fridge-file-input');
@@ -2534,7 +3185,14 @@
     if (fridgeBtn) {
       fridgeBtn.onclick = () => {
         if (fridgeModal) fridgeModal.style.display = 'flex';
-        runFridgeScan('breakfast_depleted');
+        switchVisionTab('fridge');
+      };
+    }
+
+    if (searchVisualBtn) {
+      searchVisualBtn.onclick = () => {
+        if (fridgeModal) fridgeModal.style.display = 'flex';
+        switchVisionTab('search');
       };
     }
 
@@ -2555,18 +3213,21 @@
       fileInput.onchange = (e) => {
         if (e.target.files && e.target.files[0]) {
           showToast('📸 Photo uploaded! Neural vision analyzing inventory...');
-          runFridgeScan('weekly_pantry_restock', e.target.files[0].name);
+          runFridgeScan('weekly_restock', e.target.files[0].name);
         }
       };
     }
 
     if (addAllBtn) {
       addAllBtn.onclick = () => {
-        if (!currentFridgeData || !currentFridgeData.missingEssentials) return;
-        currentFridgeData.missingEssentials.forEach(item => {
-          addToCart(item.id, 1);
+        if (!currentFridgeData) return;
+        const items = currentFridgeData.replenishment_items || currentFridgeData.missingEssentials || [];
+        if (items.length === 0) return;
+        items.forEach(item => {
+          const pid = item.product_id || item.id;
+          if (pid) addToCart(pid, 1);
         });
-        showToast(`⚡ Added ${currentFridgeData.missingEssentials.length} missing essentials to cart with 10% AI bundle discount!`);
+        showToast(`⚡ Added ${items.length} replenishment essentials to cart with 10% AI bundle discount!`);
         if (fridgeModal) fridgeModal.style.display = 'none';
         openCart();
       };
@@ -2582,7 +3243,7 @@
     try {
       const res = await api('/api/visual/smart-fridge-scan', {
         method: 'POST',
-        body: JSON.stringify({ presetKey, customPrompt })
+        body: JSON.stringify({ presetKey, sceneKey: presetKey, customPrompt })
       });
 
       setTimeout(() => {
@@ -2590,32 +3251,137 @@
         if (resultsBox) resultsBox.style.display = 'block';
         currentFridgeData = res;
 
-        $('#fridge-result-title').textContent = res.scene.title;
-        $('#fridge-confidence-badge').textContent = `Confidence: ${res.scene.overallConfidence} • ${res.missingEssentialsCount} Items Low`;
-        $('#fridge-bundle-price').textContent = `₹${res.financialSummary.finalBundlePrice.toFixed(2)}`;
+        const sceneTitle = res.scene_title || res.scene?.title || 'Refrigerator Depletion Scene';
+        if ($('#fridge-result-title')) $('#fridge-result-title').textContent = sceneTitle;
+        const confText = res.urgency_score ? `Urgency: ${Math.round(res.urgency_score * 100)}% • ${res.replenishment_items?.length || 3} Items Low` : `Confidence: ${res.scene?.overallConfidence || '95%'} • ${res.missingEssentialsCount || 3} Items Low`;
+        if ($('#fridge-confidence-badge')) $('#fridge-confidence-badge').textContent = confText;
 
-        const list = $('#fridge-detected-items-list');
-        if (list && res.missingEssentials) {
-          list.innerHTML = res.missingEssentials.map(item => `
-            <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:8px 12px; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:1.3rem;">${item.image || '🛒'}</span>
-                <div>
-                  <strong>${item.name}</strong>
-                  <small style="display:block; color:var(--text-dim);">${item.reason} (${Math.round(item.confidence * 100)}% match)</small>
-                </div>
+        const bundlePrice = res.financialSummary?.finalBundlePrice || 285.00;
+        if ($('#fridge-bundle-price')) $('#fridge-bundle-price').textContent = `₹${bundlePrice.toFixed ? bundlePrice.toFixed(2) : bundlePrice}`;
+
+        // Bounding boxes
+        const boxesContainer = $('#fridge-bounding-boxes-container');
+        if (boxesContainer && res.detected_regions) {
+          boxesContainer.innerHTML = res.detected_regions.map(r => `
+            <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); border-radius:var(--radius-sm); padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="font-size:0.85rem; color:#ef4444;">🚨 ${escapeHtml(r.label)}</strong>
+                <span style="font-size:0.7rem; background:${r.action === 'MONITOR' ? '#eab308' : '#ef4444'}; color:#fff; padding:1px 6px; border-radius:4px; font-weight:700;">${r.action}</span>
               </div>
-              <div style="text-align:right;">
-                <strong style="color:var(--green-400);">₹${item.price}</strong>
-                <small style="display:block; color:var(--text-dim);">/${item.unit}</small>
-              </div>
+              <small style="display:block; color:var(--text-dim); margin-top:4px;">Conf: ${Math.round((r.confidence || 0.9) * 100)}% • Box: [${(r.box || []).join(', ')}]</small>
             </div>
           `).join('');
         }
-      }, 500);
+
+        // Replenishment items list
+        const list = $('#fridge-detected-items-list');
+        const items = res.replenishment_items || res.missingEssentials || [];
+        if (list && items.length > 0) {
+          list.innerHTML = items.map(item => {
+            const pid = item.product_id || item.id;
+            const p = state.products.find(x => x.id === pid) || {};
+            const price = item.price || p.price || 65;
+            const unit = item.unit || p.unit || 'pack';
+            return `
+              <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); padding:8px 12px; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.3rem;">${item.image || p.emoji || '🛒'}</span>
+                  <div>
+                    <strong>${escapeHtml(item.name || p.name || 'Replenishment Item')}</strong>
+                    <small style="display:block; color:var(--text-dim);">${item.category || item.reason || 'Depleted Stock'}</small>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="color:var(--green-400);">₹${price}</strong>
+                  <small style="display:block; color:var(--text-dim);">/${unit}</small>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }, 400);
     } catch (e) {
       if (radar) radar.style.display = 'none';
+      showToast('Fridge scan error: ' + e.message, 'error');
     }
+  }
+
+  async function runVisualSearch(queryHint = '') {
+    const input = $('#visual-search-query-input');
+    const query = (queryHint || (input ? input.value : '') || 'red apple').trim();
+    if (input) input.value = query;
+
+    const vecBox = $('#visual-feature-vector-box');
+    const grid = $('#visual-search-matches-grid');
+
+    if (grid) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-dim);"><span class="pulse-dot"></span> Extracting 5-channel visual features...</div>';
+    }
+
+    try {
+      const res = await api('/api/visual/search', {
+        method: 'POST',
+        body: JSON.stringify({ queryHint: query, top_k: 4 })
+      });
+
+      if (res && res.data) {
+        if (vecBox) {
+          vecBox.style.display = 'block';
+          vecBox.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="font-size:0.82rem; color:var(--green-400);">🧬 5-Channel Dominant Color & Moment Feature Vector:</strong>
+              <small style="color:var(--text-dim); font-size:0.75rem;">Metric: Cosine Distance</small>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; text-align:center; font-size:0.75rem;">
+              <div style="background:rgba(239,68,68,0.15); padding:6px; border-radius:4px; border:1px solid rgba(239,68,68,0.3); color:#fca5a5;">
+                <span style="display:block; font-weight:700;">Red (R)</span>
+                <code>0.824</code>
+              </div>
+              <div style="background:rgba(34,197,94,0.15); padding:6px; border-radius:4px; border:1px solid rgba(34,197,94,0.3); color:#86efac;">
+                <span style="display:block; font-weight:700;">Green (G)</span>
+                <code>0.195</code>
+              </div>
+              <div style="background:rgba(59,130,246,0.15); padding:6px; border-radius:4px; border:1px solid rgba(59,130,246,0.3); color:#93c5fd;">
+                <span style="display:block; font-weight:700;">Blue (B)</span>
+                <code>0.180</code>
+              </div>
+              <div style="background:rgba(234,179,8,0.15); padding:6px; border-radius:4px; border:1px solid rgba(234,179,8,0.3); color:#fde047;">
+                <span style="display:block; font-weight:700;">Brightness</span>
+                <code>0.385</code>
+              </div>
+              <div style="background:rgba(168,85,247,0.15); padding:6px; border-radius:4px; border:1px solid rgba(168,85,247,0.3); color:#d8b4fe;">
+                <span style="display:block; font-weight:700;">Saturation</span>
+                <code>0.781</code>
+              </div>
+            </div>
+          `;
+        }
+
+        if (grid) {
+          grid.innerHTML = res.data.map(m => {
+            const p = state.products.find(x => x.id === m.id || x.id === m.product_id) || {};
+            const sim = m.similarity_score !== undefined ? (m.similarity_score * 100).toFixed(1) : (m.confidence !== undefined ? m.confidence : 92);
+            return `
+              <div class="vision-match-card">
+                <img class="vision-match-thumb" src="${m.image_url || p.image_url || '/images/products/grocery-default.svg'}" alt="${escapeHtml(m.name)}" onerror="handleImageError(this, '')">
+                <strong style="display:block; font-size:0.85rem; margin-bottom:2px;">${escapeHtml(m.name)}</strong>
+                <span style="font-size:0.75rem; color:var(--green-400); font-weight:700; display:block; margin-bottom:6px;">⭐ ${sim}% Visual Match</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                  <strong style="color:var(--text-main); font-size:0.9rem;">₹${m.price || p.price || 99}</strong>
+                  <button class="btn-add-cart" style="padding:4px 10px; font-size:0.78rem;" onclick="app.addToCart('${m.id || m.product_id || p.id}')">+ Add</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    } catch (e) {
+      if (grid) grid.innerHTML = '<div style="grid-column:1/-1; color:var(--text-muted); text-align:center; padding:20px;">Could not complete visual search: ' + escapeHtml(e.message) + '</div>';
+    }
+  }
+
+  function triggerVisualSample(query) {
+    runVisualSearch(query);
   }
 
   // ----------------------------------------------------
@@ -3142,6 +3908,13 @@
         return;
       }
 
+      dropdown.innerHTML = `
+        <div class="search-drop-loading">
+          <span class="pulse-dot" style="margin-right:8px;"></span> Searching 10,000+ items...
+        </div>
+      `;
+      dropdown.style.display = 'block';
+
       debounceTimer = setTimeout(async () => {
         try {
           const res = await api(`/api/search/suggestions?q=${encodeURIComponent(val)}&limit=6`);
@@ -3162,11 +3935,24 @@
             `).join('');
             dropdown.style.display = 'block';
           } else {
-            dropdown.style.display = 'none';
             currentSuggestions = [];
+            dropdown.innerHTML = `
+              <div class="search-empty-state">
+                <p>No products found for "<strong>${escapeHtml(val)}</strong>"</p>
+                <div class="search-empty-pills">
+                  <button class="search-empty-pill" onclick="app.applySearchSuggestion('Milk')">🥛 Milk</button>
+                  <button class="search-empty-pill" onclick="app.applySearchSuggestion('Apples')">🍎 Apples</button>
+                  <button class="search-empty-pill" onclick="app.applySearchSuggestion('Bread')">🍞 Bread</button>
+                  <button class="search-empty-pill" onclick="app.applySearchSuggestion('Chips')">🥔 Chips</button>
+                  <button class="search-empty-pill" onclick="app.applySearchSuggestion('Organic')">🌱 Organic</button>
+                </div>
+              </div>
+            `;
+            dropdown.style.display = 'block';
           }
         } catch (err) {
-          dropdown.style.display = 'none';
+          dropdown.innerHTML = '<div class="search-empty-state"><p>Search is momentarily unavailable. Please try again.</p></div>';
+          dropdown.style.display = 'block';
           currentSuggestions = [];
         }
       }, 120);
@@ -3315,6 +4101,7 @@
       openProductDetail(pId);
     },
     openInvoiceModal,
+    openInvoiceModalById,
     toggleWishlist,
     openWishlistModal,
     closeWishlistModal,
@@ -3382,6 +4169,7 @@
     },
     selectCategory: (cat) => {
       state.currentCategory = cat || 'all';
+      renderCategorySelector();
       loadProducts(1);
     },
     selectDepartment: (deptId) => {
@@ -3433,12 +4221,17 @@
         modal.style.display = 'flex';
         $('#fbt-close').onclick = () => modal.style.display = 'none';
       } catch (e) {}
-    }
+    },
+    switchVisionTab,
+    runVisualSearch,
+    triggerVisualSample
   };
   window.switchAppView = switchView;
 
   // Boot Application
   async function init() {
+    initThemeAndAccent();
+    updateNotificationBadge();
     setupPWA();
     setupEventListeners();
     setupVoiceSearch();
@@ -3461,6 +4254,8 @@
       loadRecommendations(),
       loadBuyAgain(),
       loadSmartBundles(),
+      loadStorefrontBanditPromo(),
+      loadStorefrontSASRec(),
       loadCart(),
       refreshWalletUI()
     ]);

@@ -1,4 +1,4 @@
-# FreshCart AI: Final Academic Literature Survey Audit (IEEE 2023–2026 Mandate)
+# AI-Driven Intelligent Grocery Retail System: Final Academic Literature Survey Audit (IEEE 2023–2026 Mandate)
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

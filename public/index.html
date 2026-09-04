@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreshCart AI — Intelligent Grocery E-Commerce & 10-Min Quick Delivery</title>
-  <meta name="description" content="AI-Powered 10-Minute Grocery Delivery with Multimodal Search, Voice AI, Live Delivery Tracking, and Demand Forecasting.">
+  <title>AI-Driven Intelligent Grocery Retail System Using Machine Learning</title>
+  <meta name="description" content="AI-Driven Intelligent Grocery Retail System Using Machine Learning — Full-Stack Quick Commerce & Operations Optimization.">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#10b981">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,12 +28,8 @@
       </div>
 
       <div class="qc-right-items" role="toolbar" aria-label="Quick Commerce Utilities">
-        <button class="qc-pill-btn" id="fridge-scan-btn" title="Snap Your Fridge & Pantry AI Scanner">
-          <span class="qc-pill-icon">📸</span>
-          <span>Snap Fridge AI</span>
-        </button>
 
-        <button class="qc-pill-btn" id="pwa-install-btn" style="display:none;" title="Install FreshCart AI App">
+        <button class="qc-pill-btn" id="pwa-install-btn" style="display:none;" title="Install AI Grocery Retail App">
           <span class="qc-pill-icon">📲</span>
           <span>Install App</span>
         </button>
@@ -51,6 +47,11 @@
         <button class="qc-pill-btn" id="group-buy-btn" title="Neighborhood Group Buy Lobbies">
           <span class="qc-pill-icon">👥</span>
           <span>Group Buy</span>
+        </button>
+
+        <button class="qc-pill-btn ai-vision-pill" id="fridge-scan-btn" title="Multimodal AI Smart Fridge & Visual Product Scanner">
+          <span class="qc-pill-icon">📸</span>
+          <span style="font-weight:700; color:var(--green-400);">Snap Fridge AI</span>
         </button>
 
         <button class="qc-pill-btn coins-badge" id="coins-btn" title="View FreshCoins Balance">
@@ -78,13 +79,50 @@
           <span>Compare (<span id="compare-badge">0</span>)</span>
         </button>
 
-        <button class="qc-pill-btn" id="lang-toggle-btn" title="Switch Language (Hindi / English)">
-          <span class="qc-pill-icon">🌐</span>
-          <span id="lang-label">हिन्दी</span>
-        </button>
+        <!-- Accent Theme Palette Picker -->
+        <div class="dropdown-relative-wrap">
+          <button class="qc-pill-btn" id="accent-picker-btn" title="Choose Color Palette Accent">
+            <span class="qc-pill-icon">🎨</span>
+            <span id="accent-label">Palette</span>
+          </button>
+          <div class="custom-popover-menu" id="accent-dropdown-menu">
+            <button class="popover-item active" data-set-accent="emerald">
+              <span class="color-dot-indicator dot-emerald"></span> 🌿 Emerald Green
+            </button>
+            <button class="popover-item" data-set-accent="sapphire">
+              <span class="color-dot-indicator dot-sapphire"></span> 💎 Sapphire Blue
+            </button>
+            <button class="popover-item" data-set-accent="amethyst">
+              <span class="color-dot-indicator dot-amethyst"></span> 🍇 Amethyst Violet
+            </button>
+            <button class="popover-item" data-set-accent="amber">
+              <span class="color-dot-indicator dot-amber"></span> 🍊 Sunset Amber
+            </button>
+            <button class="popover-item" data-set-accent="ruby">
+              <span class="color-dot-indicator dot-ruby"></span> 🍓 Ruby Berry
+            </button>
+          </div>
+        </div>
 
-        <button class="qc-pill-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
+        <!-- 5-Language Internationalization Selector -->
+        <div class="dropdown-relative-wrap">
+          <button class="qc-pill-btn" id="lang-toggle-btn" title="Switch Language (5 Languages Supported)">
+            <span class="qc-pill-icon">🌐</span>
+            <span id="lang-label">English</span>
+          </button>
+          <div class="custom-popover-menu" id="lang-dropdown-menu">
+            <button class="popover-item active" data-set-lang="en">🇺🇸 English</button>
+            <button class="popover-item" data-set-lang="hi">🇮🇳 हिन्दी (Hindi)</button>
+            <button class="popover-item" data-set-lang="es">🇪🇸 Español (Spanish)</button>
+            <button class="popover-item" data-set-lang="fr">🇫🇷 Français (French)</button>
+            <button class="popover-item" data-set-lang="de">🇩🇪 Deutsch (German)</button>
+          </div>
+        </div>
+
+        <!-- Day / Night Theme Switcher -->
+        <button class="qc-pill-btn" id="theme-toggle-btn" title="Toggle Day (Light) / Night (Dark) Mode" aria-label="Toggle Theme">
           <span id="theme-icon">☀️</span>
+          <span id="theme-text" style="font-size:0.78rem; font-weight:600;">Day Mode</span>
         </button>
       </div>
     </div>
@@ -95,11 +133,11 @@
     <div class="header-container">
       <!-- Left: Brand Logo & Integrated Delivery Context -->
       <div class="header-brand-wrap">
-        <a href="#store" class="logo" id="header-logo-link" title="FreshCart AI Home">
+        <a href="#store" class="logo" id="header-logo-link" title="AI-Driven Intelligent Grocery Retail System">
           <span class="logo-icon" aria-hidden="true">🌿</span>
           <div class="logo-text">
-            <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
-            <span class="logo-subtitle">10-Min Quick Grocery</span>
+            <span class="logo-title">GroceryRetail<span class="ai-tag">AI</span></span>
+            <span class="logo-subtitle">Intelligent Retail System (ML)</span>
           </div>
         </a>
 
@@ -139,37 +177,72 @@
         <!-- Application View Switcher Tabs -->
         <nav class="app-views-nav" id="app-views-nav" aria-label="Application Views">
           <button class="view-nav-btn active" id="view-nav-store" title="Customer Grocery Storefront">
-            <span class="btn-icon">🛒</span> <span>Store</span>
+            <span class="btn-icon">🛒</span> <span data-i18n="navStore">Store</span>
           </button>
           <button class="view-nav-btn" id="view-nav-orders" title="Live Order Tracking & History">
-            <span class="btn-icon">📦</span> <span>Orders</span>
+            <span class="btn-icon">📦</span> <span data-i18n="navOrders">Orders</span>
           </button>
-          <button class="view-nav-btn admin-mode-btn" id="view-nav-admin" title="Admin & AI Operations Dashboard">
-            <span class="btn-icon">⚡</span> <span id="nav-admin-label">Admin & AI</span>
-          </button>
+          <a href="/admin.html" class="view-nav-btn admin-mode-btn" id="view-nav-admin" title="Admin & AI Operations Dashboard" style="text-decoration:none;">
+            <span class="btn-icon">⚡</span> <span id="nav-admin-label" data-i18n="navAdmin">Admin & AI</span>
+          </a>
         </nav>
 
         <!-- Hidden backward-compatibility alias buttons for test harnesses -->
         <button class="nav-btn" id="orders-btn" style="display:none;" aria-hidden="true"><span class="btn-icon">📦</span><span>Orders</span></button>
-        <button class="nav-btn admin-nav-btn" id="admin-link" style="display:none;" aria-hidden="true"><span class="btn-icon">⚡</span><span>Admin & AI</span></button>
+        <a href="/admin.html" class="nav-btn admin-nav-btn" id="admin-link" style="display:none;" aria-hidden="true"><span class="btn-icon">⚡</span><span>Admin & AI</span></a>
+
+        <!-- Real-Time Notification Center Bell Button -->
+        <button class="notification-bell-btn" id="notification-bell-btn" title="Notification Center (Live Alerts & Deals)" aria-label="Notifications">
+          <span>🔔</span>
+          <span class="notification-badge" id="notification-badge">3</span>
+        </button>
 
         <!-- User Authentication -->
         <div id="auth-section">
           <button class="nav-btn auth-nav-btn" id="login-modal-btn" title="Sign In / User Profile">
             <span class="btn-icon">👤</span>
-            <span id="auth-btn-text">Sign In</span>
+            <span id="auth-btn-text" data-i18n="signIn">Sign In</span>
           </button>
         </div>
 
         <!-- Cart Button -->
         <button class="nav-btn cart-nav-btn" id="cart-btn" title="View Shopping Cart" aria-label="View Shopping Cart">
           <span class="btn-icon">🛍️</span>
-          <span>Cart</span>
+          <span data-i18n="cart">Cart</span>
           <span class="cart-badge" id="cart-badge">0</span>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- Notification Center Drawer Overlay & Panel -->
+  <div class="notification-drawer-overlay" id="notification-overlay"></div>
+  <aside class="notification-drawer" id="notification-center-drawer" aria-label="Notification Center" role="dialog" aria-modal="true">
+    <div class="notification-drawer-header">
+      <h3>
+        <span>🔔 <span data-i18n="notificationsTitle">Notifications</span></span>
+        <span class="notification-count-tag" id="notification-unread-tag">3 New</span>
+      </h3>
+      <div class="notification-header-actions">
+        <button id="notif-mark-all-read" title="Mark all notifications as read" data-i18n="markAllRead">Mark Read</button>
+        <button id="notif-clear-all" title="Clear all notifications" data-i18n="clearAll">Clear</button>
+        <button id="notif-close-btn" style="font-size:1.1rem; padding:2px 6px;">✕</button>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="notification-filter-tabs">
+      <button class="notification-tab-btn active" data-filter="all" data-i18n="notifAll">All</button>
+      <button class="notification-tab-btn" data-filter="orders" data-i18n="notifOrders">🛵 Orders</button>
+      <button class="notification-tab-btn" data-filter="deals" data-i18n="notifDeals">⚡ AI Deals</button>
+      <button class="notification-tab-btn" data-filter="fridge" data-i18n="notifFridge">🥛 Fridge</button>
+    </div>
+
+    <!-- Notification Feed -->
+    <div class="notification-list" id="notification-items-container">
+      <!-- Dynamically populated by app.js -->
+    </div>
+  </aside>
 
   <!-- ==========================================================================
        VIEW 1: CUSTOMER GROCERY STOREFRONT PANE
@@ -201,7 +274,7 @@
           </div>
 
           <div class="hero-buttons">
-            <button class="btn-primary" id="hero-shop-btn">Explore Products ↓</button>
+            <button class="btn-primary" id="hero-shop-btn" data-i18n="exploreProducts">Explore Products ↓</button>
             <button class="btn-secondary" id="demo-login-btn">Quick Demo Login (Customer)</button>
           </div>
         </div>
@@ -232,13 +305,27 @@
       </div>
     </section>
 
+    <!-- Thompson Sampling Dynamic Hero Promotion (Multi-Armed Bandit) -->
+    <section class="section" id="bandit-promo-section" style="padding-top:10px; padding-bottom:10px;">
+      <div class="section-container">
+        <div id="bandit-storefront-banner" class="bandit-hero-banner" style="display:none;">
+          <div class="bandit-banner-content">
+            <span class="bandit-tag" id="bandit-banner-badge">⚡ Thompson Sampling Active Deal</span>
+            <h3 id="bandit-banner-title">Loading Dynamic Promotion...</h3>
+            <p id="bandit-banner-tagline">Optimized dynamically via Bayesian Beta-Bernoulli exploration</p>
+          </div>
+          <button class="btn-primary" id="btn-claim-bandit-deal" style="white-space:nowrap; padding:10px 22px;">Claim Deal 🎁</button>
+        </div>
+      </div>
+    </section>
+
     <!-- Flash Deals & Midnight Steals Ticker -->
     <section class="section" style="padding-top:0;">
       <div class="section-container">
         <div class="flash-deals-banner">
           <div class="flash-header">
             <div class="flash-title-wrap">
-              <span class="flash-title">⚡ Flash Deals & Fresh Steals</span>
+              <span class="flash-title" data-i18n="flashDeals">⚡ Flash Deals & Fresh Steals</span>
               <span style="font-size:0.8rem; color:rgba(255,255,255,0.8);">Up to 40% Off on Selected Farm Produce</span>
             </div>
             <div class="countdown-box">
@@ -260,7 +347,7 @@
         <div class="section-header">
           <div>
             <div class="section-badge">🍳 1-Click Meal Kits</div>
-            <h2 class="section-title">Curated Smart Combos</h2>
+            <h2 class="section-title" data-i18n="combos">Curated Smart Combos</h2>
             <p class="section-subtitle">Pre-bundled ingredient kits curated by AI with bundled savings</p>
           </div>
         </div>
@@ -277,7 +364,7 @@
         <div class="section-header">
           <div>
             <div class="section-badge">🤖 Machine Learning Engine</div>
-            <h2 class="section-title">Recommended Just For You</h2>
+            <h2 class="section-title" data-i18n="recommended">Recommended Just For You</h2>
             <p class="section-subtitle" id="rec-subtitle">Personalized based on hybrid collaborative filtering & your shopping patterns</p>
           </div>
           <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
@@ -285,6 +372,25 @@
 
         <div class="product-grid" id="ai-recs-grid">
           <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Transformer (SASRec) Next-Pick Recommendations -->
+    <section class="section" id="sasrec-tray-section" style="padding-top:10px;">
+      <div class="section-container">
+        <div class="section-header">
+          <div>
+            <div class="section-badge" style="background:rgba(59, 130, 246, 0.15); color:var(--blue-400); border-color:rgba(59,130,246,0.3);">
+              ⚡ Sequential Transformer (SASRec Attention)
+            </div>
+            <h2 class="section-title">⚡ Next-Pick For Your Basket</h2>
+            <p class="section-subtitle">Real-time scaled dot-product self-attention inferred from your chronological browsing trajectory</p>
+          </div>
+          <span class="algorithm-badge" style="background:rgba(59, 130, 246, 0.15); color:var(--blue-400); border-color:rgba(59, 130, 246, 0.3);">SASRec Self-Attention (QK^T / √d)</span>
+        </div>
+        <div class="product-grid" id="sasrec-storefront-grid">
+          <!-- Populated dynamically via JS -->
         </div>
       </div>
     </section>
@@ -396,19 +502,19 @@
         </div>
 
         <div class="order-stepper" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin: 20px 0; text-align:center;">
-          <div class="step-box active" id="step-1" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
+          <div class="step-box active" id="orders-step-1" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
             <span style="font-size:1.3rem; display:block;">✅</span>
             <strong style="font-size:0.8rem; color:#fff;">Order Placed</strong>
           </div>
-          <div class="step-box active" id="step-2" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
+          <div class="step-box active" id="orders-step-2" style="background:rgba(16,185,129,0.15); border:1px solid var(--green-500); padding:12px 6px; border-radius:var(--radius-sm);">
             <span style="font-size:1.3rem; display:block;">🏭</span>
             <strong style="font-size:0.8rem; color:#fff;">Dark Store Picked</strong>
           </div>
-          <div class="step-box active" id="step-3" style="background:rgba(59,130,246,0.15); border:1px solid var(--blue-500); padding:12px 6px; border-radius:var(--radius-sm);">
+          <div class="step-box active" id="orders-step-3" style="background:rgba(59,130,246,0.15); border:1px solid var(--blue-500); padding:12px 6px; border-radius:var(--radius-sm);">
             <span style="font-size:1.3rem; display:block;">🛵</span>
             <strong style="font-size:0.8rem; color:#fff;">Rider Dispatched</strong>
           </div>
-          <div class="step-box" id="step-4" style="background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); padding:12px 6px; border-radius:var(--radius-sm);">
+          <div class="step-box" id="orders-step-4" style="background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); padding:12px 6px; border-radius:var(--radius-sm);">
             <span style="font-size:1.3rem; display:block;">🏠</span>
             <strong style="font-size:0.8rem; color:var(--text-dim);">Delivered</strong>
           </div>
@@ -1532,80 +1638,6 @@
     </div>
   </div>
 
-  <!-- Multimodal Snap Your Fridge AI Scanner Modal -->
-  <div class="modal-overlay" id="fridge-modal-overlay" style="display:none;">
-    <div class="modal-card modal-wide">
-      <div class="modal-header">
-        <div>
-          <span class="ai-pill">Multimodal Vision AI</span>
-          <h3>📸 Snap Your Fridge & Pantry AI Scanner</h3>
-        </div>
-        <button class="close-btn" id="fridge-close">✕</button>
-      </div>
-
-      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">
-        Take a photo or upload an image of your refrigerator/kitchen shelf to auto-detect depleted essentials and build your 1-click reorder basket:
-      </p>
-
-      <!-- Drag and drop or sample selector -->
-      <div class="fridge-drop-zone" id="fridge-drop-zone" style="border: 2px dashed var(--green-400); border-radius: var(--radius-md); padding: 18px; text-align:center; background: rgba(16,185,129,0.04); margin-bottom:14px;">
-        <span style="font-size:2.2rem; display:block; margin-bottom:6px;">🧊 📷</span>
-        <label for="fridge-file-input" style="font-weight:700; color:var(--green-400); cursor:pointer; font-size:0.95rem;">Tap to Take Photo / Choose File</label>
-        <input type="file" id="fridge-file-input" accept="image/*" style="display:none;">
-        <small style="display:block; color:var(--text-dim); margin-top:4px;">Supports camera capture, JPG, PNG & WebP</small>
-      </div>
-
-      <div style="font-size:0.82rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Or simulate with AI scene presets:</div>
-      <div class="fridge-presets-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-bottom:14px;">
-        <button class="btn-secondary fridge-preset-btn active" data-preset="breakfast_depleted" style="text-align:left; padding:10px;">
-          <strong>🍳 Breakfast & Dairy Low</strong>
-          <small style="display:block; color:var(--text-dim); font-size:0.72rem;">Eggs, milk & bread low</small>
-        </button>
-        <button class="btn-secondary fridge-preset-btn" data-preset="produce_running_low" style="text-align:left; padding:10px;">
-          <strong>🥦 Veggie Crisper Empty</strong>
-          <small style="display:block; color:var(--text-dim); font-size:0.72rem;">Tomatoes, onions & greens needed</small>
-        </button>
-        <button class="btn-secondary fridge-preset-btn" data-preset="fruit_snack_refill" style="text-align:left; padding:10px;">
-          <strong>🍎 Fruits & Snacks Empty</strong>
-          <small style="display:block; color:var(--text-dim); font-size:0.72rem;">Apples, bananas & yogurt refill</small>
-        </button>
-        <button class="btn-secondary fridge-preset-btn" data-preset="weekly_pantry_restock" style="text-align:left; padding:10px;">
-          <strong>📦 Full Weekly Restock</strong>
-          <small style="display:block; color:var(--text-dim); font-size:0.72rem;">Multi-shelf pantry replenish</small>
-        </button>
-      </div>
-
-      <!-- Scanning Radar Progress Animation -->
-      <div id="fridge-scanning-radar" style="display:none; text-align:center; padding:20px; background:rgba(16,185,129,0.05); border-radius:var(--radius-md); margin-bottom:14px;">
-        <div class="spinner" style="margin: 0 auto 10px;"></div>
-        <strong style="color:var(--green-400);">🧠 Neural Vision Model Analyzing Inventory...</strong>
-        <small style="display:block; color:var(--text-dim); margin-top:4px;">Extracting object boundaries & matching 31 catalog SKU signatures</small>
-      </div>
-
-      <!-- Scan Results Box -->
-      <div id="fridge-scan-results" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:12px;">
-          <div>
-            <strong style="color:var(--green-400);" id="fridge-result-title">Breakfast & Dairy Depleted</strong>
-            <small style="display:block; color:var(--text-dim);" id="fridge-confidence-badge">Confidence: 94.2%</small>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:0.8rem; color:var(--text-muted);">AI Bundle Price:</div>
-            <strong style="font-size:1.2rem; color:var(--green-400);" id="fridge-bundle-price">₹0.00</strong>
-          </div>
-        </div>
-
-        <div id="fridge-detected-items-list" style="display:flex; flex-direction:column; gap:8px; max-height:180px; overflow-y:auto; margin-bottom:14px;">
-          <!-- Loaded dynamically -->
-        </div>
-
-        <button class="btn-checkout" id="fridge-add-all-btn" style="width:100%;">
-          ⚡ Add All Missing Essentials to Cart (10% AI Discount)
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Interactive Razorpay / UPI Payment Gateway Modal -->
   <div class="modal-overlay" id="payment-gateway-overlay" style="display:none;">
     <div class="modal-card modal-wide">
@@ -1862,6 +1894,154 @@
     </div>
   </div>
 
+  <!-- Multimodal Smart Fridge AI & Visual Product Scanner Modal -->
+  <div class="modal-overlay" id="fridge-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="fridge-modal-title">
+    <div class="modal-card modal-wide vision-modal-card" style="max-width:880px; width:95%;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2)); display:flex; align-items:center; justify-content:center; font-size:1.5rem; border:1px solid rgba(16,185,129,0.3);">
+            📸
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="ai-pill" style="background:rgba(16,185,129,0.15); color:var(--green-400); border:1px solid rgba(16,185,129,0.3); font-size:0.75rem; padding:2px 8px; border-radius:12px; font-weight:700;">Computer Vision Engine</span>
+              <span style="font-size:0.75rem; color:var(--text-dim);">Multimodal Inference</span>
+            </div>
+            <h3 id="fridge-modal-title" style="font-size:1.25rem; margin-top:3px; font-weight:800;">Smart Fridge & Visual Product AI</h3>
+          </div>
+        </div>
+        <button class="close-btn" id="fridge-close" aria-label="Close Smart Fridge Modal">✕</button>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div style="display:flex; gap:8px; border-bottom:1px solid var(--border-subtle); padding:10px 0 14px 0; margin-bottom:16px;">
+        <button class="vision-tab-btn active" id="vision-tab-fridge" onclick="app.switchVisionTab('fridge')">
+          🧊 Multimodal Fridge Scanner
+        </button>
+        <button class="vision-tab-btn" id="vision-tab-search" onclick="app.switchVisionTab('search')">
+          🔍 5-Channel Visual Feature Search
+        </button>
+      </div>
+
+      <!-- Tab 1: Smart Fridge Scanner Pane -->
+      <div id="vision-pane-fridge">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button class="fridge-preset-btn active" data-preset="breakfast_depleted">🍳 Breakfast & Dairy Depleted</button>
+            <button class="fridge-preset-btn" data-preset="produce_running_low">🥗 Crisper Running Low</button>
+            <button class="fridge-preset-btn" data-preset="weekly_restock">🛒 Weekly Multi-Shelf Restock</button>
+          </div>
+          <div>
+            <input type="file" id="fridge-file-input" style="display:none;" accept="image/*">
+            <button class="btn-secondary" style="padding:7px 14px; font-size:0.82rem; display:flex; align-items:center; gap:6px;" onclick="$('#fridge-file-input').click()">
+              📷 Upload Fridge Photo
+            </button>
+          </div>
+        </div>
+
+        <!-- Scanning Radar Animation -->
+        <div id="fridge-scanning-radar" style="display:none; text-align:center; padding:35px 20px; background:rgba(0,0,0,0.25); border-radius:var(--radius-md); border:1px dashed var(--border-active);">
+          <div class="pulse-radar" style="width:50px; height:50px; border-radius:50%; border:3px solid var(--green-400); margin:0 auto 14px; animation:spin 1.2s linear infinite; border-top-color:transparent;"></div>
+          <h4 style="color:var(--text-main); font-size:1.05rem;">Neural Vision Scanning Refrigerator Shelves...</h4>
+          <p style="color:var(--text-dim); font-size:0.85rem; margin-top:4px;">Extracting spatial bounding boxes and calculating depleted food volumes</p>
+        </div>
+
+        <!-- Scan Results -->
+        <div id="fridge-scan-results">
+          <!-- Scene Summary Header Card -->
+          <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-md); padding:14px 18px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <span id="fridge-confidence-badge" style="display:inline-block; font-size:0.75rem; color:var(--green-400); font-weight:700; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:12px; margin-bottom:4px;">Confidence: 95% • 3 Items Low</span>
+              <h4 id="fridge-result-title" style="font-size:1.15rem; color:var(--text-main); font-weight:800; margin:0;">Breakfast & Dairy Depleted Shelf</h4>
+              <small style="color:var(--text-dim); font-size:0.8rem; display:block; margin-top:2px;">Model: Multimodal CNN Spatial Extractor + Cosine Classifier (14.5ms)</small>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:0.78rem; color:var(--text-dim); display:block;">1-Click Bundle Total</span>
+              <strong id="fridge-bundle-price" style="font-size:1.4rem; color:var(--green-400); font-weight:800;">₹285.00</strong>
+            </div>
+          </div>
+
+          <!-- Interactive Simulated Refrigerator Visual Representation -->
+          <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:0.8rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px;">🧊 Detected Shelf Regions & Bounding Boxes</span>
+              <span style="font-size:0.75rem; color:var(--green-400); background:rgba(16,185,129,0.1); padding:2px 8px; border-radius:6px;">Cold Chain Validated (-18°C / +4°C)</span>
+            </div>
+            <div id="fridge-bounding-boxes-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+              <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); border-radius:var(--radius-sm); padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="font-size:0.85rem; color:#ef4444;">🚨 Empty Milk Jug</strong>
+                  <span style="font-size:0.7rem; background:#ef4444; color:#fff; padding:1px 6px; border-radius:4px; font-weight:700;">CRITICAL</span>
+                </div>
+                <small style="display:block; color:var(--text-dim); margin-top:4px;">Shelf #1 • Conf: 95% • Box: [0.12, 0.15, 0.35, 0.58]</small>
+              </div>
+              <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); border-radius:var(--radius-sm); padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="font-size:0.85rem; color:#ef4444;">🚨 Depleted Egg Carton</strong>
+                  <span style="font-size:0.7rem; background:#ef4444; color:#fff; padding:1px 6px; border-radius:4px; font-weight:700;">CRITICAL</span>
+                </div>
+                <small style="display:block; color:var(--text-dim); margin-top:4px;">Shelf #1 • Conf: 92% • Box: [0.42, 0.18, 0.78, 0.45]</small>
+              </div>
+              <div style="background:rgba(234,179,8,0.1); border:1px solid rgba(234,179,8,0.4); border-radius:var(--radius-sm); padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="font-size:0.85rem; color:#eab308;">⚠️ Half Sourdough Loaf</strong>
+                  <span style="font-size:0.7rem; background:#eab308; color:#000; padding:1px 6px; border-radius:4px; font-weight:700;">MONITOR</span>
+                </div>
+                <small style="display:block; color:var(--text-dim); margin-top:4px;">Shelf #2 • Conf: 88% • Box: [0.55, 0.60, 0.88, 0.90]</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detected Replenishment Items List -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:0.85rem; font-weight:700; color:var(--text-dim); margin-bottom:8px;">Suggested 10-Minute Replenishment Cart:</div>
+            <div id="fridge-detected-items-list" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto;">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- Modal Footer Action -->
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:14px;">
+            <small style="color:var(--text-dim);">✨ 10% AI Refrigerator Bundle Discount automatically applied</small>
+            <button class="btn-checkout" id="fridge-add-all-btn" style="padding:10px 24px; font-weight:800;">
+              🛒 Add All Replenishments to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 5-Channel Visual Feature Cosine Search Pane -->
+      <div id="vision-pane-search" style="display:none;">
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:0.85rem; font-weight:700; color:var(--text-dim); margin-bottom:6px;">Enter Visual Description / Color Features:</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="visual-search-query-input" placeholder="e.g. 'crisp red apple', 'bright yellow banana', 'fresh green leafy'..." style="flex:1; padding:10px 14px; border-radius:var(--radius-sm); background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); color:var(--text-main);">
+            <button class="btn-primary" id="run-visual-search-btn" onclick="app.runVisualSearch()" style="padding:10px 18px; font-weight:700;">
+              ⚡ Match Visual Features
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px;">
+          <span style="font-size:0.75rem; color:var(--text-dim); align-self:center;">Try Sample Visual Cues:</span>
+          <button class="search-empty-pill" onclick="app.triggerVisualSample('red apple')">🍎 Red Apple</button>
+          <button class="search-empty-pill" onclick="app.triggerVisualSample('yellow banana')">🍌 Yellow Banana</button>
+          <button class="search-empty-pill" onclick="app.triggerVisualSample('green spinach leafy')">🥬 Green Spinach</button>
+          <button class="search-empty-pill" onclick="app.triggerVisualSample('pure white milk dairy')">🥛 White Milk</button>
+          <button class="search-empty-pill" onclick="app.triggerVisualSample('orange citrus fruit')">🍊 Orange Citrus</button>
+        </div>
+
+        <div id="visual-feature-vector-box" style="display:none; background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:14px;">
+          <!-- Feature vector display -->
+        </div>
+
+        <div id="visual-search-matches-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; max-height:280px; overflow-y:auto;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Sticky Bottom Quick-Access Bar -->
   <nav class="mobile-bottom-bar" aria-label="Mobile Quick Navigation">
     <button class="mobile-nav-btn active" id="mobile-nav-store" onclick="app.switchView('store')">
@@ -1888,8 +2068,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
-      <p>© 2026 FreshCart AI — Intelligent Grocery E-Commerce & 10-Min Delivery Network</p>
-      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • Full-Stack AI Quick Commerce</p>
+      <p>© 2026 AI-Driven Intelligent Grocery Retail System Using Machine Learning</p>
+      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • Full-Stack Intelligent Retail System</p>
     </div>
   </footer>
 

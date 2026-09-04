@@ -1,4 +1,4 @@
-# FreshCart AI: Codebase Cleanup Manifest & Inventory Audit
+# AI-Driven Intelligent Grocery Retail System: Codebase Cleanup Manifest & Inventory Audit
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Date & Timestamp:** 2026-08-26  

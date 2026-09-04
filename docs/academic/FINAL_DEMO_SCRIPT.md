@@ -1,4 +1,4 @@
-# FreshCart AI: Final Live Application Demonstration Script
+# AI-Driven Intelligent Grocery Retail System: Final Live Application Demonstration Script
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Target Audience:** External Examiner, Internal Examiner, Project Guide & Evaluation Committee  

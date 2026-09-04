@@ -1,4 +1,4 @@
-# FreshCart AI: Master Algorithm Inventory, Formulations & Pseudocode
+# AI-Driven Intelligent Grocery Retail System: Master Algorithm Inventory, Formulations & Pseudocode
 
 This document catalogs every verified algorithm implemented in **FreshCart AI**, including its mathematical formulation, complexity, evaluation metrics, and source file in the codebase.
 

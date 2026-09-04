@@ -1,4 +1,4 @@
-# FreshCart AI: Master Academic Diagram Inventory & UML Specification
+# AI-Driven Intelligent Grocery Retail System: Master Academic Diagram Inventory & UML Specification
 
 This document defines the 22 original technical diagrams required for the **Mumbai University / APSIT Major Project Black Book**, **Review-1 Presentation**, and **Semester-7 Report**.
 

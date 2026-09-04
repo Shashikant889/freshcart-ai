@@ -1,4 +1,4 @@
-# FreshCart AI: Master Academic Results & Benchmarks Inventory
+# AI-Driven Intelligent Grocery Retail System: Master Academic Results & Benchmarks Inventory
 
 This document compiles all empirical numerical findings, holdout metrics, ablation comparisons, and generated plot paths across all 7 AI/ML and Operations Research subsystems.
 

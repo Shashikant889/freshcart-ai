@@ -1,4 +1,4 @@
-# FreshCart AI: Major Project Review-1 Presentation Slide-by-Slide Blueprint
+# AI-Driven Intelligent Grocery Retail System: Major Project Review-1 Presentation Slide-by-Slide Blueprint
 
 **Format Guidelines (Official APSIT Specifications):**
 - Concise bullet points only (strictly NO wall-of-text paragraphs).

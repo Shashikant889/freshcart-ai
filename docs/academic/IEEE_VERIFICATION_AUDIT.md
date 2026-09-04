@@ -1,4 +1,4 @@
-# FreshCart AI: IEEE Xplore Verification Audit Report
+# AI-Driven Intelligent Grocery Retail System: IEEE Xplore Verification Audit Report
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

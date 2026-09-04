@@ -1,10 +1,10 @@
-# AI-Powered Intelligent Grocery E-Commerce & Recommendation System
+# AI-Driven Intelligent Grocery Retail System Using Machine Learning
 ## 🎓 Final Year Major Project Report — Department of Computer Science & Engineering (AI & ML)
 
 ---
 
 ### Abstract
-Modern grocery e-commerce systems face complex operational and user-engagement challenges, including high inventory perishability, volatile short-term demand, diverse user dietary preferences, and last-mile delivery route inefficiencies. This project presents **FreshCart AI**, a full-stack, AI-native intelligent grocery platform developed by a 5-student team. The system integrates six genuine machine learning modules: (1) a **Hybrid Recommendation Engine** combining Content-Based Cosine Similarity and User-User Collaborative Filtering, (2) **Apriori Association Rule Mining** for "Frequently Bought Together" affinity discovery, (3) **Time-Series Demand Forecasting** utilizing Ordinary Least Squares (OLS) Linear Regression and seasonal decomposition with RMSE validation, (4) **Customer Segmentation** via an unsupervised custom K-Means algorithm evaluated via the Within-Cluster Sum of Squares (WCSS) Elbow Method, (5) a **Conversational NLP Recipe-to-Cart Assistant** and TF-IDF bilingual search engine, (6) a **Real-Time Z-Score Transaction Anomaly & Fraud Detector**, and (7) a **Vehicle Routing Problem (VRP)** multi-stop delivery dispatch optimizer using 2-Opt local search heuristics. Operating entirely as a unified, production-ready full-stack application localized in Indian Rupees (₹), the system demonstrates significant improvements in recommendation accuracy ($78.4\%$ Precision@5), demand forecast reliability, and last-mile route efficiency.
+Modern grocery retail systems face complex operational and user-engagement challenges, including high inventory perishability, volatile short-term demand, diverse user dietary preferences, and last-mile delivery route inefficiencies. This project presents the **AI-Driven Intelligent Grocery Retail System Using Machine Learning**, a full-stack, AI-native intelligent grocery platform developed by a 5-student team. The system integrates six genuine machine learning modules: (1) a **Hybrid Recommendation Engine** combining Content-Based Cosine Similarity and User-User Collaborative Filtering, (2) **Apriori Association Rule Mining** for "Frequently Bought Together" affinity discovery, (3) **Time-Series Demand Forecasting** utilizing Ordinary Least Squares (OLS) Linear Regression and seasonal decomposition with RMSE validation, (4) **Customer Segmentation** via an unsupervised custom K-Means algorithm evaluated via the Within-Cluster Sum of Squares (WCSS) Elbow Method, (5) a **Conversational NLP Recipe-to-Cart Assistant** and TF-IDF bilingual search engine, (6) a **Real-Time Z-Score Transaction Anomaly & Fraud Detector**, and (7) a **Vehicle Routing Problem (VRP)** multi-stop delivery dispatch optimizer using 2-Opt local search heuristics. Operating entirely as a unified, production-ready full-stack application localized in Indian Rupees (₹), the system demonstrates significant improvements in recommendation accuracy ($78.4\%$ Precision@5), demand forecast reliability, and last-mile route efficiency.
 
 ---
 
@@ -24,7 +24,7 @@ The core objectives of this project are:
 
 ```
                       ┌────────────────────────────────────────────────────────┐
-                      │    AI Grocery E-Commerce & Recommendation System       │
+                      │ AI-Driven Intelligent Grocery Retail System Using ML   │
                       └──────────────────────────┬─────────────────────────────┘
                                                  │
       ┌──────────────────┬───────────────────────┼───────────────────────┬──────────────────┐

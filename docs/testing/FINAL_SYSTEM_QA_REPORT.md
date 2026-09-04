@@ -1,4 +1,4 @@
-# FreshCart AI: Final Comprehensive System Quality Assurance & Audit Report
+# AI-Driven Intelligent Grocery Retail System: Final Comprehensive System Quality Assurance & Audit Report
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Evaluation Scope:** Major Final-Year Capstone Project (B.Tech CSE-AIML, Mumbai University)  

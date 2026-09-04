@@ -1,11 +1,12 @@
 services:
+  # FreshCart AI Web Service on Render Free Tier
   - type: web
     name: freshcart-ai
     runtime: node
     plan: free
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-

@@ -1,11 +1,11 @@
-# 📊 FreshCart AI — 15-Slide Final Project Presentation Deck
-## B.Tech Major Project Defense — Department of Computer Science & Engineering (AI & ML)
+# 📊 AI-Driven Intelligent Grocery Retail System Using Machine Learning — 15-Slide Final Project Presentation Deck
+## B.E. Major Project Defense — Department of Computer Science & Engineering (AI & ML)
 
 ---
 
 ### Slide 1: Title & Team Introduction
-* **Title**: AI-Powered Intelligent Grocery E-Commerce & Recommendation System (FreshCart AI)
-* **Subtitle**: A Unified Microeconomic & Machine Learning Platform for Smart Retail
+* **Title**: AI-Driven Intelligent Grocery Retail System Using Machine Learning
+* **Subtitle**: A Unified Operations Research & Machine Learning Platform for Smart Retail
 * **Team Members & Roll Numbers**:
   1. Student 1: System Architecture & Relational Data Engineering
   2. Student 2: Backend REST APIs, Security & Real-Time Fraud AI

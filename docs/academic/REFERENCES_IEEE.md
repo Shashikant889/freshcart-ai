@@ -1,4 +1,4 @@
-# FreshCart AI: Master IEEE References (2023–2026 Verified)
+# AI-Driven Intelligent Grocery Retail System: Master IEEE References (2023–2026 Verified)
 
 **Academic Program:** Bachelor of Engineering in Computer Science & Engineering (AIML)  
 **Institution:** A.P. Shah Institute of Technology, Thane (Affiliated to University of Mumbai)  

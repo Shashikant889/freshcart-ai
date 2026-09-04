@@ -1,4 +1,4 @@
-# FreshCart AI: Semester-7 Project Stage Report Blueprint
+# AI-Driven Intelligent Grocery Retail System: Semester-7 Project Stage Report Blueprint
 
 **Academic Context:** Semester-7 Major Project Stage-1 Submission  
 **Department:** Computer Science & Engineering (AIML)  

@@ -1,8 +1,8 @@
-# FreshCart AI: Integration Architecture & Service Gateway
+# AI-Driven Intelligent Grocery Retail System: Integration Architecture & Service Gateway
 
 ## 1. System Overview
 
-FreshCart AI adopts a **Hybrid Two-Tier Microservice Architecture**:
+The **AI-Driven Intelligent Grocery Retail System Using Machine Learning** adopts a **Hybrid Two-Tier Microservice Architecture**:
 - **Application Tier (Node.js + Express):** Serves customer storefront and admin web applications, handles session/JWT authentication, executes transactional SQLite queries, and coordinates business workflows.
 - **Intelligence Tier (Python + FastAPI):** Serves offline-trained machine learning and operations research models (Hybrid Recommender, SARIMAX Demand Forecaster, Dynamic Price Elasticity, Random Forest Fraud Detector, EOQ/ROP Inventory Optimizer, Dark Store 2D TSP Picker, and Capacitated Vehicle Routing Problem).
 - **Service Gateway (`services/ai-client.js`):** A resilient, decoupled HTTP client layer inside Node.js that invokes the Python inference endpoints with sub-second timeouts and automatic, zero-downtime graceful fallback to in-process Node heuristics.

@@ -309,4 +309,158 @@ router.get('/analytics/overview', (req, res) => {
   }
 });
 
+// GET /api/admin/deep-demand - PyTorch 2-Layer Multivariate LSTM Demand Forecast
+router.get('/deep-demand', async (req, res) => {
+  try {
+    const horizon = parseInt(req.query.horizon) || 7;
+    const forecast = await aiClient.getDeepDemandForecast({ horizonDays: horizon });
+    res.json({ success: true, data: forecast });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Deep demand forecast error: ' + err.message });
+  }
+});
+
+// POST /api/admin/rag/query - Local Grounded RAG Query Engine
+router.post('/rag/query', async (req, res) => {
+  try {
+    const { query, top_k } = req.body;
+    if (!query || !query.trim()) {
+      return res.status(400).json({ success: false, message: 'Query string is required' });
+    }
+    const result = await aiClient.queryRAG({ query, topK: top_k || 3 });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'RAG engine query error: ' + err.message });
+  }
+});
+
+// GET /api/admin/rag/chunks - RAG Knowledge Corpus Chunks Inspector
+router.get('/rag/chunks', async (req, res) => {
+  try {
+    const chunks = await aiClient.getRAGChunks();
+    res.json({ success: true, data: chunks });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'RAG chunks error: ' + err.message });
+  }
+});
+
+// POST /api/admin/warehouse-optimize - 2D Dark Store Warehouse Picking Optimization
+router.post('/warehouse-optimize', async (req, res) => {
+  try {
+    const { product_ids } = req.body;
+    const result = await aiClient.optimizeWarehouse({ productIds: product_ids || [] });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Warehouse picker optimization error: ' + err.message });
+  }
+});
+
+// POST /api/admin/delivery-optimize - Capacitated Vehicle Routing Fleet Optimization
+router.post('/delivery-optimize', async (req, res) => {
+  try {
+    const { orders, vehicle_capacity_kg } = req.body;
+    const result = await aiClient.optimizeDelivery({
+      orders: orders || [],
+      vehicleCapacityKg: vehicle_capacity_kg || 25.0
+    });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Delivery fleet optimization error: ' + err.message });
+  }
+});
+
+// GET /api/admin/rl/policy - Bellman Q-Learning Optimal Inventory Policy
+router.get('/rl/policy', async (req, res) => {
+  try {
+    const policy = await aiClient.getRLPolicy();
+    res.json({ success: true, data: policy });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'RL policy error: ' + err.message });
+  }
+});
+
+// POST /api/admin/rl/simulate - Run Perishable Replenishment Simulation Trajectory
+router.post('/rl/simulate', async (req, res) => {
+  try {
+    const { days, initial_stock, demand_pattern } = req.body;
+    const sim = await aiClient.simulateRLEpisode({
+      days: parseInt(days) || 14,
+      initialStock: parseInt(initial_stock) || 15,
+      demandPattern: demand_pattern || 'poisson_stochastic'
+    });
+    res.json({ success: true, data: sim });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'RL simulation error: ' + err.message });
+  }
+});
+
+// POST /api/admin/sasrec/predict - Sequential Self-Attention Transformer Predictions
+router.post('/sasrec/predict', async (req, res) => {
+  try {
+    const { sequence, top_k } = req.body;
+    const result = await aiClient.predictSequentialNextPick({
+      sequence: Array.isArray(sequence) && sequence.length > 0 ? sequence : [1, 2, 4],
+      topK: parseInt(top_k) || 5
+    });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'SASRec prediction error: ' + err.message });
+  }
+});
+
+// GET /api/admin/kg/graph - Heterogeneous Product Knowledge Graph Exploration
+router.get('/kg/graph', async (req, res) => {
+  try {
+    const { center_node, max_depth } = req.query;
+    const graph = await aiClient.getProductKnowledgeGraph({
+      centerNode: center_node || null,
+      maxDepth: parseInt(max_depth) || 2
+    });
+    res.json({ success: true, data: graph });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Knowledge graph error: ' + err.message });
+  }
+});
+
+// POST /api/admin/kg/substitutes/:id - Multi-Hop Allergen-Safe Substitutions
+router.post('/kg/substitutes/:id', async (req, res) => {
+  try {
+    const { exclude_allergens, prefer_organic } = req.body;
+    const subs = await aiClient.findSafeSubstitutes({
+      productId: parseInt(req.params.id) || 1,
+      excludeAllergens: Array.isArray(exclude_allergens) ? exclude_allergens : ['Lactose'],
+      preferOrganic: prefer_organic !== undefined ? Boolean(prefer_organic) : true
+    });
+    res.json({ success: true, data: subs });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'KG substitution error: ' + err.message });
+  }
+});
+
+// POST /api/admin/bandit/sample - Multi-Armed Bandit Dynamic Thompson Sampling
+router.post('/bandit/sample', async (req, res) => {
+  try {
+    const { context } = req.body;
+    const sample = await aiClient.sampleBanditArm({ context: context || 'admin_eval' });
+    res.json({ success: true, data: sample });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Bandit sampling error: ' + err.message });
+  }
+});
+
+// POST /api/admin/bandit/feedback - Thompson Sampling Feedback Reward
+router.post('/bandit/feedback', async (req, res) => {
+  try {
+    const { arm_id, reward } = req.body;
+    const fb = await aiClient.recordBanditFeedback({
+      armId: arm_id || 'ARM_FLASH_15',
+      reward: reward !== undefined ? Number(reward) : 1.0
+    });
+    res.json({ success: true, data: fb });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Bandit feedback error: ' + err.message });
+  }
+});
+
 module.exports = router;
+

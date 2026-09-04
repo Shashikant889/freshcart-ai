@@ -1,4 +1,4 @@
-# FreshCart AI: Final Academic Claim & Evidence Audit
+# AI-Driven Intelligent Grocery Retail System: Final Academic Claim & Evidence Audit
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

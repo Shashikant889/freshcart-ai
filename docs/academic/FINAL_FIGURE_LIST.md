@@ -1,4 +1,4 @@
-# FreshCart AI: Final Master List of System Figures & Diagrams
+# AI-Driven Intelligent Grocery Retail System: Final Master List of System Figures & Diagrams
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

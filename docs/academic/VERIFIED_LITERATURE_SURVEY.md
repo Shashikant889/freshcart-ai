@@ -1,4 +1,4 @@
-# FreshCart AI: Verified Literature Survey & Paper-by-Paper Analysis
+# AI-Driven Intelligent Grocery Retail System: Verified Literature Survey & Paper-by-Paper Analysis
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  

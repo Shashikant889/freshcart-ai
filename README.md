@@ -1,8 +1,8 @@
-# 🌿 FreshCart AI — Intelligent Quick-Commerce & Operations Research Platform
+# 🌿 AI-Driven Intelligent Grocery Retail System Using Machine Learning
 
-> **A Production-Grade, Full-Stack AI-Native Quick-Commerce Platform with Real-Time ML Inference & Combinatorial Logistics Optimization**  
+> **A Production-Grade, Full-Stack AI-Native Grocery Retail Platform with Real-Time ML Inference & Combinatorial Logistics Optimization**  
 > *Scales to 10,000 Products across 108 Categories, 150,000 Users, and Real-Time Dark Store Fulfillment*  
-> *B.Tech CSE (Artificial Intelligence & Machine Learning) Major Project — A. P. Shah Institute of Technology, University of Mumbai*
+> *B.E. CSE (Artificial Intelligence & Machine Learning) Major Project — A. P. Shah Institute of Technology, University of Mumbai*
 
 [![CI Build](https://github.com/Shashikant889/freshcart-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashikant889/freshcart-ai/actions)
 [![Node.js](https://img.shields.io/badge/Node.js-v18%20%7C%20v20-green.svg)](https://nodejs.org/)
@@ -33,7 +33,7 @@ For in-depth architectural and mathematical references, consult the dedicated do
 
 ## 📖 Project Overview
 
-**FreshCart AI** is a dual-tier, full-stack intelligent grocery retail and operations research platform engineered for modern 10-minute quick-commerce dark stores. The system operates on a production-scale catalog of **10,000 products** spanning **108 hyper-specialized categories**, backed by **150,000 synthetic customer accounts** and over 65,000 historical transactions. It uniquely bridges customer-facing quick-commerce features (bilingual Hindi/English NLP search, Top-K hybrid recommendations, Nutri-Score analysis, and recipe ingredient bundling) with backend fulfillment operations (30-day SARIMAX demand forecasting, econometric dynamic pricing, real-time transaction fraud scoring, 2D TSP dark store warehouse picker routing, and CVRP delivery fleet dispatch).
+The **AI-Driven Intelligent Grocery Retail System Using Machine Learning** is a dual-tier, full-stack intelligent grocery retail and operations research platform engineered for modern 10-minute quick-commerce dark stores. The system operates on a production-scale catalog of **10,000 products** spanning **108 hyper-specialized categories**, backed by **150,000 synthetic customer accounts** and over 65,000 historical transactions. It uniquely bridges customer-facing quick-commerce features (bilingual Hindi/English NLP search, Top-K hybrid recommendations, Nutri-Score analysis, and recipe ingredient bundling) with backend fulfillment operations (30-day SARIMAX demand forecasting, econometric dynamic pricing, real-time transaction fraud scoring, 2D TSP dark store warehouse picker routing, and CVRP delivery fleet dispatch).
 
 ---
 

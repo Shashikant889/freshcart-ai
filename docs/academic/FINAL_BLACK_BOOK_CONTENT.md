@@ -1,4 +1,4 @@
-# FreshCart AI: Master Black Book Academic Content Index & Source Registry
+# AI-Driven Intelligent Grocery Retail System: Master Black Book Academic Content Index & Source Registry
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (Artificial Intelligence & Machine Learning)  

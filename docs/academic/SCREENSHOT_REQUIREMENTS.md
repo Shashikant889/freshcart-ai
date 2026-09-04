@@ -1,4 +1,4 @@
-# FreshCart AI: Official Real Application Screenshot Registry
+# AI-Driven Intelligent Grocery Retail System: Official Real Application Screenshot Registry
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A. P. Shah Institute of Technology  

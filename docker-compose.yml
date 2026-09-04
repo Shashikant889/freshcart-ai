@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Node.js Storefront SPA, API Gateway & Admin Operations
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: freshcart-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - PYTHON_AI_URL=http://ai:8000
+    depends_on:
+      - ai
+    networks:
+      - freshcart-network
+
+  # Python FastAPI High-Performance AI Microservice
+  ai:
+    build:
+      context: .
+      dockerfile: ml/Dockerfile.ai
+    container_name: freshcart-ai-engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    networks:
+      - freshcart-network
+
+networks:
+  freshcart-network:
+    driver: bridge

@@ -2,7 +2,8 @@
    FreshCart AI — Admin & AI Analytics Dashboard CSS
    ========================================================================== */
 
-:root {
+.admin-layout,
+#view-admin-page {
   --bg-admin: #0b0f19;
   --bg-sidebar: #0e1526;
   --bg-card: rgba(18, 26, 44, 0.85);
@@ -29,26 +30,28 @@
   --radius-lg: 20px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
+body.admin-body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg-admin);
-  color: var(--text-main);
+  background: #0b0f19;
+  color: #f8fafc;
   line-height: 1.5;
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, .logo-brand {
+.admin-layout h1, 
+.admin-layout h2, 
+.admin-layout h3, 
+.admin-layout h4, 
+.admin-layout .logo-brand {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
 }
 
 .admin-layout {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-main, #f8fafc);
+  line-height: 1.5;
+  background: var(--bg-admin, #0b0f19);
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
@@ -526,8 +529,222 @@ h1, h2, h3, h4, .logo-brand {
   margin: 12px 0;
 }
 
+/* Deep Learning & RAG Components */
+.pill-prompt {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--blue-400);
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pill-prompt:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: var(--blue-400);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.pill-prompt.pill-red {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--red-400);
+}
+
+.pill-prompt.pill-red:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--red-400);
+  color: #fff;
+}
+
+.rag-citation-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--green-400);
+  font-size: 0.76rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+.security-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.security-badge-secure {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--green-500);
+  color: var(--green-400);
+}
+
+.security-badge-blocked {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--red-400);
+  color: var(--red-400);
+}
+
+.rag-confidence-meter {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.rag-confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-500), var(--blue-500));
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* Pinnacle AI Components (BDA, RL, SASRec, KG, Bandit) */
+.mr-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.mr-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.heatmap-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  margin-top: 8px;
+}
+
+.heatmap-table th {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  font-weight: 500;
+  text-align: center;
+  padding: 4px;
+}
+
+.heatmap-cell {
+  height: 38px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: transform 0.15s ease;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.08);
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.sasrec-item-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: all 0.2s ease;
+}
+
+.sasrec-item-card:hover {
+  border-color: var(--blue-500);
+  background: rgba(30, 58, 138, 0.15);
+}
+
+.bandit-arm-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.bandit-arm-card.selected-winner {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.bandit-arm-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.bandit-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  font-size: 0.82rem;
+  color: var(--gray-300);
+}
+
+.bandit-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 8px 0 12px;
+}
+
+.bandit-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border-radius: 3px;
+}
+
+.btn-reward-feedback {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--gray-200);
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-reward-feedback:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--green-500);
+  color: #fff;
+}
+
+.btn-reward-feedback.negative:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--red-400);
+}
+
 @media (max-width: 900px) {
   .admin-layout { grid-template-columns: 1fr; }
   .sidebar { height: auto; position: static; }
   .chart-grid { grid-template-columns: 1fr; }
 }
+

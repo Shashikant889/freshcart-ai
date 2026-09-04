@@ -1,18 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { matchImageToProducts } = require('../ml/visual-search');
-const { analyzeFridgeImage, SCENE_PRESETS } = require('../ml/fridge-vision-ai');
+const aiClient = require('../services/ai-client');
+const { SCENE_PRESETS } = require('../ml/fridge-vision-ai');
 
 // POST /api/visual/search - Visual image query match
-router.post('/search', (req, res) => {
-  const { queryHint = 'red apple fruit' } = req.body;
-  const matches = matchImageToProducts(queryHint, 4);
-  res.json({
-    success: true,
-    queryHint,
-    algorithm: 'Computer Vision (Dominant RGB Histogram + Visual Cosine Similarity)',
-    data: matches
-  });
+router.post('/search', async (req, res) => {
+  const { queryHint = 'red apple fruit', top_k = 4 } = req.body;
+  try {
+    const result = await aiClient.searchVisualProducts({ queryHint, topK: top_k });
+    res.json({
+      success: true,
+      queryHint: result.queryHint,
+      algorithm: 'Computer Vision (5-Channel Color Moments + Cosine Distance)',
+      engine: result.engine,
+      isFallback: result.isFallback,
+      data: result.matches
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // GET /api/visual/fridge-presets - List available fridge/pantry scan scenes
@@ -29,14 +35,19 @@ router.get('/fridge-presets', (req, res) => {
 });
 
 // POST /api/visual/smart-fridge-scan - Multimodal fridge image & pantry scanner
-router.post('/smart-fridge-scan', (req, res) => {
+router.post('/smart-fridge-scan', async (req, res) => {
   try {
-    const result = analyzeFridgeImage(req.body);
-    res.json(result);
+    const sceneKey = req.body.presetKey || req.body.scene_key || 'breakfast_depleted';
+    const result = await aiClient.scanFridgeInventory({ sceneKey });
+    res.json({
+      success: true,
+      ...result
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 module.exports = router;
+
 

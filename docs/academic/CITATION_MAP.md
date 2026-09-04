@@ -1,4 +1,4 @@
-# FreshCart AI: Academic Citation Mapping Framework (Recent IEEE Grounded)
+# AI-Driven Intelligent Grocery Retail System: Academic Citation Mapping Framework (Recent IEEE Grounded)
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Department:** Computer Science & Engineering (AIML), A.P. Shah Institute of Technology  
