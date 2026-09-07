@@ -93,10 +93,10 @@ FreshCart AI is 100% pre-configured for free zero-downtime hosting on **Render.c
    - **Name:** `freshcart-ai`
    - **Runtime:** `Node`
    - **Plan:** `Free`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
+   - **Build Command:** `npm install && node db/seed.js`
+   - **Start Command:** `node server.js`
    - **Health Check Path:** `/api/health`
-6. Click **Apply**. Render will build and deploy the app automatically!
+6. Click **Apply**. Render will build, seed the initial database, and deploy the app automatically!
 
 ### Method 2: Manual Web Service Setup on Render
 If setting up manually without Blueprint:
@@ -108,13 +108,18 @@ If setting up manually without Blueprint:
    - **Branch:** `main`
    - **Root Directory:** *(leave blank)*
    - **Runtime:** `Node`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
+   - **Build Command:** `npm install && node db/seed.js`
+   - **Start Command:** `node server.js`
    - **Plan:** `Free`
 4. Expand **Advanced**:
    - **Health Check Path:** `/api/health`
    - **Auto-Deploy:** `Yes`
 5. Click **Create Web Service**.
+
+### SQLite & Persistence Notes on Render
+- **Free Tier Ephemeral Disk**: Render Free Tier web services use an ephemeral filesystem. On service spin-down or new deployment, the build step (`npm install && node db/seed.js`) automatically seeds the verified database with 32 core benchmark SKUs, 50+ users, and historical order interactions.
+- **Persistent Disk (Optional Paid Upgrade)**: For persistent order history retention across restarts without reseeding, attach a Render Persistent Disk mounted at `/var/data` and configure `DB_PATH=/var/data/freshcart.db`.
+- **Zero-Downtime Autonomous ML**: When deployed as a single web service on Render Free Tier, all AI/ML endpoints (recommendations, forecasting, dynamic pricing, route dispatch) run using high-speed in-process algorithms with zero external service dependencies.
 
 ---
 

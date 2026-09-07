@@ -9,8 +9,18 @@
 const http = require('http');
 
 // Configuration
-const AI_SERVICE_HOST = process.env.AI_SERVICE_HOST || '127.0.0.1';
-const AI_SERVICE_PORT = parseInt(process.env.AI_SERVICE_PORT || '8000', 10);
+let defaultHost = '127.0.0.1';
+let defaultPort = 8000;
+if (process.env.PYTHON_AI_URL) {
+  try {
+    const parsedUrl = new URL(process.env.PYTHON_AI_URL);
+    defaultHost = parsedUrl.hostname || defaultHost;
+    defaultPort = parsedUrl.port ? parseInt(parsedUrl.port, 10) : defaultPort;
+  } catch (e) {}
+}
+
+const AI_SERVICE_HOST = process.env.AI_SERVICE_HOST || defaultHost;
+const AI_SERVICE_PORT = parseInt(process.env.AI_SERVICE_PORT || String(defaultPort), 10);
 const AI_SERVICE_BASE_URL = `http://${AI_SERVICE_HOST}:${AI_SERVICE_PORT}`;
 const REQUEST_TIMEOUT_MS = parseInt(process.env.AI_TIMEOUT_MS || '8000', 10);
 

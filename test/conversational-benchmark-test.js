@@ -386,10 +386,20 @@ async function runConversationalBenchmark() {
 }
 
 if (require.main === module) {
-  runConversationalBenchmark().catch(err => {
-    console.error('Benchmark error:', err);
-    process.exit(1);
-  });
+  runConversationalBenchmark()
+    .then(summary => {
+      const upIntent = parseFloat(summary.upgraded.intentAcc);
+      const upTool = parseFloat(summary.upgraded.toolAcc);
+      if (upIntent >= 95 && upTool >= 95) {
+        process.exit(0);
+      } else {
+        process.exit(1);
+      }
+    })
+    .catch(err => {
+      console.error('Benchmark error:', err);
+      process.exit(1);
+    });
 }
 
 module.exports = { runConversationalBenchmark };

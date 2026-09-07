@@ -25,8 +25,15 @@ CREATE TABLE IF NOT EXISTS products (
   image_alt TEXT,
   brand TEXT,
   mrp REAL,
-  discount INTEGER DEFAULT 0
+  discount INTEGER DEFAULT 0,
+  is_active INTEGER DEFAULT 1,
+  department TEXT,
+  subcategory TEXT,
+  product_family TEXT,
+  category_confidence TEXT DEFAULT 'HIGH',
+  category_status TEXT DEFAULT 'MAPPED'
 );
+
 
 CREATE TABLE IF NOT EXISTS orders (
   id TEXT PRIMARY KEY,
