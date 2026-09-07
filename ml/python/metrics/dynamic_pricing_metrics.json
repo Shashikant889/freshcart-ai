@@ -1,15 +1,15 @@
 {
   "category_elasticities": {
     "fruits": {
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "std_error": 0.011651752680314416,
-      "t_stat": -5.015187291835471,
-      "p_value": 6.595920799651709e-07,
+      "t_stat": -5.015187291835447,
+      "p_value": 6.595920799652522e-07,
       "ci_95": [
-        -0.081273157223339,
-        -0.0355982867165065
+        -0.08127315722333872,
+        -0.03559828671650622
       ],
-      "r_squared": 0.031953295250111036,
+      "r_squared": 0.031953295250110925,
       "sample_size": 764,
       "demand_type": "Inelastic (|Ed| <= 1)"
     },
@@ -27,26 +27,26 @@
       "demand_type": "Inelastic (|Ed| <= 1)"
     },
     "bakery": {
-      "elasticity": -0.10458013418312498,
-      "std_error": 0.015663056199756227,
-      "t_stat": -6.676866433305182,
-      "p_value": 5.331731807133142e-11,
+      "elasticity": -0.10458013418312537,
+      "std_error": 0.015663056199756234,
+      "t_stat": -6.676866433305204,
+      "p_value": 5.3317318071323783e-11,
       "ci_95": [
-        -0.1352797243346472,
-        -0.07388054403160277
+        -0.13527972433464758,
+        -0.07388054403160316
       ],
       "r_squared": 0.06560009063244099,
       "sample_size": 637,
       "demand_type": "Inelastic (|Ed| <= 1)"
     },
     "beverages": {
-      "elasticity": -0.20123098799774689,
-      "std_error": 0.02057533688031002,
-      "t_stat": -9.780203802656516,
-      "p_value": 7.915286565446822e-21,
+      "elasticity": -0.20123098799774697,
+      "std_error": 0.020575336880310015,
+      "t_stat": -9.780203802656521,
+      "p_value": 7.915286565446445e-21,
       "ci_95": [
-        -0.24155864828315451,
-        -0.16090332771233926
+        -0.2415586482831546,
+        -0.16090332771233934
       ],
       "r_squared": 0.1571543767106124,
       "sample_size": 515,
@@ -66,13 +66,13 @@
       "demand_type": "Inelastic (|Ed| <= 1)"
     },
     "snacks": {
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "std_error": 0.014290627590571495,
-      "t_stat": -5.856603369418817,
+      "t_stat": -5.856603369418816,
       "p_value": 7.649567583439465e-09,
       "ci_95": [
         -0.11170416777557066,
-        -0.055684907620530404
+        -0.05568490762053039
       ],
       "r_squared": 0.0521828895562515,
       "sample_size": 625,
@@ -82,7 +82,7 @@
   "out_of_sample_validation": {
     "validation_samples": 1675,
     "mae": 5.108770592056467,
-    "r2": 0.09452465462484183
+    "r2": 0.09452465462484194
   },
   "simulation_summary": {
     "num_products": 31,
@@ -91,8 +91,8 @@
     "optimized_daily_revenue": 254382.41565058284,
     "net_revenue_lift_pct": 22.210238274080986,
     "baseline_daily_profit": 83260.59068147112,
-    "optimized_daily_profit": 132278.85613830312,
-    "net_profit_lift_pct": 58.873309756305346
+    "optimized_daily_profit": 132278.8561383031,
+    "net_profit_lift_pct": 58.87330975630532
   },
   "product_optimizations": [
     {
@@ -102,7 +102,7 @@
       "base_price": 249.0,
       "optimal_price": 311.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 8733.899605760309,
       "mean_opt_revenue": 10775.940926488749,
       "revenue_lift_pct": 23.3806365186708,
@@ -117,7 +117,7 @@
       "base_price": 49.0,
       "optimal_price": 61.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 1723.222850437017,
       "mean_opt_revenue": 2126.123321504374,
       "revenue_lift_pct": 23.380636518670787,
@@ -132,7 +132,7 @@
       "base_price": 149.0,
       "optimal_price": 186.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 5222.832187794146,
       "mean_opt_revenue": 6443.963597602438,
       "revenue_lift_pct": 23.380636518670816,
@@ -147,7 +147,7 @@
       "base_price": 199.0,
       "optimal_price": 248.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 6967.656657497441,
       "mean_opt_revenue": 8596.739134455886,
       "revenue_lift_pct": 23.3806365186708,
@@ -162,7 +162,7 @@
       "base_price": 99.0,
       "optimal_price": 123.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 3460.714990892428,
       "mean_opt_revenue": 4269.852183860138,
       "revenue_lift_pct": 23.380636518670812,
@@ -177,7 +177,7 @@
       "base_price": 179.0,
       "optimal_price": 223.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.05843572196992275,
+      "elasticity": -0.05843572196992247,
       "mean_base_revenue": 6258.315978880275,
       "mean_opt_revenue": 7721.550090092167,
       "revenue_lift_pct": 23.38063651867081,
@@ -352,18 +352,18 @@
     },
     {
       "product_id": "b1",
-      "product_name": "Sourdough Loaf",
+      "product_name": "Artisan Sourdough Bread",
       "category": "bakery",
       "base_price": 199.0,
       "optimal_price": 248.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.10458013418312498,
+      "elasticity": -0.10458013418312537,
       "mean_base_revenue": 6984.982153567958,
-      "mean_opt_revenue": 8529.831491621302,
-      "revenue_lift_pct": 22.116725627770258,
+      "mean_opt_revenue": 8529.831491621298,
+      "revenue_lift_pct": 22.116725627770208,
       "mean_base_profit": 2793.992861427184,
-      "mean_opt_profit": 4435.5123756430785,
-      "profit_lift_pct": 58.751743316101354
+      "mean_opt_profit": 4435.512375643077,
+      "profit_lift_pct": 58.75174331610129
     },
     {
       "product_id": "b2",
@@ -372,13 +372,13 @@
       "base_price": 249.0,
       "optimal_price": 311.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.10458013418312498,
+      "elasticity": -0.10458013418312537,
       "mean_base_revenue": 8724.038493607606,
       "mean_opt_revenue": 10653.510150899861,
       "revenue_lift_pct": 22.11672562777025,
       "mean_base_profit": 3489.6153974430426,
-      "mean_opt_profit": 5539.825278467928,
-      "profit_lift_pct": 58.751743316101326
+      "mean_opt_profit": 5539.825278467927,
+      "profit_lift_pct": 58.75174331610129
     },
     {
       "product_id": "b3",
@@ -387,13 +387,13 @@
       "base_price": 199.0,
       "optimal_price": 248.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.10458013418312498,
+      "elasticity": -0.10458013418312537,
       "mean_base_revenue": 6984.908392315995,
-      "mean_opt_revenue": 8529.741416795621,
-      "revenue_lift_pct": 22.116725627770244,
+      "mean_opt_revenue": 8529.74141679562,
+      "revenue_lift_pct": 22.11672562777022,
       "mean_base_profit": 2793.963356926398,
-      "mean_opt_profit": 4435.465536733724,
-      "profit_lift_pct": 58.75174331610135
+      "mean_opt_profit": 4435.465536733723,
+      "profit_lift_pct": 58.75174331610131
     },
     {
       "product_id": "b4",
@@ -402,13 +402,13 @@
       "base_price": 599.0,
       "optimal_price": 748.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.10458013418312498,
+      "elasticity": -0.10458013418312537,
       "mean_base_revenue": 20950.678084167346,
-      "mean_opt_revenue": 25584.282073200033,
-      "revenue_lift_pct": 22.116725627770258,
+      "mean_opt_revenue": 25584.282073200025,
+      "revenue_lift_pct": 22.116725627770222,
       "mean_base_profit": 8380.27123366694,
-      "mean_opt_profit": 13303.826678064017,
-      "profit_lift_pct": 58.751743316101326
+      "mean_opt_profit": 13303.826678064015,
+      "profit_lift_pct": 58.751743316101305
     },
     {
       "product_id": "b5",
@@ -417,13 +417,13 @@
       "base_price": 299.0,
       "optimal_price": 373.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.10458013418312498,
+      "elasticity": -0.10458013418312537,
       "mean_base_revenue": 10499.198957548828,
-      "mean_opt_revenue": 12821.277984103617,
-      "revenue_lift_pct": 22.116725627770258,
+      "mean_opt_revenue": 12821.277984103614,
+      "revenue_lift_pct": 22.116725627770222,
       "mean_base_profit": 4199.6795830195315,
-      "mean_opt_profit": 6667.06455173388,
-      "profit_lift_pct": 58.75174331610129
+      "mean_opt_profit": 6667.064551733879,
+      "profit_lift_pct": 58.751743316101276
     },
     {
       "product_id": "bv1",
@@ -432,7 +432,7 @@
       "base_price": 149.0,
       "optimal_price": 186.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.20123098799774689,
+      "elasticity": -0.20123098799774697,
       "mean_base_revenue": 5206.09707404136,
       "mean_opt_revenue": 6221.870636697866,
       "revenue_lift_pct": 19.51122977943218,
@@ -447,7 +447,7 @@
       "base_price": 249.0,
       "optimal_price": 311.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.20123098799774689,
+      "elasticity": -0.20123098799774697,
       "mean_base_revenue": 8720.151349410793,
       "mean_opt_revenue": 10421.560116308588,
       "revenue_lift_pct": 19.511229779432178,
@@ -462,7 +462,7 @@
       "base_price": 199.0,
       "optimal_price": 248.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.20123098799774689,
+      "elasticity": -0.20123098799774697,
       "mean_base_revenue": 6964.892059101627,
       "mean_opt_revenue": 8323.82815264237,
       "revenue_lift_pct": 19.51122977943218,
@@ -477,7 +477,7 @@
       "base_price": 349.0,
       "optimal_price": 436.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.20123098799774689,
+      "elasticity": -0.20123098799774697,
       "mean_base_revenue": 12237.186868448249,
       "mean_opt_revenue": 14624.812516889691,
       "revenue_lift_pct": 19.51122977943221,
@@ -492,7 +492,7 @@
       "base_price": 399.0,
       "optimal_price": 498.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "mean_base_revenue": 14014.282007836846,
       "mean_opt_revenue": 17193.726999857146,
       "revenue_lift_pct": 22.687177197107506,
@@ -507,7 +507,7 @@
       "base_price": 249.0,
       "optimal_price": 311.25,
       "price_delta_pct": 25.0,
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "mean_base_revenue": 8717.853801077545,
       "mean_opt_revenue": 10695.688740712778,
       "revenue_lift_pct": 22.687177197107488,
@@ -522,7 +522,7 @@
       "base_price": 99.0,
       "optimal_price": 123.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "mean_base_revenue": 3456.170673183167,
       "mean_opt_revenue": 4240.278238042695,
       "revenue_lift_pct": 22.687177197107502,
@@ -537,7 +537,7 @@
       "base_price": 299.0,
       "optimal_price": 373.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "mean_base_revenue": 10480.478626702607,
       "mean_opt_revenue": 12858.203383847607,
       "revenue_lift_pct": 22.687177197107516,
@@ -552,7 +552,7 @@
       "base_price": 199.0,
       "optimal_price": 248.75,
       "price_delta_pct": 25.0,
-      "elasticity": -0.08369453769805053,
+      "elasticity": -0.08369453769805052,
       "mean_base_revenue": 6983.895212096542,
       "mean_opt_revenue": 8568.343894125193,
       "revenue_lift_pct": 22.687177197107527,

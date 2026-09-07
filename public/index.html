@@ -29,6 +29,11 @@
 
       <div class="qc-right-items" role="toolbar" aria-label="Quick Commerce Utilities">
 
+        <a href="/admin" class="qc-pill-btn" id="admin-portal-top-btn" title="AI Admin & Operations Command Center" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(59,130,246,0.2)); border: 1px solid rgba(16,185,129,0.5); color: #34d399; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+          <span class="qc-pill-icon">🧠</span>
+          <span>AI Admin Portal</span>
+        </a>
+
         <button class="qc-pill-btn" id="pwa-install-btn" style="display:none;" title="Install AI Grocery Retail App">
           <span class="qc-pill-icon">📲</span>
           <span>Install App</span>
@@ -47,6 +52,16 @@
         <button class="qc-pill-btn" id="group-buy-btn" title="Neighborhood Group Buy Lobbies">
           <span class="qc-pill-icon">👥</span>
           <span>Group Buy</span>
+        </button>
+
+        <button class="qc-pill-btn" id="barcode-scan-top-btn" title="Scan Barcode / QR Code to Add Groceries">
+          <span class="qc-pill-icon">⚡</span>
+          <span>Barcode Scan</span>
+        </button>
+
+        <button class="qc-pill-btn" id="prime-vip-top-btn" title="FreshCart Prime VIP Loyalty & Rewards">
+          <span class="qc-pill-icon">👑</span>
+          <span id="header-vip-tier">Prime VIP</span>
         </button>
 
         <button class="qc-pill-btn ai-vision-pill" id="fridge-scan-btn" title="Multimodal AI Smart Fridge & Visual Product Scanner">
@@ -69,12 +84,12 @@
           <span>Subscriptions</span>
         </button>
 
-        <button class="qc-pill-btn" id="wishlist-btn" title="Saved Wishlist & Favorites">
+        <button class="qc-pill-btn" id="wishlist-btn" onclick="app.openWishlistModal()" title="Saved Wishlist & Favorites">
           <span class="qc-pill-icon">❤️</span>
           <span>Wishlist (<span id="wishlist-badge">0</span>)</span>
         </button>
 
-        <button class="qc-pill-btn" id="compare-btn" title="Product Comparison Matrix">
+        <button class="qc-pill-btn" id="compare-btn" onclick="app.openCompareModal()" title="Product Comparison Matrix">
           <span class="qc-pill-icon">⚖️</span>
           <span>Compare (<span id="compare-badge">0</span>)</span>
         </button>
@@ -250,6 +265,7 @@
   <main id="view-storefront" class="app-view-pane active">
     <!-- Main Hero Section -->
     <section class="hero-section">
+      <div class="hero-mesh-bg"></div>
       <div class="hero-container">
         <div class="hero-content">
           <div class="ai-pill">✨ Powered by Collaborative & Content-Based ML</div>
@@ -271,6 +287,10 @@
               <span class="stat-val">98.4%</span>
               <span class="stat-lbl">ML Match Score</span>
             </div>
+            <div class="stat-box" style="border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.06);">
+              <span class="stat-val" style="color:var(--blue-400);">11M+</span>
+              <span class="stat-lbl">Instacart/Dunnhumby Data</span>
+            </div>
           </div>
 
           <div class="hero-buttons">
@@ -280,6 +300,9 @@
         </div>
 
         <div class="hero-visual">
+          <div class="hero-canvas-wrap">
+            <canvas id="hero-3d-canvas"></canvas>
+          </div>
           <div class="floating-card c1">
             <span class="emoji">🍎</span>
             <div>
@@ -320,7 +343,7 @@
     </section>
 
     <!-- Flash Deals & Midnight Steals Ticker -->
-    <section class="section" style="padding-top:0;">
+    <section class="section reveal" style="padding-top:0;">
       <div class="section-container">
         <div class="flash-deals-banner">
           <div class="flash-header">
@@ -342,7 +365,7 @@
     </section>
 
     <!-- 1-Click Curated Value Combos Section -->
-    <section class="section combos-section">
+    <section class="section combos-section reveal">
       <div class="section-container">
         <div class="section-header">
           <div>
@@ -359,7 +382,7 @@
     </section>
 
     <!-- AI Recommendations Section -->
-    <section class="section recs-section" id="ai-recs-section">
+    <section class="section recs-section reveal" id="ai-recs-section">
       <div class="section-container">
         <div class="section-header">
           <div>
@@ -367,7 +390,10 @@
             <h2 class="section-title" data-i18n="recommended">Recommended Just For You</h2>
             <p class="section-subtitle" id="rec-subtitle">Personalized based on hybrid collaborative filtering & your shopping patterns</p>
           </div>
-          <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="algorithm-badge" id="rec-algo-badge">Hybrid AI (Cosine Similarity)</span>
+            <span class="algorithm-badge" style="background:rgba(59,130,246,0.15); color:var(--blue-400); border-color:rgba(59,130,246,0.3);">🏆 Instacart Benchmark Aligned</span>
+          </div>
         </div>
 
         <div class="product-grid" id="ai-recs-grid">
@@ -377,7 +403,7 @@
     </section>
 
     <!-- Sequential Transformer (SASRec) Next-Pick Recommendations -->
-    <section class="section" id="sasrec-tray-section" style="padding-top:10px;">
+    <section class="section reveal" id="sasrec-tray-section" style="padding-top:10px;">
       <div class="section-container">
         <div class="section-header">
           <div>
@@ -396,7 +422,7 @@
     </section>
 
     <!-- Buy Again & Reorder Section -->
-    <section class="section" id="buy-again-section" style="padding-top:10px;">
+    <section class="section reveal" id="buy-again-section" style="padding-top:10px;">
       <div class="section-container">
         <div class="section-header">
           <div>
@@ -432,7 +458,7 @@
     </section>
 
     <!-- Category & Main Product Catalog Section -->
-    <section class="section" id="catalog-section">
+    <section class="section reveal" id="catalog-section">
       <div class="section-container">
         <!-- Dietary & Health Specialty Filters -->
         <div class="diet-filter-wrapper">
@@ -460,15 +486,52 @@
           </div>
         </div>
 
-        <!-- Main Product Grid -->
-        <div class="product-grid" id="products-grid">
-          <!-- Loaded dynamically -->
+        <!-- Phase 5C: Active Filter Chips Row -->
+        <div id="active-filters-bar" class="active-filters-bar" style="display:none;">
+          <span class="active-filters-label">🔽 Filters:</span>
+          <div id="active-filter-chips" class="active-filter-chips"></div>
+          <button class="clear-all-filters-btn" id="clear-all-filters-btn" onclick="app.clearAllFilters()">
+            ✕ Clear All
+          </button>
         </div>
 
-        <!-- Professional Dynamic Catalog Pagination Bar -->
-        <div class="catalog-pagination-bar" id="catalog-pagination" role="navigation" aria-label="Product Catalog Pagination">
-          <input type="hidden" id="catalog-jump-input" value="1">
+        <!-- Phase 5C: Catalog Layout with Facet Sidebar + Product Grid -->
+        <div class="catalog-layout" id="catalog-layout">
+
+          <!-- Facet Filter Sidebar -->
+          <aside class="facet-filter-sidebar" id="facet-filter-sidebar" aria-label="Product Filters">
+            <div class="facet-panel-header">
+              <span>🔽 Filter Results</span>
+              <button class="facet-close-btn" id="facet-close-btn" onclick="app.toggleFilterPanel(false)" aria-label="Close filters">✕</button>
+            </div>
+            <!-- Populated dynamically by JS -->
+            <div id="facet-filter-content">
+              <div class="facet-loading">Loading filters…</div>
+            </div>
+          </aside>
+
+          <!-- Product Grid Column -->
+          <div class="catalog-main-col">
+            <!-- Filter Toggle Button (shows on mobile or when sidebar is collapsed) -->
+            <div class="catalog-toolbar">
+              <button class="filter-toggle-btn" id="filter-toggle-btn" onclick="app.toggleFilterPanel()" aria-expanded="false" aria-controls="facet-filter-sidebar">
+                🔽 Filters <span id="active-filter-count-badge" class="filter-count-badge" style="display:none;">0</span>
+              </button>
+              <span class="catalog-result-count" id="catalog-result-count"></span>
+            </div>
+
+            <!-- Main Product Grid -->
+            <div class="product-grid" id="products-grid">
+              <!-- Loaded dynamically -->
+            </div>
+
+            <!-- Professional Dynamic Catalog Pagination Bar -->
+            <div class="catalog-pagination-bar" id="catalog-pagination" role="navigation" aria-label="Product Catalog Pagination">
+              <input type="hidden" id="catalog-jump-input" value="1">
+            </div>
+          </div>
         </div>
+
       </div>
     </section>
   </main>
@@ -520,12 +583,37 @@
           </div>
         </div>
 
+        <!-- Live EV Courier Telemetry & Radar Canvas HUD -->
+        <div style="margin: 16px 0; background:rgba(0,0,0,0.3); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-md); padding:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.1rem;">🛰️</span>
+              <strong style="font-size:0.9rem; color:var(--text-main);">Live EV Fleet Telemetry & Haversine Radar</strong>
+              <span style="background:rgba(16,185,129,0.2); color:var(--green-400); font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:999px;">GPS LOCK ACTIVE</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="font-size:0.8rem; color:var(--text-dim);">Delivery PIN:</span>
+              <strong style="background:var(--green-500); color:#000; padding:2px 8px; border-radius:var(--radius-xs); font-family:monospace; font-size:0.95rem; letter-spacing:1px;" id="delivery-pin-display">4829</strong>
+            </div>
+          </div>
+
+          <div style="position:relative; width:100%; height:130px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid rgba(255,255,255,0.08); background:#0b1315;">
+            <canvas id="live-courier-radar-canvas" style="width:100%; height:100%; display:block;"></canvas>
+            <div style="position:absolute; bottom:8px; left:12px; display:flex; gap:16px; font-size:0.78rem; background:rgba(0,0,0,0.7); padding:4px 10px; border-radius:var(--radius-xs); border:1px solid rgba(255,255,255,0.1);">
+              <span>🛵 <strong id="telemetry-speed">29 km/h</strong></span>
+              <span>🔋 <strong id="telemetry-battery">86% EV</strong></span>
+              <span>📍 <strong id="telemetry-dist">0.9 km left</strong></span>
+              <span>⚡ <strong id="telemetry-traffic" style="color:var(--green-400);">Free Flow (Green)</strong></span>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); padding:12px 16px; border-radius:var(--radius-md); font-size:0.88rem;">
           <div>
             <span>🛵 <strong>Delivery Partner:</strong> Ramesh K. (4.9★, EV Scooter #KA-03-9941)</span>
           </div>
           <div style="display:flex; gap:10px;">
-            <button class="btn-secondary" style="padding:6px 14px; font-size:0.82rem;" onclick="app.showToast('Calling delivery partner...')">📞 Call Partner</button>
+            <button class="btn-secondary" style="padding:6px 14px; font-size:0.82rem;" onclick="app.showToast('Calling delivery partner at +91 98765 43210...')">📞 Call Partner</button>
             <button class="btn-primary" style="padding:6px 14px; font-size:0.82rem;" onclick="app.openInvoiceModal(state.lastPlacedOrder)">📄 View Tax Invoice</button>
           </div>
         </div>
@@ -1048,44 +1136,74 @@
     </div>
   </aside>
 
-  <!-- Floating FreshBot AI Assistant Widget -->
-  <div class="freshbot-floating-container">
-    <button class="freshbot-toggle-btn" id="freshbot-toggle" title="Open AI Recipe & Meal Assistant">
+  <!-- Floating FreshBot AI Agentic Assistant Widget -->
+  <div class="freshbot-floating-container" id="freshbot-floating-container">
+    <button class="freshbot-toggle-btn" id="freshbot-toggle" title="Open FreshCart AI Shopping Agent" aria-label="Open AI Shopping Agent" aria-expanded="false">
       <span class="bot-icon">🤖</span>
-      <span class="bot-label">Ask FreshBot AI</span>
+      <span class="bot-label">Ask FreshCart AI</span>
+      <span class="bot-badge-dot"></span>
     </button>
 
-    <div class="freshbot-panel" id="freshbot-panel" style="display:none;">
-      <div class="freshbot-header">
+    <div class="freshbot-panel" id="freshbot-panel" style="display:none;" role="dialog" aria-labelledby="freshbot-title" aria-modal="false">
+      <div class="freshbot-header" id="freshbot-drag-handle" title="Click and drag to move panel">
         <div class="bot-header-left">
           <span class="bot-avatar">🤖</span>
           <div>
-            <strong>FreshBot AI</strong>
-            <small>Recipe-to-Cart & Meal Planner</small>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <strong id="freshbot-title">FreshCart AI</strong>
+              <span class="bot-ai-pill">AGENTIC</span>
+            </div>
+            <small class="bot-status-indicator">
+              <span class="online-indicator-dot"></span> Grounded Shopping Agent • 10k SKUs
+            </small>
           </div>
         </div>
-        <button class="close-btn" id="freshbot-close">✕</button>
-      </div>
-
-      <div class="freshbot-quick-chips">
-        <button class="quick-chip" data-query="Mango Lassi">🥭 Mango Lassi</button>
-        <button class="quick-chip" data-query="Fruit Salad Bowl">🥗 Fruit Salad</button>
-        <button class="quick-chip" data-query="High Protein Breakfast">💪 Protein Breakfast</button>
-        <button class="quick-chip" data-query="Healthy basket under 500">💰 Under ₹500 Basket</button>
-      </div>
-
-      <div class="freshbot-messages" id="freshbot-messages">
-        <div class="bot-msg">
-          <div class="msg-bubble bot">
-            👋 Hi there! I'm <strong>FreshBot</strong>. Ask me to plan any recipe, diet, or budget basket, and I'll match fresh ingredients into your cart!
-          </div>
+        <div class="bot-header-controls">
+          <button class="bot-control-btn" id="freshbot-clear" title="Clear Conversation" aria-label="Clear Chat">🧹</button>
+          <button class="bot-control-btn" id="freshbot-minimize" title="Minimize Panel" aria-label="Minimize">🗕</button>
+          <button class="bot-control-btn" id="freshbot-maximize" title="Maximize Panel" aria-label="Maximize">⛶</button>
+          <button class="bot-control-btn close-btn" id="freshbot-close" title="Close Assistant" aria-label="Close">✕</button>
         </div>
       </div>
 
-      <form id="freshbot-form" class="freshbot-input-bar">
-        <input type="text" id="freshbot-input" placeholder="e.g. 'Mango lassi', 'High protein breakfast'..." autocomplete="off">
-        <button type="submit" class="bot-send-btn">➤</button>
-      </form>
+      <!-- Minimized Bar Content -->
+      <div class="freshbot-minimized-bar" id="freshbot-minimized-bar" style="display:none;">
+        <span>🤖 FreshCart AI Assistant (Active)</span>
+        <button class="bot-control-btn" id="freshbot-restore" title="Restore Panel">⛶ Expand</button>
+      </div>
+
+      <div class="freshbot-body" id="freshbot-body">
+        <div class="freshbot-quick-chips">
+          <button class="quick-chip" data-query="I have ₹1000. Plan groceries for 3 days for two people. I'm vegetarian. Make me a shopping list.">🛒 ₹1000 Veg Basket</button>
+          <button class="quick-chip" data-query="Find fresh products under ₹100">💰 Under ₹100</button>
+          <button class="quick-chip" data-query="What is the price of whole milk?">🥛 Price of Milk</button>
+          <button class="quick-chip" data-query="What is in my cart?">🛍️ Check Cart</button>
+          <button class="quick-chip" data-query="Find today's offers">⚡ Today's Deals</button>
+          <button class="quick-chip" data-query="Alphonso Mango Lassi">🥭 Mango Lassi</button>
+          <button class="quick-chip" data-query="Compare Organic Royal Gala Apples and Fresh Robusta Bananas">📊 Compare Products</button>
+          <button class="quick-chip" data-query="What is your return policy?">📋 Return Policy</button>
+        </div>
+
+        <div class="freshbot-messages" id="freshbot-messages">
+          <div class="bot-msg">
+            <div class="msg-bubble bot">
+              👋 Hi! I'm <strong>FreshCart AI</strong>, your unified shopping agent. I have real-time access to our 10,000-product catalog, active inventory, live prices, your cart, and order tracking.<br><br>
+              Try asking:
+              <ul style="margin:6px 0 0 16px; padding:0; font-size:0.82rem; line-height:1.5;">
+                <li><em>"I have ₹1500. Make me a grocery list for 3 days for 2 people, vegetarian, no rice."</em></li>
+                <li><em>"What is the price of milk?"</em></li>
+                <li><em>"What is in my cart?"</em></li>
+                <li><em>"Suggest a healthy alternative to whole milk."</em></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <form id="freshbot-form" class="freshbot-input-bar">
+          <input type="text" id="freshbot-input" placeholder="Ask anything (e.g. 'Price of milk', '₹1000 grocery list', 'Track order')..." autocomplete="off">
+          <button type="submit" class="bot-send-btn" id="freshbot-send" title="Send message" aria-label="Send message">➤</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1470,7 +1588,7 @@
 
   <!-- Product Detail & Customer Reviews Modal -->
   <div class="modal-overlay" id="product-detail-overlay" style="display:none;">
-    <div class="modal-card">
+    <div class="modal-card modal-wide modal-detail">
       <div class="modal-header">
         <h3 id="detail-prod-name">Product Details</h3>
         <button class="close-btn" id="product-detail-close">✕</button>
@@ -1819,9 +1937,9 @@
     </div>
   </div>
 
-  <!-- Product Comparison Matrix Modal -->
+  <!-- Product Comparison Matrix Modal (Phase 5E: Family-Scoped) -->
   <div class="modal-overlay" id="compare-modal-overlay" style="display:none;">
-    <div class="modal-card" style="max-width:920px; width:95%;">
+    <div class="modal-card compare-modal-card" style="max-width:960px; width:95%;">
       <div class="modal-header">
         <div>
           <span class="ai-pill">⚖️ Side-by-Side Analysis</span>
@@ -1829,11 +1947,12 @@
         </div>
         <button class="close-btn" id="compare-modal-close" onclick="app.closeCompareModal()">✕</button>
       </div>
-      <div id="compare-matrix-content" style="overflow-x:auto; margin-bottom:16px;">
+      <div id="compare-family-banner-container" style="display:none; margin-bottom:12px;"></div>
+      <div id="compare-matrix-content" class="compare-matrix-scroll" style="overflow-x:auto; margin-bottom:16px;">
         <!-- Populated dynamically via compareProducts() -->
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:14px;">
-        <small style="color:var(--text-dim);">Compare up to 4 products across price, ratings, diet, and stock.</small>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:14px; flex-wrap:wrap; gap:10px;">
+        <small style="color:var(--text-dim);" id="compare-scope-hint">Compare up to 4 products within the same product family.</small>
         <button class="btn-secondary" onclick="app.clearCompareList()">Clear Comparison</button>
       </div>
     </div>
@@ -1953,7 +2072,7 @@
             <div>
               <span id="fridge-confidence-badge" style="display:inline-block; font-size:0.75rem; color:var(--green-400); font-weight:700; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:12px; margin-bottom:4px;">Confidence: 95% • 3 Items Low</span>
               <h4 id="fridge-result-title" style="font-size:1.15rem; color:var(--text-main); font-weight:800; margin:0;">Breakfast & Dairy Depleted Shelf</h4>
-              <small style="color:var(--text-dim); font-size:0.8rem; display:block; margin-top:2px;">Model: Multimodal CNN Spatial Extractor + Cosine Classifier (14.5ms)</small>
+              <small style="color:var(--text-dim); font-size:0.8rem; display:block; margin-top:2px;">Model: Color Moment Vector Extractor + Cosine Classifier (14.5ms)</small>
             </div>
             <div style="text-align:right;">
               <span style="font-size:0.78rem; color:var(--text-dim); display:block;">1-Click Bundle Total</span>
@@ -2062,16 +2181,290 @@
     </button>
   </nav>
 
+  <!-- Phase 5C: Mobile filter drawer backdrop -->
+  <div class="filter-backdrop" id="filter-backdrop" onclick="app.toggleFilterPanel(false)"></div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
-      <p>© 2026 AI-Driven Intelligent Grocery Retail System Using Machine Learning</p>
-      <p class="footer-sub">Final Year B.Tech CSE-AIML Project • Full-Stack Intelligent Retail System</p>
+      <div class="footer-grid">
+        <div class="footer-col footer-col-brand">
+          <div class="footer-logo">
+            <span class="logo-icon">🌿</span>
+            <span class="logo-title">FreshCart<span class="ai-tag">AI</span></span>
+          </div>
+          <p class="footer-brand-desc">Next-generation quick commerce intelligence powered by machine learning, real-time demand forecasting & 10-minute dispatch routing.</p>
+          <div class="footer-badges">
+            <span class="footer-badge">⚡ 10-Min Delivery</span>
+            <span class="footer-badge">🧠 ML Recommendation</span>
+            <span class="footer-badge">🛡️ Bank-Grade Security</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Quick Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#store" onclick="app.switchView('store')">🛒 Customer Storefront</a></li>
+            <li><a href="#orders" onclick="app.switchView('orders')">📦 Live Order Tracker</a></li>
+            <li><a href="#admin" onclick="app.switchView('admin')">📊 Admin Operations</a></li>
+            <li><a href="javascript:void(0)" onclick="app.openSmartFridgeModal()">🥛 Smart Fridge Assistant</a></li>
+            <li><a href="javascript:void(0)" onclick="app.openVisualSearchModal()">📸 Visual Product Search</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">AI Engines</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="app.openRecipePlannerModal()">🍲 AI Meal & Recipe Solver</a></li>
+            <li><a href="javascript:void(0)" onclick="app.openNutritionScannerModal()">🥗 Nutrition Scanner (OCR)</a></li>
+            <li><a href="#admin-forecasting" onclick="app.switchView('admin-forecasting')">📈 Demand Forecasting (OLS)</a></li>
+            <li><a href="#admin-dispatch-routes" onclick="app.switchView('admin-dispatch-routes')">🚚 2-Opt Delivery Routing</a></li>
+            <li><a href="#admin-warehouse-picker" onclick="app.switchView('admin-warehouse-picker')">🏭 Warehouse 2D Picker</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">System Status</h4>
+          <div class="footer-system-status">
+            <div class="status-indicator-row"><span class="status-dot online"></span> <span>Node.js API: Active (:3000)</span></div>
+            <div class="status-indicator-row"><span class="status-dot online"></span> <span>Python ML Engine: Active (:8000)</span></div>
+            <div class="status-indicator-row"><span class="status-dot online"></span> <span>SQLite DB: Connected</span></div>
+          </div>
+          <p class="footer-meta-note">B.Tech CSE-AIML Final Year Major Project 2026</p>
+        </div>
+      </div>
+      <div class="footer-bottom-bar">
+        <p>© 2026 FreshCart AI — Intelligent Grocery Retail System. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <span>Enterprise Edition v3.0</span> • <span>Privacy Policy</span> • <span>API Health</span>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <!-- Confetti Particle Blast Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- 3D Flash Reward Auto-Popup Modal -->
+  <div class="auto-popup-overlay" id="auto-deal-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <div class="auto-popup-card">
+      <button class="popup-close-x" id="btn-close-auto-popup" aria-label="Close dialog">✕</button>
+      <div class="popup-3d-icon">🎁</div>
+      <span class="popup-badge">⚡ AI Dynamic Reward Unlocked</span>
+      <h2 class="popup-title" id="popup-title">Enjoy 25% Off + Free Delivery!</h2>
+      <p class="popup-desc">Thompson Sampling Bandit allocated your session a privileged Express 10-Minute Dispatch voucher.</p>
+      <div class="popup-timer-pill">
+        <span>⏳ Expires in:</span>
+        <span id="popup-countdown">04:59</span>
+      </div>
+      <div class="popup-actions">
+        <button class="btn-claim-3d" id="btn-claim-auto-deal">Claim Reward & Shop 🚀</button>
+        <button class="btn-dismiss-popup" id="btn-dismiss-auto-deal">Maybe Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D Live Quick-Commerce Social Proof Toast -->
+  <div class="social-proof-toast" id="social-proof-toast">
+    <span class="social-proof-avatar" id="sp-avatar">🛵</span>
+    <div class="social-proof-text">
+      <span class="social-proof-title" id="sp-title">Indiranagar: Ananya just ordered</span>
+      <span class="social-proof-sub" id="sp-sub">⚡ Alphonso Mangoes • 10-min delivery dispatched</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PINNACLE ENTERPRISE MODALS (BARCODE, HUBS, VIP, INVOICE, REVIEWS, SUBSTITUTES)
+       ========================================================================== -->
+
+  <!-- 1. Web Barcode & QR Scanner Modal -->
+  <div class="modal" id="barcode-scanner-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="barcode-modal-title">
+    <div class="modal-overlay" onclick="app.closeBarcodeScanner()"></div>
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 id="barcode-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>📷</span> <span>Scan Product Barcode / QR Code</span>
+        </h3>
+        <button class="modal-close" onclick="app.closeBarcodeScanner()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:16px;">
+        <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:14px;">
+          Point your device camera at any grocery item barcode (EAN-13 / UPC) or use instant 1-click test simulation:
+        </p>
+
+        <!-- Camera Scanner Viewport -->
+        <div style="position:relative; width:100%; height:220px; background:#000; border-radius:var(--radius-md); overflow:hidden; border:2px dashed rgba(16,185,129,0.4); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <video id="barcode-video-stream" autoplay playsinline style="width:100%; height:100%; object-fit:cover; display:none;"></video>
+          <div id="barcode-viewfinder-overlay" style="position:absolute; width:180px; height:120px; border:2px solid var(--green-400); border-radius:8px; box-shadow:0 0 15px rgba(16,185,129,0.4);">
+            <div style="position:absolute; top:0; left:0; width:100%; height:2px; background:var(--green-400); box-shadow:0 0 8px var(--green-400); animation:scanline 2s infinite ease-in-out;"></div>
+          </div>
+          <div id="barcode-camera-placeholder" style="text-align:center; color:var(--text-dim); padding:16px;">
+            <span style="font-size:2.4rem; display:block; margin-bottom:8px;">📸</span>
+            <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Camera Scanner Ready</strong>
+            <small>Position grocery barcode within target reticle</small>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div style="font-size:0.82rem; font-weight:700; color:var(--text-dim); margin-bottom:8px;">Instant 1-Click Barcode Test Simulation:</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button class="btn-secondary" style="font-size:0.8rem; padding:8px 10px; text-align:left;" onclick="app.simulateBarcodeScan('f1')">
+              🍎 <strong>Fuji Apples</strong><br><small style="color:var(--text-dim);">EAN: 890103001011</small>
+            </button>
+            <button class="btn-secondary" style="font-size:0.8rem; padding:8px 10px; text-align:left;" onclick="app.simulateBarcodeScan('d1')">
+              🥛 <strong>Whole Milk</strong><br><small style="color:var(--text-dim);">EAN: 890103002022</small>
+            </button>
+            <button class="btn-secondary" style="font-size:0.8rem; padding:8px 10px; text-align:left;" onclick="app.simulateBarcodeScan('b1')">
+              🍞 <strong>Sourdough Bread</strong><br><small style="color:var(--text-dim);">EAN: 890103003033</small>
+            </button>
+            <button class="btn-secondary" style="font-size:0.8rem; padding:8px 10px; text-align:left;" onclick="app.simulateBarcodeScan('bv4')">
+              ☕ <strong>Cold Brew Coffee</strong><br><small style="color:var(--text-dim);">EAN: 890103004044</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Dark Store Hub Switcher Modal -->
+  <div class="modal" id="hub-switcher-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="hub-modal-title">
+    <div class="modal-overlay" onclick="app.closeHubSwitcher()"></div>
+    <div class="modal-content" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 id="hub-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>📍</span> <span>Select Delivery Fulfillment Hub</span>
+        </h3>
+        <button class="modal-close" onclick="app.closeHubSwitcher()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:16px;">
+        <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:12px;">
+          FreshCart operates 4 hyper-local micro-fulfillment centers in Mumbai for 10-minute dispatch:
+        </p>
+
+        <!-- Pincode Search Input -->
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <input type="text" id="hub-pincode-input" placeholder="Enter 6-digit Mumbai Pincode (e.g. 400050, 400069)..." style="flex:1; padding:10px 14px; border-radius:var(--radius-sm); background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); color:var(--text-main);">
+          <button class="btn-primary" onclick="app.locateByPincode()" style="padding:10px 16px; font-weight:700;">Find Hub</button>
+        </div>
+
+        <div id="dark-store-cards-list" style="display:flex; flex-direction:column; gap:10px; max-height:340px; overflow-y:auto;">
+          <!-- Loaded dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FreshCart Prime VIP Loyalty Modal -->
+  <div class="modal" id="loyalty-prime-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="loyalty-modal-title">
+    <div class="modal-overlay" onclick="app.closeLoyaltyModal()"></div>
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header" style="background:linear-gradient(135deg, rgba(234,179,8,0.2), rgba(16,185,129,0.1));">
+        <h3 id="loyalty-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>👑</span> <span>FreshCart Prime VIP Loyalty</span>
+        </h3>
+        <button class="modal-close" onclick="app.closeLoyaltyModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div style="text-align:center; padding:18px; background:rgba(0,0,0,0.3); border-radius:var(--radius-md); border:1px solid rgba(234,179,8,0.3); margin-bottom:18px;">
+          <span style="font-size:2.8rem; display:block;" id="vip-badge-icon">🥇</span>
+          <h2 style="margin:6px 0 2px; color:var(--text-main); font-size:1.4rem;" id="vip-tier-name">Prime Gold Member</h2>
+          <span style="color:var(--yellow-400); font-size:0.85rem; font-weight:700;">Active Membership</span>
+
+          <!-- Progress Bar -->
+          <div style="margin:16px 0 6px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-dim); margin-bottom:6px;">
+              <span>Current: <strong id="vip-points-val" style="color:#fff;">1,840 Pts</strong></span>
+              <span>Next: <strong id="vip-next-tier-label" style="color:var(--green-400);">Platinum (3,000 Pts)</strong></span>
+            </div>
+            <div style="width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden;">
+              <div id="vip-progress-fill" style="width:61%; height:100%; background:linear-gradient(90deg, var(--yellow-400), var(--green-400)); border-radius:999px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <h4 style="font-size:0.9rem; margin-bottom:10px; color:var(--text-main);">Unlocked Prime Privileges:</h4>
+          <div id="vip-perks-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+
+        <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-sm); padding:12px; font-size:0.82rem;">
+          🔥 <strong>Quick Commerce Streak:</strong> <span id="vip-streak-msg">3-Day Order Streak Active! Bonus +50 Coins earned on today's order.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Official GST Tax Invoice Modal -->
+  <div class="modal" id="gst-invoice-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="invoice-modal-title">
+    <div class="modal-overlay" onclick="app.closeInvoiceModal()"></div>
+    <div class="modal-content" style="max-width:680px; max-height:85vh; overflow-y:auto;">
+      <div class="modal-header">
+        <h3 id="invoice-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>📄</span> <span>Tax Invoice & Delivery Receipt</span>
+        </h3>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="window.print()">🖨️ Print / PDF</button>
+          <button class="modal-close" onclick="app.closeInvoiceModal()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:20px;" id="gst-invoice-rendered-body">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Verified Product Reviews & Sentiment Modal -->
+  <div class="modal" id="product-reviews-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="reviews-modal-title">
+    <div class="modal-overlay" onclick="app.closeReviewsModal()"></div>
+    <div class="modal-content" style="max-width:580px; max-height:85vh; overflow-y:auto;">
+      <div class="modal-header">
+        <h3 id="reviews-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>⭐</span> <span>Verified Reviews & AI Sentiment</span>
+        </h3>
+        <button class="modal-close" onclick="app.closeReviewsModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:16px;" id="product-reviews-rendered-body">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. AI Smart Substitutes Modal -->
+  <div class="modal" id="substitutes-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="sub-modal-title">
+    <div class="modal-overlay" onclick="app.closeSubstitutesModal()"></div>
+    <div class="modal-content" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 id="sub-modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span>✨</span> <span>AI Smart Substitutes & Alternatives</span>
+        </h3>
+        <button class="modal-close" onclick="app.closeSubstitutesModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:16px;">
+        <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:14px;" id="sub-modal-desc">
+          Evaluated via multi-attribute compatibility: category, price proximity, and nutritional overlap:
+        </p>
+        <div id="substitutes-cards-container" style="display:flex; flex-direction:column; gap:10px;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Bulk Actions Dock (Phase 5E: Multi-select & Bulk Shopping) -->
+  <div id="bulk-actions-bar" class="bulk-actions-dock" role="region" aria-label="Bulk actions toolbar">
+    <div class="bulk-dock-info">
+      <span class="bulk-dock-count-badge" id="bulk-selected-count">0 selected</span>
+      <span class="bulk-dock-total-price" id="bulk-selected-total">₹0</span>
+    </div>
+    <div class="bulk-dock-buttons">
+      <button class="bulk-btn bulk-btn-subtle" id="bulk-select-all-btn" onclick="app.selectAllProductsInView()" title="Select all visible products">Select All</button>
+      <button class="bulk-btn bulk-btn-primary" id="bulk-add-cart-btn" onclick="app.bulkAddToCart()" title="Add all selected items to cart">🛒 Add to Cart</button>
+      <button class="bulk-btn bulk-btn-compare" id="bulk-compare-btn" onclick="app.bulkCompare()" title="Compare selected items in same product family">⚖️ Compare</button>
+      <button class="bulk-btn bulk-btn-clear" id="bulk-clear-btn" onclick="app.clearProductSelection()" title="Clear product selection">✕</button>
+    </div>
+  </div>
 
   <script src="js/admin.js"></script>
   <script src="js/app.js"></script>

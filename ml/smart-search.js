@@ -16,7 +16,7 @@ const STOP_WORDS = new Set([
   'a', 'an', 'the', 'and', 'or', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'of', 'from', 'is', 'it'
 ]);
 
-// Multilingual synonym dictionary (Hindi/Hinglish -> English keywords)
+// Multilingual synonym dictionary (Hindi/Hinglish -> English keywords + Retail Categories)
 const SYNONYM_MAP = {
   'seb': 'apple apples',
   'kela': 'banana bananas',
@@ -39,7 +39,21 @@ const SYNONYM_MAP = {
   'coffee': 'cold brew nescafe',
   'makhana': 'nuts snacks foxnuts',
   'aloo': 'potato chips wafers',
-  'mithai': 'cake chocolate sweets'
+  'mithai': 'cake chocolate sweets',
+  'earbuds': 'earbuds earphones headphones tws audio headset bluetooth',
+  'earbud': 'earbuds earphones headphones tws',
+  'earphone': 'earbuds earphones headphones',
+  'earphones': 'earbuds earphones headphones',
+  'headphone': 'headphones headset earbuds',
+  'smartwatch': 'smartwatch watch band fitness tracker',
+  'smart watch': 'smartwatch watch band fitness tracker',
+  'pooja': 'pooja incense agarbatti dhoop diya camphor wicks puja sambrani',
+  'puja': 'pooja incense agarbatti dhoop diya camphor wicks puja',
+  'agarbatti': 'agarbatti incense dhoop fragrance sticks phool',
+  'dhoop': 'dhoop agarbatti incense sambrani cones sticks',
+  'diya': 'diya brass clay camphor wicks oil aarti lighting',
+  'camphor': 'camphor kapoor diya aarti lighting',
+  'kapoor': 'camphor kapoor diya aarti'
 };
 
 /**
@@ -93,7 +107,12 @@ function buildTFIDFIndex(forceRefresh = false) {
   }
 
   const db = getDb();
-  const products = db.prepare('SELECT id, name, emoji, category, price, unit, description, stock, rating, tags, image_url, image_key, image_alt, brand, mrp, discount FROM products').all();
+  let products = [];
+  try {
+    products = db.prepare('SELECT id, name, emoji, category, department, subcategory, product_family, brand, model, barcode, price, unit, description, stock, rating, tags, image_url, image_key, image_alt, mrp, discount, dataset_status FROM products WHERE (is_active = 1 OR is_active IS NULL)').all();
+  } catch (e) {
+    products = db.prepare('SELECT id, name, emoji, category, price, unit, description, stock, rating, tags, image_url, image_key, image_alt, brand, mrp, discount FROM products WHERE (is_active = 1 OR is_active IS NULL)').all();
+  }
   const numDocs = products.length;
 
   const productMap = new Map();
@@ -103,7 +122,7 @@ function buildTFIDFIndex(forceRefresh = false) {
 
   for (const p of products) {
     productMap.set(p.id, p);
-    const rawText = `${p.name} ${p.category} ${p.description} ${p.unit} ${p.tags || ''}`;
+    const rawText = `${p.name} ${p.category || ''} ${p.department || ''} ${p.subcategory || ''} ${p.product_family || ''} ${p.brand || ''} ${p.model || ''} ${p.barcode || ''} ${p.description || ''} ${p.unit || ''} ${p.tags || ''}`;
     const tokens = tokenize(rawText);
     docTokens.set(p.id, tokens);
 
@@ -154,13 +173,14 @@ function buildTFIDFIndex(forceRefresh = false) {
 /**
  * Execute Scalable TF-IDF Smart Search with Inverted Index Candidate Pruning & Facet Filters
  */
-function smartSearch(queryStr, limit = 12, options = {}) {
-  if (!queryStr || queryStr.trim().length === 0) return [];
+function smartSearch(queryStr = '', limit = 12, options = {}) {
+  const hasFacetOptions = options && (options.category || options.department || options.subcategory || options.product_family || options.diet);
+  if ((!queryStr || String(queryStr).trim().length === 0) && !hasFacetOptions) return [];
 
   const index = buildTFIDFIndex();
   const { productMap, vocabulary, docTokens, invertedIndex, idf } = index;
 
-  let normalizedQuery = queryStr.toLowerCase().trim();
+  let normalizedQuery = (queryStr || '').toLowerCase().trim();
 
   // 1. Synonym Expansion (e.g. "seb" -> "apple apples", "dahi" -> "yogurt")
   for (const [hindiWord, englishEquivalent] of Object.entries(SYNONYM_MAP)) {
@@ -170,7 +190,32 @@ function smartSearch(queryStr, limit = 12, options = {}) {
   }
 
   let queryTokens = tokenize(normalizedQuery);
-  if (queryTokens.length === 0) return [];
+  if (queryTokens.length === 0) {
+    // Facet-only discovery (e.g. browsing a product_family, category, or diet without keywords)
+    if (options.category || options.department || options.subcategory || options.product_family || options.diet) {
+      const facetCandidates = [];
+      for (const [pId, p] of productMap.entries()) {
+        if (options.category && options.category !== 'all' && p.category !== options.category && p.subcategory !== options.category && p.department !== options.category) continue;
+        if (options.department && options.department !== 'all' && p.department !== options.department) continue;
+        if (options.subcategory && options.subcategory !== 'all' && p.subcategory !== options.subcategory) continue;
+        if (options.product_family && options.product_family !== 'all' && p.product_family !== options.product_family) continue;
+        if (options.brand && options.brand !== 'all' && (!p.brand || !p.brand.toLowerCase().includes(options.brand.toLowerCase()))) continue;
+        if (options.minPrice != null && options.minPrice !== '' && p.price < Number(options.minPrice)) continue;
+        if (options.maxPrice != null && options.maxPrice !== '' && p.price > Number(options.maxPrice)) continue;
+        if (options.inStockOnly && p.stock <= 0) continue;
+        if (options.diet && options.diet !== 'all') {
+          const pTags = String(p.tags || '').toLowerCase();
+          const pName = String(p.name || '').toLowerCase();
+          const combined = `${pTags} ${pName}`;
+          if (options.diet === 'organic' && !combined.includes('organic') && !combined.includes('farm')) continue;
+        }
+        facetCandidates.push({ product: p, score: (p.rating || 4.5) / 5.0 });
+        if (facetCandidates.length >= limit * 2) break;
+      }
+      return facetCandidates.slice(0, limit);
+    }
+    return [];
+  }
 
   // 2. Typo Correction & Expansion against Vocabulary
   const candidateTerms = new Set(queryTokens);
@@ -203,15 +248,23 @@ function smartSearch(queryStr, limit = 12, options = {}) {
     }
   }
 
-  // 3. Fast Candidate Document Retrieval via Inverted Index
+  // 3. Fast Candidate Document Retrieval via Inverted Index (Rarest/Highest-Precision Terms First)
+  const sortedCandidateTerms = Array.from(candidateTerms).sort((a, b) => {
+    const sizeA = invertedIndex.get(a) ? invertedIndex.get(a).size : 0;
+    const sizeB = invertedIndex.get(b) ? invertedIndex.get(b).size : 0;
+    return sizeA - sizeB;
+  });
+
   const candidateDocIds = new Set();
-  for (const term of candidateTerms) {
+  for (const term of sortedCandidateTerms) {
     const docs = invertedIndex.get(term);
     if (docs) {
       for (const docId of docs) {
         candidateDocIds.add(docId);
+        if (candidateDocIds.size >= 500) break;
       }
     }
+    if (candidateDocIds.size >= 500) break;
   }
 
   // If few candidates found, do fallback prefix scan on candidate names
@@ -228,18 +281,41 @@ function smartSearch(queryStr, limit = 12, options = {}) {
   const queryTokensArray = Array.from(candidateTerms);
   let scored = [];
 
-  for (const docId of candidateDocIds) {
+  const docIdsToScore = candidateDocIds.size > 350 ? Array.from(candidateDocIds).slice(0, 350) : candidateDocIds;
+
+  // Build target match tokens for name matching (query + expanded synonyms)
+  const matchTargets = [queryStr.toLowerCase()];
+  if (SYNONYM_MAP[queryStr.toLowerCase()]) {
+    matchTargets.push(...SYNONYM_MAP[queryStr.toLowerCase()].split(/\s+/));
+  }
+
+  for (const docId of docIdsToScore) {
     const p = productMap.get(docId);
     if (!p) continue;
 
-    // Apply Facet Filters (Category, Price, Rating, Diet)
-    if (options.category && options.category !== 'all' && p.category !== options.category) {
+    // Apply Facet Filters (Category, Department, Subcategory, Product Family, Price, Rating, Diet)
+    if (options.category && options.category !== 'all' && p.category !== options.category && p.subcategory !== options.category && p.department !== options.category) {
       continue;
     }
-    if (options.minPrice !== undefined && p.price < Number(options.minPrice)) {
+    if (options.department && options.department !== 'all' && p.department !== options.department) {
       continue;
     }
-    if (options.maxPrice !== undefined && p.price > Number(options.maxPrice)) {
+    if (options.subcategory && options.subcategory !== 'all' && p.subcategory !== options.subcategory) {
+      continue;
+    }
+    if (options.product_family && options.product_family !== 'all' && p.product_family !== options.product_family) {
+      continue;
+    }
+    if (options.brand && options.brand !== 'all' && (!p.brand || !p.brand.toLowerCase().includes(options.brand.toLowerCase()))) {
+      continue;
+    }
+    if (options.inStockOnly && p.stock <= 0) {
+      continue;
+    }
+    if (options.minPrice != null && options.minPrice !== '' && p.price < Number(options.minPrice)) {
+      continue;
+    }
+    if (options.maxPrice != null && options.maxPrice !== '' && p.price > Number(options.maxPrice)) {
       continue;
     }
     if (options.minRating !== undefined && (p.rating || 0) < Number(options.minRating)) {
@@ -271,15 +347,18 @@ function smartSearch(queryStr, limit = 12, options = {}) {
       }
     }
 
-    // Direct name match bonus
+    // Direct name match bonus (supports direct query & multilingual synonyms)
     const nameLower = p.name.toLowerCase();
     let nameBonus = 0;
-    if (nameLower === queryStr.toLowerCase()) {
-      nameBonus = 1.0;
-    } else if (nameLower.startsWith(queryStr.toLowerCase())) {
-      nameBonus = 0.6;
-    } else if (nameLower.includes(queryStr.toLowerCase())) {
-      nameBonus = 0.35;
+    for (const target of matchTargets) {
+      if (!target || target.length < 2) continue;
+      if (nameLower === target) {
+        nameBonus = Math.max(nameBonus, 1.2);
+      } else if (nameLower.startsWith(target) || nameLower.endsWith(target)) {
+        nameBonus = Math.max(nameBonus, 0.8);
+      } else if (nameLower.includes(target)) {
+        nameBonus = Math.max(nameBonus, 0.5);
+      }
     }
 
     // Rating boost (higher rated products ranked higher)

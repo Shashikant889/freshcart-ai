@@ -32,6 +32,10 @@ function createApp() {
   app.use('/api/supplier', require('./routes/supplier'));
   app.use('/api/health', require('./routes/health'));
   app.use('/api/bda', require('./routes/bda'));
+  app.use('/api/dark-stores', require('./routes/dark-stores'));
+  app.use('/api/iot', require('./routes/iot-sensors'));
+  app.use('/api/loyalty', require('./routes/loyalty'));
+  app.use('/api/reviews', require('./routes/reviews'));
 
   // Serve Admin Dashboard page
   app.get('/admin', (req, res) => {
@@ -46,6 +50,11 @@ function createApp() {
     const status = err.status || 500;
     const message = status === 500 ? 'Internal Server Error' : err.message;
     res.status(status).json({ success: false, message });
+  });
+
+  // Ensure any unmatched /api/* requests return JSON 404, never HTML!
+  app.all('/api/*', (req, res) => {
+    res.status(404).json({ success: false, message: `API endpoint not found: ${req.method} ${req.originalUrl}` });
   });
 
   // Serve frontend for all other routes

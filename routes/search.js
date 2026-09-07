@@ -24,7 +24,7 @@ router.get('/suggestions', (req, res) => {
 router.get('/', (req, res) => {
   const query = req.query.q || '';
   const limit = parseInt(req.query.limit) || 12;
-  const { category, minPrice, maxPrice, minRating, diet, sort } = req.query;
+  const { category, department, subcategory, product_family, minPrice, maxPrice, minRating, diet, sort } = req.query;
 
   if (!query.trim()) {
     return res.json({ success: true, count: 0, algorithm: 'TF-IDF Smart Search', data: [] });
@@ -32,6 +32,9 @@ router.get('/', (req, res) => {
 
   const results = smartSearch(query, limit, {
     category,
+    department,
+    subcategory,
+    product_family,
     minPrice: minPrice ? Number(minPrice) : undefined,
     maxPrice: maxPrice ? Number(maxPrice) : undefined,
     minRating: minRating ? Number(minRating) : undefined,

@@ -768,10 +768,16 @@ async function simulateRLEpisode({ days = 14, initialStock = 15, demandPattern =
         daily_reward: Math.round(profit * 10) / 10
       });
     }
+    const fallbackOrder = initialStock < 8 ? 20 : 15;
     return {
       engine: 'node_fallback',
       simulated_days: days,
       initial_inventory: initialStock,
+      action_order_qty: fallbackOrder,
+      decision: {
+        action_order_qty: fallbackOrder,
+        recommended_restock_units: fallbackOrder
+      },
       cumulative_reward: Math.round(totalProfit * 10) / 10,
       total_spoilage_units: totalSpoilage,
       service_level_pct: 95.8,

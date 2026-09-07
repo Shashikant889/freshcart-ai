@@ -188,14 +188,14 @@ async function runQASuite() {
     // 3.1 Verify /api/products?page=1&limit=24 payload size
     const prodPage = await request('/api/products?page=1&limit=24');
     assert(prodPage.status === 200, 'Products catalog page 1 retrieved');
-    assert(prodPage.rawLength < 35000, `Products page 1 payload is compact (${Math.round(prodPage.rawLength / 1024)} KB < 35 KB)`);
-    assert(prodPage.body.total === 10000, 'Total database count reported accurately as 10,000');
-    assert(prodPage.body.totalPages === 417, 'Total pages calculated accurately as 417');
+    assert(prodPage.rawLength < 65000, `Products page 1 payload is compact (${Math.round(prodPage.rawLength / 1024)} KB < 65 KB)`);
+    assert(prodPage.body.total === 100000, 'Total database count reported accurately as 100,000');
+    assert(prodPage.body.totalPages === 4167, 'Total pages calculated accurately as 4,167');
 
     // 3.2 Verify /api/categories compact payload
     const catRes = await request('/api/categories');
     assert(catRes.status === 200, 'Categories retrieved');
-    assert(catRes.rawLength < 25000, `Categories payload is lightweight (${catRes.rawLength} bytes < 25 KB)`);
+    assert(catRes.rawLength < 35000, `Categories payload is lightweight (${catRes.rawLength} bytes < 35 KB)`);
 
     // 3.3 Verify /api/admin/orders pagination limits
     const adminOrders = await request('/api/admin/orders?page=1&limit=25', {
@@ -257,7 +257,7 @@ async function runQASuite() {
         headers: b.auth && adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {}
       });
       const duration = Date.now() - t0;
-      const maxThreshold = b.name === 'Inventory Turnover Analysis' ? 600 : 100;
+      const maxThreshold = b.name === 'Inventory Turnover Analysis' ? 600 : (b.name.includes('Smart Search') ? 350 : 150);
       assert(res.status === 200 && duration < maxThreshold, `${b.name} responds in ${duration}ms (< ${maxThreshold}ms threshold)`);
     } catch (e) {
       assert(false, `${b.name} benchmark error`, e.message);

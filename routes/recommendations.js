@@ -95,10 +95,16 @@ router.get('/smart-bundles', (req, res) => {
   });
 });
 
-// POST /api/recommendations/compare - Side-by-Side Product Comparison
-router.post('/compare', (req, res) => {
-  const { productIds = [] } = req.body;
-  const comparison = compareProducts(productIds);
+// POST & GET /api/recommendations/compare - Side-by-Side Product Comparison
+router.all('/compare', (req, res) => {
+  let ids = [];
+  if (req.method === 'POST') {
+    ids = req.body.productIds || req.body.ids || [];
+  } else {
+    const rawIds = req.query.ids || req.query.productIds || '';
+    ids = Array.isArray(rawIds) ? rawIds : rawIds.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  const comparison = compareProducts(ids);
   res.json(comparison);
 });
 
@@ -113,8 +119,8 @@ router.get('/similar/:productId', (req, res) => {
   });
 });
 
-// GET /api/recommendations/frequently-bought/:productId - Association Rule Mining
-router.get('/frequently-bought/:productId', (req, res) => {
+// GET /api/recommendations/frequently-bought/:productId (and /frequently-bought-together/:productId alias) - Association Rule Mining
+router.get(['/frequently-bought/:productId', '/frequently-bought-together/:productId'], (req, res) => {
   const limit = parseInt(req.query.limit) || 3;
   const items = getFrequentlyBoughtTogether(req.params.productId, limit);
   res.json({
@@ -146,7 +152,16 @@ router.get('/trending', (req, res) => {
 // GET /api/recommendations/substitutes/:productId - Intelligent Product Substitution
 router.get('/substitutes/:productId', (req, res) => {
   const limit = parseInt(req.query.limit) || 3;
-  const substitutes = findProductSubstitutes(req.params.productId, limit);
+  let substitutes = [];
+  try {
+    const { getSmartSubstitutes } = require('../ml/substitute-recommender');
+    substitutes = getSmartSubstitutes(req.params.productId, limit);
+  } catch (e) {
+    substitutes = findProductSubstitutes(req.params.productId, limit);
+  }
+  if (!substitutes || substitutes.length === 0) {
+    substitutes = findProductSubstitutes(req.params.productId, limit);
+  }
   res.json({
     success: true,
     algorithm: 'Multi-Factor Product Substitution (Category, Price Proximity, Rating, Content Cosine)',

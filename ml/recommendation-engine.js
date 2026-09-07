@@ -66,7 +66,7 @@ function getSimilarProductsContentBased(productId, limit = 4) {
   // Fetch candidates from same category + shared tag keywords (limit to 50 candidates for blazing speed)
   const candidates = db.prepare(`
     SELECT * FROM products 
-    WHERE category = ? AND id != ?
+    WHERE category = ? AND id != ? AND (is_active = 1 OR is_active IS NULL)
     ORDER BY rating DESC 
     LIMIT 50
   `).all(targetProduct.category, productId);
@@ -605,24 +605,48 @@ function compareProducts(productIds = []) {
   }
 
   const formatted = products.map(p => {
-    const tags = JSON.parse(p.tags || '[]');
+    let tags = [];
+    try { tags = JSON.parse(p.tags || '[]'); } catch (e) {}
+    let technicalSpecs = {};
+    try { technicalSpecs = JSON.parse(p.technical_specs_json || '{}'); } catch (e) {}
+    let dimensions = {};
+    try { dimensions = JSON.parse(p.dimensions_json || '{}'); } catch (e) {}
+
     return {
       id: p.id,
       name: p.name,
       emoji: p.emoji,
       category: p.category,
+      department: p.department,
+      subcategory: p.subcategory,
+      product_family: p.product_family,
+      brand: p.brand || p.brand_display || null,
+      package_size: p.package_size || p.unit,
+      nutrition_grade: p.nutrition_grade,
+      storage_information: p.storage_information,
+      shelf_life_claim: p.shelf_life_claim,
+      technical_specs: technicalSpecs,
+      dimensions: dimensions,
+      primary_image_url: p.primary_image_url || p.front_image_url || p.image_url,
+      image_url: p.primary_image_url || p.front_image_url || p.image_url,
       price: p.price,
+      mrp: p.mrp,
       unit: p.unit,
       stock: p.stock,
       rating: p.rating,
       description: p.description,
       tags,
-      isOrganic: tags.some(t => t.toLowerCase().includes('organic')),
-      isHighProtein: tags.some(t => t.toLowerCase().includes('protein') || t.toLowerCase().includes('egg')),
-      isKeto: tags.some(t => t.toLowerCase().includes('keto')),
+      isOrganic: tags.some(t => String(t).toLowerCase().includes('organic')),
+      isHighProtein: tags.some(t => String(t).toLowerCase().includes('protein') || String(t).toLowerCase().includes('egg')),
+      isKeto: tags.some(t => String(t).toLowerCase().includes('keto')),
       inStock: p.stock > 0
     };
   });
+
+  // Check product family consistency
+  const families = Array.from(new Set(formatted.map(p => p.product_family).filter(Boolean)));
+  const isFamilyScoped = families.length <= 1;
+  const commonFamily = families.length === 1 ? families[0] : (formatted[0].subcategory || formatted[0].category || 'General Products');
 
   // Determine comparison highlights
   let lowestPriceProduct = formatted[0];
@@ -636,6 +660,9 @@ function compareProducts(productIds = []) {
   return {
     success: true,
     comparedCount: formatted.length,
+    isFamilyScoped,
+    product_family: commonFamily,
+    families,
     products: formatted,
     highlights: {
       bestValueId: lowestPriceProduct.id,

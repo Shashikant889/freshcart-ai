@@ -21,8 +21,8 @@
 
 | Document | File Link | Focus & Coverage |
 |---|---|---|
-| 📋 **Complete Project Master Record** | [`COMPLETE_PROJECT_RECORD.md`](COMPLETE_PROJECT_RECORD.md) | Exhaustive 41 KB chronicle of all features, 5 Pinnacle AI models, UI revamp, and 244/244 test suite |
-| 🚀 **Deployment & DevOps Guide** | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Step-by-step instructions for Git, GitHub, Docker containers, and 1-click Render cloud deployment |
+| 📋 **Complete Project Master Record** | [`docs/COMPLETE_PROJECT_RECORD.md`](docs/COMPLETE_PROJECT_RECORD.md) | Exhaustive 41 KB chronicle of all features, 5 Pinnacle AI models, UI revamp, and 244/244 test suite |
+| 🚀 **Deployment & DevOps Guide** | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Step-by-step instructions for Git, GitHub, Docker containers, and 1-click Render cloud deployment |
 | 🏛️ **System Architecture** | [`docs/ARCHITECTURE_CURRENT.md`](docs/ARCHITECTURE_CURRENT.md) | Dual-tier microservice architecture, complete request/data flow, circuit breaker, and directory roles |
 | 📜 **IEEE Major Research Report** | [`docs/IEEE_Project_Report.md`](docs/IEEE_Project_Report.md) | Full IEEE double-column capstone research manuscript with empirical benchmarks |
 | 🎓 **Mumbai University Black Book** | [`docs/academic/FINAL_BLACK_BOOK.md`](docs/academic/FINAL_BLACK_BOOK.md) | Official APSIT / University of Mumbai Major Project dissertation |
@@ -153,7 +153,7 @@ docker compose up --build -d
 3. Select your repository: `Shashikant889/freshcart-ai`.
 4. Render automatically configures the Node service with `healthCheckPath: /api/health` via [`render.yaml`](render.yaml).
 
-For complete deployment details, consult [`DEPLOYMENT.md`](DEPLOYMENT.md).
+For complete deployment details, consult [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ---
 

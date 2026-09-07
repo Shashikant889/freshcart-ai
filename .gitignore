@@ -110,8 +110,18 @@ desktop.ini
 *.sublime-workspace
 *.sublime-project
 
-# Large Binary Archives (Backups)
+# Large Binary Archives & Backups
 *.zip
 *.tar.gz
 *.rar
 *.7z
+backup/
+data/raw/
+
+# Large Generated Datasets (Local Reproducibility Only, Exceeds GitHub Limit)
+data/synthetic/products.csv
+
+# Local Project Operating Artifacts (Antigravity IDE local state)
+.antigravity/
+.agents/
+

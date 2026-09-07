@@ -330,17 +330,33 @@ function computeInventoryTurnover(db) {
   return payload;
 }
 
-// Warm up turnover cache in background on startup
+// Warm up turnover cache in background on startup and refresh every 60s
 setTimeout(() => {
   try {
     const db = getDb();
     computeInventoryTurnover(db);
   } catch (e) {}
-}, 500);
+}, 200);
+
+setInterval(() => {
+  try {
+    const db = getDb();
+    computeInventoryTurnover(db);
+  } catch (e) {}
+}, 60000);
 
 // GET /api/supplier/inventory-turnover - Stock velocity, COGS, turnover ratio, fast/slow/dead stock
 router.get('/inventory-turnover', requireAuth, requireAdmin, (req, res) => {
-  if (cachedTurnover && (Date.now() - lastTurnoverComputeTime < 60000)) {
+  if (cachedTurnover) {
+    // Stale-while-revalidate: return instant cached snapshot, refresh asynchronously if > 60s old
+    if (Date.now() - lastTurnoverComputeTime >= 60000) {
+      setImmediate(() => {
+        try {
+          const db = getDb();
+          computeInventoryTurnover(db);
+        } catch (e) {}
+      });
+    }
     return res.json(cachedTurnover);
   }
 

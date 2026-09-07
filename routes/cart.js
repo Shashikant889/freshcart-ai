@@ -180,6 +180,119 @@ router.put('/update', optionalAuth, (req, res) => {
   res.json({ success: true, data: { ...cart, ...calculateTotals(cart.items) } });
 });
 
+// POST /api/cart/bulk-add - Bulk Add items to cart
+router.post('/bulk-add', optionalAuth, (req, res) => {
+  const { productIds = [], items = [] } = req.body;
+  const db = getDb();
+
+  const toAdd = [];
+  if (Array.isArray(items) && items.length > 0) {
+    items.forEach(it => {
+      if (typeof it === 'string') toAdd.push({ productId: it, quantity: 1 });
+      else if (it && it.productId) toAdd.push({ productId: it.productId, quantity: parseInt(it.quantity) || 1 });
+    });
+  } else if (Array.isArray(productIds) && productIds.length > 0) {
+    productIds.forEach(id => toAdd.push({ productId: id, quantity: 1 }));
+  }
+
+  if (toAdd.length === 0) {
+    return res.status(400).json({ success: false, message: 'No items provided for bulk add' });
+  }
+
+  let addedCount = 0;
+  let skippedCount = 0;
+  const addedProducts = [];
+
+  if (req.user) {
+    const userId = req.user.id;
+    for (const item of toAdd) {
+      const product = db.prepare('SELECT id, name, stock FROM products WHERE id = ?').get(item.productId);
+      if (!product || product.stock <= 0) {
+        skippedCount++;
+        continue;
+      }
+      const existing = db.prepare('SELECT quantity FROM cart_items WHERE user_id = ? AND product_id = ?').get(userId, product.id);
+      const currentQty = existing ? existing.quantity : 0;
+      const targetQty = currentQty + item.quantity;
+      const finalQty = Math.min(targetQty, product.stock);
+
+      if (finalQty > currentQty) {
+        if (existing) {
+          db.prepare('UPDATE cart_items SET quantity = ? WHERE user_id = ? AND product_id = ?').run(finalQty, userId, product.id);
+        } else {
+          db.prepare('INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)').run(userId, product.id, finalQty);
+        }
+        addedCount++;
+        addedProducts.push(product.name);
+      } else {
+        skippedCount++;
+      }
+    }
+    const cartItems = getUserCartItems(userId);
+    return res.json({
+      success: true,
+      addedCount,
+      skippedCount,
+      message: `Added ${addedCount} item${addedCount === 1 ? '' : 's'} to cart${skippedCount > 0 ? ` (${skippedCount} unavailable skipped)` : ''}`,
+      data: { items: cartItems, ...calculateTotals(cartItems) }
+    });
+  }
+
+  // Guest Cart handling
+  const sessionId = req.headers['x-session-id'] || 'default';
+  const cart = getGuestCart(sessionId);
+
+  for (const item of toAdd) {
+    const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.productId);
+    if (!product || product.stock <= 0) {
+      skippedCount++;
+      continue;
+    }
+    const existing = cart.items.find(ci => ci.productId === product.id);
+    if (existing) {
+      const targetQty = existing.quantity + item.quantity;
+      if (targetQty <= product.stock) {
+        existing.quantity = targetQty;
+        addedCount++;
+        addedProducts.push(product.name);
+      } else if (existing.quantity < product.stock) {
+        existing.quantity = product.stock;
+        addedCount++;
+        addedProducts.push(product.name);
+      } else {
+        skippedCount++;
+      }
+    } else {
+      const addQty = Math.min(item.quantity, product.stock);
+      cart.items.push({
+        productId: product.id,
+        name: product.name,
+        emoji: product.emoji,
+        price: product.price,
+        unit: product.unit,
+        quantity: addQty,
+        image_url: product.image_url,
+        image_key: product.image_key,
+        image_alt: product.image_alt,
+        brand: product.brand,
+        mrp: product.mrp,
+        discount: product.discount
+      });
+      addedCount++;
+      addedProducts.push(product.name);
+    }
+  }
+
+  cart.updatedAt = new Date().toISOString();
+  return res.json({
+    success: true,
+    addedCount,
+    skippedCount,
+    message: `Added ${addedCount} item${addedCount === 1 ? '' : 's'} to cart${skippedCount > 0 ? ` (${skippedCount} unavailable skipped)` : ''}`,
+    data: { ...cart, ...calculateTotals(cart.items) }
+  });
+});
+
 // DELETE /api/cart/remove/:productId
 router.delete('/remove/:productId', optionalAuth, (req, res) => {
   const { productId } = req.params;

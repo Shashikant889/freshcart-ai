@@ -59,25 +59,33 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'ml/route-optimizer.js',
     'ml/smart-search.js',
     'ml/visual-search.js',
+    'ml/substitute-recommender.js',
+    'ml/dark-store-network.js',
     'middleware/auth.js',
     'routes/admin.js',
     'routes/analytics.js',
     'routes/assistant.js',
     'routes/auth.js',
     'routes/cart.js',
+    'routes/dark-stores.js',
     'routes/dispatch.js',
     'routes/group-orders.js',
     'routes/health.js',
+    'routes/iot-sensors.js',
+    'routes/loyalty.js',
     'routes/nutrition.js',
     'routes/orders.js',
     'routes/pricing.js',
     'routes/products.js',
     'routes/recommendations.js',
+    'routes/reviews.js',
     'routes/search.js',
     'routes/supplier.js',
     'routes/visual.js',
     'scripts/dev-start.js',
     'services/ai-client.js',
+    'services/chatbot-agent.js',
+    'services/llm-provider.js',
     'public/js/app.js',
     'public/js/admin.js',
     'public/sw.js',
@@ -89,7 +97,10 @@ runAuditSection('1. Codebase Syntax & Lint Verification (node -c):', () => {
     'test/enterprise-features-test.js',
     'test/pwa-vision-payment-test.js',
     'test/ai-service-integration-test.js',
-    'test/unified-app-hardening-test.js'
+    'test/unified-app-hardening-test.js',
+    'test/chatbot-agent-test.js',
+    'test/conversational-benchmark-test.js',
+    'test/pinnacle-features-test.js'
   ];
 
   jsFiles.forEach(file => {
@@ -126,9 +137,9 @@ runAuditSection('2. Frontend Assets, PWA Manifest & Design System Tokens:', () =
 });
 
 // -------------------------------------------------------------
-// 3. Execution of All 8 Modular Test Suites
+// 3. Execution of All Modular Test Suites
 // -------------------------------------------------------------
-runAuditSection('3. Executing All 8 Automated Multi-Tier Test Suites (140+ Assertions):', () => {
+runAuditSection('3. Executing All Automated Multi-Tier Test Suites (200+ Assertions):', () => {
   const suites = [
     { name: '10-Agent ML Verification Suite', cmd: 'node test/deep-verify.js' },
     { name: 'OWASP Security & SQLi Immunity Suite', cmd: 'node test/security-safety-test.js' },
@@ -137,7 +148,9 @@ runAuditSection('3. Executing All 8 Automated Multi-Tier Test Suites (140+ Asser
     { name: 'Enterprise Mega-Pack Verification Suite', cmd: 'node test/enterprise-features-test.js' },
     { name: 'PWA, Vision AI & Payment Gateway Suite', cmd: 'node test/pwa-vision-payment-test.js' },
     { name: 'AI/ML Microservice & Operations Research Integration Suite', cmd: 'node test/ai-service-integration-test.js' },
-    { name: 'Unified Application Architecture & Engineering Hardening Suite', cmd: 'node test/unified-app-hardening-test.js' }
+    { name: 'Unified Application Architecture & Engineering Hardening Suite', cmd: 'node test/unified-app-hardening-test.js' },
+    { name: 'Conversational AI Agent & Grounded Tool Orchestrator Suite', cmd: 'node test/chatbot-agent-test.js' },
+    { name: 'Pinnacle Quick-Commerce & Omnichannel Ecosystem Suite', cmd: 'node test/pinnacle-features-test.js' }
   ];
 
   suites.forEach(suite => {

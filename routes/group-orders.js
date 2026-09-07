@@ -25,8 +25,8 @@ if (groupLobbies.size === 0) {
   });
 }
 
-// GET /api/group-orders/lobbies - List active community group buying lobbies
-router.get('/lobbies', (req, res) => {
+// GET /api/group-orders (and /lobbies) - List active community group buying lobbies
+router.get(['/', '/lobbies'], (req, res) => {
   const list = Array.from(groupLobbies.values());
   res.json({
     success: true,

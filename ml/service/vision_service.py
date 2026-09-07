@@ -154,7 +154,7 @@ class ComputerVisionEngine:
             'detected_regions': target['detected_regions'],
             'replenishment_items': replenishment_items,
             'urgency_score': target['urgency_score'],
-            'model_architecture': 'Multimodal CNN Feature Extractor + Visual Cosine Classifier',
+            'model_architecture': 'Color Moment Vector Extractor + Cosine Distance Classifier',
             'inference_latency_ms': 14.5
         }
 

@@ -1,69 +1,69 @@
 {
   "benchmark_results": {
     "Rule-Based / Z-Score Baseline": {
-      "Precision": 0.10344827586206896,
-      "Recall": 0.06818181818181818,
-      "F1-Score": 0.0821917808219178,
-      "ROC-AUC": 0.5553837188452573
+      "Precision": 0.14548802946593,
+      "Recall": 0.11173974540311174,
+      "F1-Score": 0.1264,
+      "ROC-AUC": 0.5527762512374986
     },
     "Logistic Regression (Balanced)": {
-      "Precision": 0.05803571428571429,
-      "Recall": 0.5909090909090909,
-      "F1-Score": 0.10569105691056911,
-      "ROC-AUC": 0.6080105791644252
+      "Precision": 0.06000851184565187,
+      "Recall": 0.5983026874115983,
+      "F1-Score": 0.10907684373388345,
+      "ROC-AUC": 0.6195027146026706
     },
     "Random Forest Classifier": {
-      "Precision": 0.08292682926829269,
-      "Recall": 0.38636363636363635,
-      "F1-Score": 0.13654618473895583,
-      "ROC-AUC": 0.6086829836829837
+      "Precision": 0.08240482822655525,
+      "Recall": 0.5021216407355021,
+      "F1-Score": 0.1415752741774676,
+      "ROC-AUC": 0.6309162308405545
     },
     "Isolation Forest (Unsupervised)": {
-      "Precision": 0.0,
-      "Recall": 0.0,
-      "F1-Score": 0.0,
-      "ROC-AUC": 0.5258427469965932
+      "Precision": 0.05521472392638037,
+      "Recall": 0.05091937765205092,
+      "F1-Score": 0.052980132450331126,
+      "ROC-AUC": 0.5336585523884508
     }
   },
   "confusion_matrices": {
     "Rule-Based / Z-Score Baseline": [
       [
-        988,
-        26
+        15079,
+        464
       ],
       [
-        41,
-        3
+        628,
+        79
       ]
     ],
     "Logistic Regression (Balanced)": [
       [
-        592,
-        422
+        8917,
+        6626
       ],
       [
-        18,
-        26
+        284,
+        423
       ]
     ],
     "Random Forest Classifier": [
       [
-        826,
-        188
+        11590,
+        3953
       ],
       [
-        27,
-        17
+        352,
+        355
       ]
     ],
     "Isolation Forest (Unsupervised)": [
       [
-        965,
-        49
+        14927,
+        616
       ],
       [
-        44,
-        0
+        671,
+        36
       ]
     ]
   }

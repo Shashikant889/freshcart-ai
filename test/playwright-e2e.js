@@ -51,6 +51,11 @@ async function runPlaywrightSuite() {
 
   const page = await context.newPage();
 
+  // Prevent spontaneous auto-popup during deterministic E2E clicks
+  await context.addInitScript(() => {
+    sessionStorage.setItem('freshcart_auto_popup_seen', '1');
+  });
+
   page.on('pageerror', err => {
     // Ignore minor third-party resource warnings if any
     uncaughtErrors.push(err.message);

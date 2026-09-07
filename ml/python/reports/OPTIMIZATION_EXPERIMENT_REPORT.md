@@ -2,7 +2,7 @@
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Evaluation Framework:** Final-Year Major Capstone (B.Tech CSE-AIML, Mumbai University)  
-**Experiment Execution Date:** `2026-08-26 12:07:47`  
+**Experiment Execution Date:** `2026-09-07 09:18:14`  
 **Random Seed:** `42` (Fixed for strict reproducibility)  
 **Environment:** Python 3.12, NumPy, Pandas, Matplotlib, Scipy  
 
@@ -22,20 +22,20 @@ All metrics reflect actual simulations across multiple randomized scenarios with
 ## 2. Module 1: Inventory & Procurement Optimization
 
 ### 2.1 Benchmark Results (180 Simulated Days Across 31 Catalog SKUs)
-- **Baseline Total Cost:** ₹796,250.89
-- **Optimized (EOQ+ROP) Total Cost:** ₹98,394.90
-- **Net Cost Reduction:** **-₹697,855.99 (87.64% savings)**
-- **Baseline Mean Service Level:** 89.45%
-- **Optimized Mean Service Level:** **99.88%** (Target: 95.00%)
-- **Total Stockout Days:** 890 days (Baseline) $\to$ **15 days (Optimized)** (-98.3%)
+- **Baseline Total Cost:** ₹953,330.79
+- **Optimized (EOQ+ROP) Total Cost:** ₹110,760.79
+- **Net Cost Reduction:** **-₹842,570.00 (88.38% savings)**
+- **Baseline Mean Service Level:** 88.69%
+- **Optimized Mean Service Level:** **99.90%** (Target: 95.00%)
+- **Total Stockout Days:** 729 days (Baseline) $\to$ **7 days (Optimized)** (-99.0%)
 
 ### 2.2 Scenario Sensitivity Stress Tests
 
 | Scenario | Baseline Cost | Optimized Cost | Savings % | Baseline Service Level | Optimized Service Level | Stockout Days |
 |---|---|---|---|---|---|---|
-| **Scenario A (Standard Demand & Lead Time)** | ₹796,250.89 | ₹98,394.90 | **-87.64%** | 89.4% | 99.9% | 890d vs 15d |
-| **Scenario B (High Volatility +80%)** | ₹1,303,558.91 | ₹135,593.21 | **-89.60%** | 87.4% | 99.9% | 1103d vs 20d |
-| **Scenario C (Supply Delay +100%)** | ₹1,554,422.37 | ₹103,765.50 | **-93.32%** | 65.4% | 99.9% | 2312d vs 15d |
+| **Scenario A (Standard Demand & Lead Time)** | ₹953,330.79 | ₹110,760.79 | **-88.38%** | 88.7% | 99.9% | 729d vs 7d |
+| **Scenario B (High Volatility +80%)** | ₹1,465,463.64 | ₹159,875.01 | **-89.09%** | 88.5% | 99.8% | 784d vs 15d |
+| **Scenario C (Supply Delay +100%)** | ₹2,139,970.90 | ₹129,740.55 | **-93.94%** | 65.5% | 99.7% | 1833d vs 15d |
 
 ---
 

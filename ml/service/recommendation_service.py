@@ -8,17 +8,26 @@ from ml.service.model_loader import registry
 from ml.service.schemas import RecommendationRequest, RecommendationResponse, RecommendedItem
 from ml.python.data_loader import load_products_df, load_user_interactions_df
 
-# Cache product catalog metadata
-_products_df = None
+import sqlite3
+from ml.python.config import DB_PATH
 
-def get_products():
-    global _products_df
-    if _products_df is None:
+# Cache only queried product items in memory
+_cached_items: Dict[str, Dict[str, Any]] = {}
+
+def get_items_by_ids(pids: List[str]) -> Dict[str, Dict[str, Any]]:
+    missing = [pid for pid in pids if pid not in _cached_items]
+    if missing:
         try:
-            _products_df = load_products_df()
-        except Exception:
-            _products_df = None
-    return _products_df
+            conn = sqlite3.connect(str(DB_PATH))
+            placeholders = ','.join(['?'] * len(missing))
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT id, name, category, price FROM products WHERE id IN ({placeholders})", missing)
+            for row in cursor.fetchall():
+                _cached_items[row[0]] = {"name": row[1], "category": row[2], "price": float(row[3])}
+            conn.close()
+        except Exception as e:
+            print(f"[WARN] Error fetching items by ids: {e}")
+    return _cached_items
 
 def get_recommendations(req: RecommendationRequest) -> RecommendationResponse:
     """
@@ -29,16 +38,6 @@ def get_recommendations(req: RecommendationRequest) -> RecommendationResponse:
     metadata = registry.get_metadata("recommendation")
     model_name = metadata.get("model_name", "Hybrid Ensemble (CF + CB)")
     
-    products_df = get_products()
-    catalog_items = {}
-    if products_df is not None:
-        for _, row in products_df.iterrows():
-            catalog_items[row["id"]] = {
-                "name": row["name"],
-                "category": row["category"],
-                "price": float(row["price"]),
-            }
-            
     is_fallback = False
     recs: List[RecommendedItem] = []
     
@@ -50,6 +49,8 @@ def get_recommendations(req: RecommendationRequest) -> RecommendationResponse:
                 u_idx = (req.user_id - 1) % 50  # 50 trained persona indices
                 
             raw_pids = model.recommend(user_idx=u_idx, top_k=req.top_k)
+            candidate_pids = [str(p) for p in raw_pids[:req.top_k * 2]]
+            catalog_items = get_items_by_ids(candidate_pids)
             
             for rank, pid in enumerate(raw_pids[:req.top_k], start=1):
                 p_info = catalog_items.get(pid, {"name": f"Product {pid}", "category": "Grocery", "price": 99.0})
@@ -77,6 +78,7 @@ def get_recommendations(req: RecommendationRequest) -> RecommendationResponse:
     if is_fallback or not recs:
         is_fallback = True
         fallback_pids = ["f1", "d1", "b1", "v2", "s1", "f2", "d3", "v1", "b2", "s2"]
+        catalog_items = get_items_by_ids(fallback_pids)
         for rank, pid in enumerate(fallback_pids[:req.top_k], start=1):
             p_info = catalog_items.get(pid, {"name": f"Product {pid}", "category": "Grocery", "price": 99.0})
             recs.append(RecommendedItem(

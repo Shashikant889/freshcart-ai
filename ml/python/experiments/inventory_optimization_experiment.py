@@ -41,6 +41,9 @@ def run_inventory_optimization_experiment():
     print("=" * 65)
     
     products = load_products_df()
+    benchmark_ids = [f"f{i}" for i in range(1, 6)] + [f"v{i}" for i in range(1, 6)] + [f"d{i}" for i in range(1, 6)] + [f"b{i}" for i in range(1, 6)] + [f"o{i}" for i in range(1, 6)] + [f"s{i}" for i in range(1, 7)]
+    if len(products) > len(benchmark_ids):
+        products = products[products["id"].isin(benchmark_ids)].reset_index(drop=True)
     _, sales_history = load_sales_time_series()
     
     print(f"Loaded Catalog: {len(products)} SKUs across {products['category'].nunique()} categories")

@@ -141,21 +141,57 @@ def get_deep_learning_forecast() -> DeepDemandResponse:
 
     target_mean = meta["target_scaler"]["mean"]
     target_std = meta["target_scaler"]["std"]
-
-    # Synthesize realistic recent 14-day lookback sequence normalized with feature scalers
     feat_means = meta["feature_scaler"]["mean"]
     feat_stds = meta["feature_scaler"]["std"]
 
-    dummy_seq = np.zeros((1, 14, 4), dtype=np.float32)
-    for day in range(14):
-        raw_val = target_mean + np.sin(day / 2.0) * (target_std * 0.4)
-        dummy_seq[0, day, 0] = (raw_val - feat_means[0]) / feat_stds[0]
-        dummy_seq[0, day, 1] = (raw_val - feat_means[1]) / feat_stds[1]
-        dummy_seq[0, day, 2] = np.sin(2 * np.pi * (day % 7) / 7.0)
-        dummy_seq[0, day, 3] = np.cos(2 * np.pi * (day % 7) / 7.0)
+    # Load recent 14-day lookback sequence directly from freshcart.db sales_history
+    import sqlite3
+    import pandas as pd
+    from ml.python.config import DB_PATH
+
+    seq = None
+    if DB_PATH.exists():
+        try:
+            conn = sqlite3.connect(str(DB_PATH))
+            query = """
+                SELECT date, SUM(quantity_sold) as daily_demand
+                FROM sales_history
+                GROUP BY date
+                ORDER BY date DESC
+                LIMIT 21
+            """
+            recent_df = pd.read_sql_query(query, conn)
+            conn.close()
+            if len(recent_df) >= 14:
+                recent_df = recent_df.sort_values("date").reset_index(drop=True)
+                recent_df["date"] = pd.to_datetime(recent_df["date"])
+                recent_df["dow"] = recent_df["date"].dt.dayofweek
+                recent_df["rolling_mean_7"] = recent_df["daily_demand"].shift(1).rolling(7, min_periods=1).mean().fillna(recent_df["daily_demand"].mean())
+                last_14 = recent_df.iloc[-14:].copy().reset_index(drop=True)
+                real_seq = np.zeros((1, 14, 4), dtype=np.float32)
+                for day in range(14):
+                    d_val = float(last_14.loc[day, "daily_demand"])
+                    r_val = float(last_14.loc[day, "rolling_mean_7"])
+                    dow = int(last_14.loc[day, "dow"])
+                    real_seq[0, day, 0] = (d_val - feat_means[0]) / feat_stds[0]
+                    real_seq[0, day, 1] = (r_val - feat_means[1]) / feat_stds[1]
+                    real_seq[0, day, 2] = np.sin(2 * np.pi * dow / 7.0)
+                    real_seq[0, day, 3] = np.cos(2 * np.pi * dow / 7.0)
+                seq = real_seq
+        except Exception:
+            seq = None
+
+    if seq is None:
+        seq = np.zeros((1, 14, 4), dtype=np.float32)
+        for day in range(14):
+            raw_val = target_mean + np.sin(day / 2.0) * (target_std * 0.4)
+            seq[0, day, 0] = (raw_val - feat_means[0]) / feat_stds[0]
+            seq[0, day, 1] = (raw_val - feat_means[1]) / feat_stds[1]
+            seq[0, day, 2] = np.sin(2 * np.pi * (day % 7) / 7.0)
+            seq[0, day, 3] = np.cos(2 * np.pi * (day % 7) / 7.0)
 
     with torch.no_grad():
-        preds_scaled = model(torch.tensor(dummy_seq)).numpy()[0]
+        preds_scaled = model(torch.tensor(seq)).numpy()[0]
 
     preds = (preds_scaled * target_std) + target_mean
     preds = np.maximum(preds, 10.0)

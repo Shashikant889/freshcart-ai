@@ -21,7 +21,9 @@
     "test:playwright": "node test/playwright-e2e.js",
     "test:all": "node test/deep-verify.js && node test/security-safety-test.js && node test/alpha-beta-backend.js && node test/synthetic-frontend-test.js && node test/enterprise-features-test.js && node test/pwa-vision-payment-test.js && node test/ai-service-integration-test.js && node test/unified-app-hardening-test.js && node test/pinnacle-ai-test.js",
     "check": "node test/master-audit.js",
-    "audit": "node test/master-audit.js"
+    "audit": "node test/master-audit.js",
+    "audit:full": "node scripts/full-system-audit.js",
+    "verify:everything": "node scripts/full-system-audit.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

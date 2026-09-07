@@ -655,6 +655,9 @@ The persistence layer uses **SQLite 3 compiled to WebAssembly via sql.js (v1.12.
 
 ```mermaid
 erDiagram
+    categories ||--o{ subcategories : divides
+    subcategories ||--o{ product_families : groups
+    product_families ||--o{ products : classifies
     users ||--o{ orders : places
     users ||--o{ cart_items : maintains
     users ||--o{ user_interactions : logs
@@ -664,13 +667,28 @@ erDiagram
     products ||--o{ sales_history : records
     orders ||--|{ order_items : includes
 
-    users {
-        INTEGER id PK
+    categories {
+        TEXT id PK
         TEXT name
-        TEXT email UK
-        TEXT password_hash
-        TEXT role
-        TEXT created_at
+        TEXT department
+        TEXT emoji
+        TEXT description
+        INTEGER display_order
+    }
+
+    subcategories {
+        TEXT id PK
+        TEXT category_id FK
+        TEXT name
+        TEXT description
+    }
+
+    product_families {
+        TEXT id PK
+        TEXT subcategory_id FK
+        TEXT name
+        TEXT brand_family
+        TEXT description
     }
 
     products {
@@ -678,12 +696,24 @@ erDiagram
         TEXT name
         TEXT emoji
         TEXT category
+        TEXT department
+        TEXT subcategory
+        TEXT product_family
+        TEXT brand
+        TEXT model
+        TEXT barcode
         REAL price
         TEXT unit
         TEXT description
         INTEGER stock
         REAL rating
         TEXT tags
+        TEXT front_image_url
+        TEXT back_image_url
+        TEXT attributes_json
+        TEXT source_dataset
+        TEXT dataset_status
+        TEXT license
     }
 
     orders {
@@ -1127,15 +1157,38 @@ When a fallback triggers:
 
 ---
 
-## 28. Datasets
+## 28. Datasets & Product Catalog Architecture
 
-### Dataset Inventory (`data/synthetic/` & SQLite Database)
-1. **`products`** (31 records): Grocery items across 6 categories with base prices in INR, units, descriptions, stock levels, rating, and JSON tags.
-2. **`users`** (52 records): 1 system administrator, 1 demo customer, and 50 synthetic customer profiles generated deterministically.
-3. **`sales_history`** (~11,315 records): 365 consecutive days of daily sales quantity and revenue per SKU for time-series forecasting.
-4. **`user_interactions`** (~83,000 records): High-volume clickstream logs (`view`, `cart`, `purchase`, `rate`) capturing user preference distributions.
-5. **`orders`** (~4,200 records): Historical customer orders with subtotal, taxes, delivery fees, customer details, and payment methods.
-6. **`order_items`** (~14,500 records): Individual line-item mappings connecting orders to product SKUs and purchase prices.
+### Rebuilt Real-World Catalog Inventory (`freshcart.db`)
+Following the Master Dataset Migration Directive, the product catalog has been fully rebuilt from verified, real-world open retail datasets into a **4-tier normalized hierarchy** (Department → Subcategory → Product Family → SKU):
+
+1. **`products`** (10,000 active retail SKUs):
+   - **Open Food Facts (6,988 SKUs, ODbL 1.0):** Real grocery, dairy, produce, snacks, and beverages with authentic EAN-13 barcodes, Nutri-Score, ingredients, packaging/front photography, and nutrition profiles.
+   - **Amazon Berkeley Objects (2,492 SKUs, CC BY-NC 4.0):** Personal electronics (TWS earbuds, smartwatches, Hi-Fi headphones) and mobile accessories (fast chargers, high-speed cables) with authentic ASINs and AWS S3 photographic imagery.
+   - **Curated Pooja Essentials (520 SKUs, CC BY 4.0):** Sacred incense, handcrafted agarbatti, dhoop, brass diyas, and festive kits honestly documented as `dataset_status = 'curated_unverified'`.
+2. **`categories`** (4 Departments): Grocery & Food, Electronics, Pooja Essentials, Home & Personal Care.
+3. **`subcategories`** (12 Subcategories): Fresh Produce, Dairy & Breakfast, Snacks & Munchies, Beverages, Staples & Grains, Personal Electronics, Mobile & Audio Accessories, Incense & Fragrance, Lighting & Sacred Wicks, Pooja Consumables & Kits, Personal Care, Household & Cleaning.
+4. **`product_families`** (20 Product Families): Granular groupings including Wireless Earbuds (TWS), Smart Watches & Bands, Handcrafted Agarbatti, Brass Diyas, and Atta/Rice.
+5. **`users`** (52 records): 1 administrator, 1 demo customer, and 50 synthetic customer profiles.
+6. **`sales_history`** (~11,315 records): 365 consecutive days of sales data for time-series forecasting.
+7. **`user_interactions`** (980,427 records): Complete clickstream logs (`view`, `cart`, `purchase`, `rate`) preserving 100% referential integrity with zero orphan references.
+8. **`orders`** (~4,200 records) & **`order_items`** (292,431 records): Historical order transactions with zero orphan foreign key references.
+
+### Catalog Audit Artifacts
+All dataset provenance, licensing, deduplication, and quality metrics are documented in the root project reports:
+- `CURRENT_CATALOG_BACKUP_MANIFEST.md`
+- `DATASET_SOURCE_MATRIX.md`
+- `DATASET_DOWNLOAD_PLAN.md`
+- `DATASET_LICENSE_AUDIT.md`
+- `DATASET_PROVENANCE_AND_LICENSE_REPORT.md`
+- `CATEGORY_MAPPING_REPORT.md`
+- `CATALOG_DEDUPLICATION_REPORT.md`
+- `IMAGE_DATA_QUALITY_REPORT.md`
+- `NEW_CATALOG_DATA_QUALITY_REPORT.md`
+- `CATALOG_MIGRATION_REPORT.md`
+- `CATALOG_ROLLBACK_GUIDE.md`
+- `FINAL_CATALOG_ARCHITECTURE.md`
+- `REAL_CATALOG_FINAL_VERIFICATION.md`
 
 ---
 

@@ -42,7 +42,10 @@ class PopularityRecommender:
         
     def fit(self, train_matrix, product_ids):
         self.product_ids = list(product_ids)
-        col_sums = train_matrix.sum(axis=0)
+        if hasattr(train_matrix, "sum"):
+            col_sums = np.asarray(train_matrix.sum(axis=0)).ravel()
+        else:
+            col_sums = np.sum(train_matrix, axis=0)
         sorted_indices = np.argsort(-col_sums)
         self.popular_items = [self.product_ids[i] for i in sorted_indices]
         return self
@@ -54,65 +57,91 @@ class ContentBasedRecommender:
     """Content-Based recommender using TF-IDF on product tags & category descriptions."""
     def __init__(self):
         self.tfidf = TfidfVectorizer()
-        self.item_sim_matrix = None
+        self.tfidf_matrix = None
         self.product_ids = []
         
     def fit(self, products_df, product_ids):
         self.product_ids = list(product_ids)
         corpus = products_df.set_index("id").reindex(self.product_ids)["tags_str"].fillna("")
-        tfidf_matrix = self.tfidf.fit_transform(corpus)
-        self.item_sim_matrix = cosine_similarity(tfidf_matrix)
+        self.tfidf_matrix = self.tfidf.fit_transform(corpus)  # Sparse (P x V)
         return self
         
     def recommend(self, user_idx, top_k=10, train_row=None):
-        if train_row is None or train_row.sum() == 0:
+        if train_row is None:
             return self.product_ids[:top_k]
-        user_profile = train_row.dot(self.item_sim_matrix)
-        top_indices = np.argsort(-user_profile)[:top_k]
+        # User profile in tag space: 1 x V
+        user_tag_profile = train_row.dot(self.tfidf_matrix)
+        if hasattr(user_tag_profile, "toarray"):
+            user_tag_profile = user_tag_profile.toarray().ravel()
+        if np.all(user_tag_profile == 0):
+            return self.product_ids[:top_k]
+        # Score items: (P x V) dot (V x 1) -> (P x 1)
+        scores = self.tfidf_matrix.dot(user_tag_profile)
+        if hasattr(scores, "toarray"):
+            scores = scores.toarray().ravel()
+        top_indices = np.argsort(-scores)[:top_k]
         return [self.product_ids[i] for i in top_indices]
 
 class UserUserCollaborativeFiltering:
-    """User-User Collaborative Filtering with Cosine Neighborhood weighting."""
+    """Sparse User-User Collaborative Filtering with on-the-fly cosine neighborhood search."""
     def __init__(self, k_neighbors=10):
         self.k_neighbors = k_neighbors
         self.train_matrix = None
-        self.user_sim_matrix = None
+        self.user_norms = None
         self.product_ids = []
         
     def fit(self, train_matrix, product_ids):
-        self.train_matrix = train_matrix.copy()
+        import scipy.sparse as sp
+        self.train_matrix = sp.csr_matrix(train_matrix, dtype=np.float32)
         self.product_ids = list(product_ids)
-        self.user_sim_matrix = cosine_similarity(train_matrix)
-        np.fill_diagonal(self.user_sim_matrix, 0.0)
+        # Precompute L2 norms for each user
+        self.user_norms = np.sqrt(self.train_matrix.multiply(self.train_matrix).sum(axis=1).A1) + 1e-9
         return self
         
     def recommend(self, user_idx, top_k=10, train_row=None):
-        sim_scores = self.user_sim_matrix[user_idx]
+        user_vec = self.train_matrix[user_idx]
+        norm_u = self.user_norms[user_idx]
+        if norm_u < 1e-8:
+            return self.product_ids[:top_k]
+            
+        # Cosine similarity dot product: (N x P) dot (P x 1) -> (N x 1)
+        sim_scores = self.train_matrix.dot(user_vec.T).toarray().ravel()
+        sim_scores = sim_scores / (self.user_norms * norm_u)
+        sim_scores[user_idx] = 0.0
+        
         top_neighbors = np.argsort(-sim_scores)[:self.k_neighbors]
         neighbor_sims = sim_scores[top_neighbors]
-        neighbor_ratings = self.train_matrix[top_neighbors]
         
-        sim_sum = np.sum(np.abs(neighbor_sims)) + 1e-9
-        pred_scores = np.dot(neighbor_sims, neighbor_ratings) / sim_sum
+        if np.sum(neighbor_sims) <= 0:
+            return self.product_ids[:top_k]
+            
+        neighbor_matrix = self.train_matrix[top_neighbors]
+        pred_scores = neighbor_matrix.T.dot(neighbor_sims)
+        if hasattr(pred_scores, "toarray"):
+            pred_scores = pred_scores.toarray().ravel()
+        else:
+            pred_scores = np.asarray(pred_scores).ravel()
+            
         top_indices = np.argsort(-pred_scores)[:top_k]
         return [self.product_ids[i] for i in top_indices]
 
 class SVDMatrixFactorizationRecommender:
-    """Latent Matrix Factorization using Truncated SVD."""
+    """Latent Matrix Factorization using Truncated SVD on sparse interaction matrix."""
     def __init__(self, n_components=6):
         self.n_components = n_components
         self.svd = TruncatedSVD(n_components=n_components, random_state=RANDOM_SEED)
-        self.reconstructed_matrix = None
+        self.user_factors = None
+        self.components_ = None
         self.product_ids = []
         
     def fit(self, train_matrix, product_ids):
         self.product_ids = list(product_ids)
-        user_factors = self.svd.fit_transform(train_matrix)
-        self.reconstructed_matrix = np.dot(user_factors, self.svd.components_)
+        self.user_factors = self.svd.fit_transform(train_matrix)
+        self.components_ = self.svd.components_
         return self
         
     def recommend(self, user_idx, top_k=10, train_row=None):
-        scores = self.reconstructed_matrix[user_idx]
+        scores = np.dot(self.user_factors[user_idx], self.components_)
         top_indices = np.argsort(-scores)[:top_k]
         return [self.product_ids[i] for i in top_indices]
 
@@ -134,21 +163,36 @@ class HybridRecommender:
     def recommend(self, user_idx, top_k=10, train_row=None):
         if train_row is None:
             return self.product_ids[:top_k]
-        
-        # Normalized CB scores
-        cb_scores = train_row.dot(self.cb_model.item_sim_matrix)
+            
+        # 1. Normalized CB scores
+        user_tag_profile = train_row.dot(self.cb_model.tfidf_matrix)
+        if hasattr(user_tag_profile, "toarray"):
+            user_tag_profile = user_tag_profile.toarray().ravel()
+        cb_scores = self.cb_model.tfidf_matrix.dot(user_tag_profile)
+        if hasattr(cb_scores, "toarray"):
+            cb_scores = cb_scores.toarray().ravel()
         if cb_scores.max() > cb_scores.min():
             cb_scores = (cb_scores - cb_scores.min()) / (cb_scores.max() - cb_scores.min() + 1e-9)
             
-        # Normalized CF scores
-        sim_scores = self.cf_model.user_sim_matrix[user_idx]
-        top_neighbors = np.argsort(-sim_scores)[:self.cf_model.k_neighbors]
-        neighbor_sims = sim_scores[top_neighbors]
-        neighbor_ratings = self.cf_model.train_matrix[top_neighbors]
-        sim_sum = np.sum(np.abs(neighbor_sims)) + 1e-9
-        cf_scores = np.dot(neighbor_sims, neighbor_ratings) / sim_sum
-        if cf_scores.max() > cf_scores.min():
-            cf_scores = (cf_scores - cf_scores.min()) / (cf_scores.max() - cf_scores.min() + 1e-9)
+        # 2. Normalized CF scores
+        user_vec = self.cf_model.train_matrix[user_idx]
+        norm_u = self.cf_model.user_norms[user_idx]
+        if norm_u > 1e-8:
+            sim_scores = self.cf_model.train_matrix.dot(user_vec.T).toarray().ravel()
+            sim_scores = sim_scores / (self.cf_model.user_norms * norm_u)
+            sim_scores[user_idx] = 0.0
+            top_neighbors = np.argsort(-sim_scores)[:self.cf_model.k_neighbors]
+            neighbor_sims = sim_scores[top_neighbors]
+            neighbor_matrix = self.cf_model.train_matrix[top_neighbors]
+            cf_scores = neighbor_matrix.T.dot(neighbor_sims)
+            if hasattr(cf_scores, "toarray"):
+                cf_scores = cf_scores.toarray().ravel()
+            else:
+                cf_scores = np.asarray(cf_scores).ravel()
+            if cf_scores.max() > cf_scores.min():
+                cf_scores = (cf_scores - cf_scores.min()) / (cf_scores.max() - cf_scores.min() + 1e-9)
+        else:
+            cf_scores = np.zeros(len(self.product_ids))
             
         hybrid_scores = self.cb_weight * cb_scores + self.cf_weight * cf_scores
         top_indices = np.argsort(-hybrid_scores)[:top_k]
@@ -163,9 +207,10 @@ def compute_ndcg_at_k(recommended, ground_truth, k):
     idcg = sum([1.0 / np.log2(r + 2) for r in range(min(k, len(ground_truth)))])
     return dcg / (idcg + 1e-9)
 
-def evaluate_recommender(model, train_matrix, test_ground_truth, user_ids, product_ids, k_values=[5, 10]):
+def evaluate_recommender(model, train_matrix, test_ground_truth, user_ids, product_ids, k_values=[5, 10], max_eval_users=100):
     """
-    Evaluate ranking metrics across all users on future holdout purchases.
+    Evaluate ranking metrics across users with future holdout purchases.
+    Uses a deterministic stratified cohort of evaluation users for reproducibility.
     """
     metrics = {f"P@{k}": [] for k in k_values}
     metrics.update({f"R@{k}": [] for k in k_values})
@@ -173,12 +218,19 @@ def evaluate_recommender(model, train_matrix, test_ground_truth, user_ids, produ
     metrics.update({f"NDCG@{k}": [] for k in k_values})
     metrics.update({f"HitRate@{k}": [] for k in k_values})
     
-    num_eval_users = 0
-    for u_idx, uid in enumerate(user_ids):
+    # Filter users who have holdout ground truth items
+    valid_users = [u_idx for u_idx, uid in enumerate(user_ids) if len(test_ground_truth.get(uid, set())) > 0]
+    
+    # Stratified cohort of evaluation users
+    np.random.seed(RANDOM_SEED)
+    if len(valid_users) > max_eval_users:
+        eval_indices = np.random.choice(valid_users, size=max_eval_users, replace=False)
+    else:
+        eval_indices = valid_users
+        
+    for u_idx in eval_indices:
+        uid = user_ids[u_idx]
         gt_items = test_ground_truth.get(uid, set())
-        if len(gt_items) == 0:
-            continue
-        num_eval_users += 1
         train_row = train_matrix[u_idx]
         
         for k in k_values:
@@ -201,7 +253,7 @@ def evaluate_recommender(model, train_matrix, test_ground_truth, user_ids, produ
     summary = {}
     for key, values in metrics.items():
         summary[key] = float(np.mean(values)) if len(values) > 0 else 0.0
-    summary["num_eval_users"] = num_eval_users
+    summary["num_eval_users"] = len(eval_indices)
     return summary
 
 def run_recommendation_experiment():

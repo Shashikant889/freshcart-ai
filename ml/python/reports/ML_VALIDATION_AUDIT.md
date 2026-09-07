@@ -1,7 +1,7 @@
 # Machine Learning Subsystem Rigorous Academic Validation Audit
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
-**Audit Timestamp:** `2026-08-26 11:38:38`  
+**Audit Timestamp:** `2026-09-07 09:17:45`  
 **Environment:** Python 3.12, Scikit-learn 1.9, Statsmodels 0.14  
 **Audit Purpose:** Comprehensive audit for data leakage, target leakage, temporal leakage, synthetic-label leakage, evaluation validity, and realistic academic bounds.
 
@@ -39,9 +39,9 @@
   - $\text{F1@}K = \frac{2 \cdot P@K \cdot R@K}{P@K + R@K}$
   - $\text{NDCG@}K = \frac{\text{DCG@}K}{\text{IDCG@}K}$
 - **Final Validated Metrics (Top-10):**
-  - Content-Based (TF-IDF): Precision@10 = 0.9640, Recall@10 = 0.3346, F1@10 = 0.4943, NDCG@10 = 0.9667
-  - Popularity Baseline: Precision@10 = 0.9300, Recall@10 = 0.3183, F1@10 = 0.4725, NDCG@10 = 0.9276
-  - User-User CF: Precision@10 = 0.9760, Recall@10 = 0.3406, F1@10 = 0.5022, NDCG@10 = 0.9813
+  - Content-Based (TF-IDF): Precision@10 = 0.0050, Recall@10 = 0.0128, F1@10 = 0.0071, NDCG@10 = 0.0077
+  - Popularity Baseline: Precision@10 = 0.0000, Recall@10 = 0.0000, F1@10 = 0.0000, NDCG@10 = 0.0000
+  - User-User CF: Precision@10 = 0.0600, Recall@10 = 0.1950, F1@10 = 0.0882, NDCG@10 = 0.1879
 
 ---
 
@@ -58,9 +58,9 @@
 - **SARIMAX:** Uses state-space dynamic out-of-sample forecasting (`sarimax_res.forecast(steps=30)`).
 
 ### 2.3 Final Validated Metrics (30-Day Holdout)
-- **SARIMAX $(1,1,1)\times(1,0,1)_7$:** MAE = 4.87, RMSE = **5.83 units**, MAPE = **2.50%**
-- **Random Forest Regressor (Recursive):** MAE = 4.66, RMSE = 5.99, MAPE = 2.40%
-- **7-Day Moving Average Baseline (Recursive):** MAE = 40.45, RMSE = 48.70, MAPE = 19.77%
+- **SARIMAX $(1,1,1)\times(1,0,1)_7$:** MAE = 1544.89, RMSE = **1922.64 units**, MAPE = **17.83%**
+- **Random Forest Regressor (Recursive):** MAE = 1805.60, RMSE = 2063.34, MAPE = 25.63%
+- **7-Day Moving Average Baseline (Recursive):** MAE = 1883.35, RMSE = 2207.99, MAPE = 26.54%
 
 ---
 
@@ -89,10 +89,10 @@
   - Target variable $y$ is statistically independent from the exact deterministic formula of input features.
 
 ### 4.2 Final Validated Metrics (Holdout Set, N=1,058)
-- **Random Forest Classifier:** Precision = 0.0829, Recall = **0.3864**, F1-Score = **0.1365**, ROC-AUC = **0.6087**
-- **Logistic Regression (Balanced):** Precision = 0.0580, Recall = 0.5909, F1-Score = 0.1057, ROC-AUC = 0.6080
-- **Rule-Based Baseline:** Precision = 0.1034, Recall = 0.0682, F1-Score = 0.0822, ROC-AUC = 0.5554
-- **Isolation Forest (Unsupervised):** Precision = 0.0000, Recall = 0.0000, F1-Score = 0.0000, ROC-AUC = 0.5258
+- **Random Forest Classifier:** Precision = 0.0824, Recall = **0.5021**, F1-Score = **0.1416**, ROC-AUC = **0.6309**
+- **Logistic Regression (Balanced):** Precision = 0.0600, Recall = 0.5983, F1-Score = 0.1091, ROC-AUC = 0.6195
+- **Rule-Based Baseline:** Precision = 0.1455, Recall = 0.1117, F1-Score = 0.1264, ROC-AUC = 0.5528
+- **Isolation Forest (Unsupervised):** Precision = 0.0552, Recall = 0.0509, F1-Score = 0.0530, ROC-AUC = 0.5337
 
 ---
 

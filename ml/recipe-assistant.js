@@ -81,6 +81,29 @@ const RECIPE_KNOWLEDGE_BASE = [
       { search: 'Cold Brew Coffee', qty: 1 }
     ],
     diet: 'Artisan Bakery • Morning Indulgence'
+  },
+  {
+    name: 'Fresh Royal Paneer Biryani',
+    keywords: ['paneer biryani', 'biryani', 'paneer rice'],
+    description: 'Aromatic basmati rice layered with fresh malai paneer, fragrant spices, and golden onions.',
+    requiredItems: [
+      { search: 'Basmati Rice', qty: 1 },
+      { search: 'Malai Paneer', qty: 1 },
+      { search: 'Cooking Oil', qty: 1 }
+    ],
+    diet: 'Vegetarian • Rich & Fragrant'
+  },
+  {
+    name: 'Homestyle Vegetable Pulao',
+    keywords: ['vegetable pulao', 'veg pulao', 'pulao'],
+    description: 'Wholesome one-pot spiced basmati rice simmered with crisp broccoli and sweet corn.',
+    requiredItems: [
+      { search: 'Basmati Rice', qty: 1 },
+      { search: 'Fresh Broccoli', qty: 1 },
+      { search: 'Sweet Corn', qty: 1 },
+      { search: 'Cooking Oil', qty: 1 }
+    ],
+    diet: 'Vegetarian • Wholesome'
   }
 ];
 

@@ -53,7 +53,8 @@ def score_transaction_fraud(req: FraudScoreRequest) -> FraudScoreResponse:
             if hasattr(model, "predict_proba"):
                 probs = model.predict_proba(feat_df)
                 fraud_prob = float(probs[0, 1])
-                risk_score = round(fraud_prob * 100.0, 1)
+                factor_bonus = min(30.0, len(contributing_factors) * 5.0)
+                risk_score = min(99.0, round((fraud_prob * 100.0) + factor_bonus, 1))
             else:
                 risk_score = 45.0 if contributing_factors else 10.0
         except Exception as e:

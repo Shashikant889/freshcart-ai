@@ -1,11 +1,11 @@
 """
 ml/service/rl_inventory_service.py
-Deep Reinforcement Learning (Q-Learning / Bellman Optimality)
+Tabular Reinforcement Learning (Q-Learning / Markov Decision Process)
 Autonomous Inventory Restocking Policy for Perishable Quick-Commerce Retail
-- State Space: Discretized (Stock Level, Forecasted Demand, Days to Expiry, Lead Time)
+- State Space: Discretized 36 states (Stock Level, Forecasted Demand, Days to Expiry)
 - Action Space: Order Multiplier [0%, 25%, 50%, 100%, 150%]
 - Reward: Revenue - Holding Costs - Spoilage Penalty - Stockout Penalty
-- Algorithm: Q-Learning with epsilon-greedy decay and Bellman temporal difference updates
+- Algorithm: Tabular Q-Learning with epsilon-greedy decay and Bellman temporal difference updates
 """
 
 import math

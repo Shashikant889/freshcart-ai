@@ -350,7 +350,7 @@ c:\Users\shash\demo1\
 │   ├── seed.js                                 # Reseed entrypoint
 │   └── synthetic-data.js                       # 12-month synthetic sales generator
 ├── docs/
-│   ├── COMPLETE_PROJECT_RECORD.md              # [THIS FILE] Exhaustive master project log
+│   ├── COMPLETE_PROJECT_RECORD.md              # Exhaustive master project log
 │   ├── IEEE_Project_Report.md                  # IEEE research paper manuscript
 │   ├── Presentation_Slide_Deck.md              # 15-slide examiner defense deck
 │   ├── ACADEMIC_VIVA_AND_PANEL_DEFENSE_GUIDE.md# Viva exam question bank & derivations

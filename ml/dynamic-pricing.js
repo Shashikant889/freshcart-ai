@@ -138,10 +138,10 @@ function simulatePriceChange(productId, proposedPrice) {
     revenueChangePct: (pctRevenueChange >= 0 ? '+' : '') + pctRevenueChange + '%',
     optimalRevenuePrice,
     explanationSteps,
-    disclaimer: 'Note: Simulated pricing is an economic optimization model based on historical sales velocity and price elasticity, not an empirical market price.',
+    disclaimer: 'Note: Simulated outcomes are econometric model estimates under Constant Elasticity of Demand (CED) assumptions, not measured real-world business lift.',
     strategyRecommendation: revenueDifference > 0
-      ? `✅ Recommended: This price adjustment will increase net 7-day revenue by ₹${revenueDifference} (+${pctRevenueChange}%).`
-      : `⚠️ Margin Warning: This price change is predicted to decrease net revenue by ₹${Math.abs(revenueDifference)} (${pctRevenueChange}%).`
+      ? `✅ Estimated Model Advantage: This price adjustment is projected to increase estimated 7-day revenue by ₹${revenueDifference} (+${pctRevenueChange}% simulated estimate).`
+      : `⚠️ Margin Warning: This price change is projected to decrease estimated revenue by ₹${Math.abs(revenueDifference)} (${pctRevenueChange}% simulated estimate).`
   };
 }
 

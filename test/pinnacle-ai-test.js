@@ -14,14 +14,25 @@ const assert = require('assert');
 const aiClient = require('../services/ai-client');
 
 const { initDb } = require('../db/database');
+const { startTestServer } = require('./test-helper');
 
-const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:3000';
+let effectiveBaseUrl = process.env.BASE_URL || 'http://127.0.0.1:3000';
+let testServer = null;
 
 async function runTests() {
   await initDb();
   console.log('\n================================================================');
   console.log('🧪 FRESHCART AI — PINNACLE AI CAPABILITIES TEST SUITE');
   console.log('================================================================\n');
+
+  try {
+    const res = await fetch(`${effectiveBaseUrl}/api/health`, { signal: AbortSignal.timeout(1000) });
+    if (!res.ok) throw new Error('Not ok');
+  } catch (e) {
+    console.log('  [TEST] Gateway server not detected on port 3000. Launching ephemeral test server...');
+    testServer = await startTestServer();
+    effectiveBaseUrl = testServer.baseUrl;
+  }
 
   let passed = 0;
   let total = 0;
@@ -138,12 +149,12 @@ async function runTests() {
   // SUITE 6: Express Gateway Endpoints
   // -------------------------------------------------------------
   await test('GATEWAY-1: GET /api/bda/cube returns HTTP 200 with success: true', async () => {
-    const res = await fetch(`${BASE_URL}/api/bda/cube`).then(r => r.json());
+    const res = await fetch(`${effectiveBaseUrl}/api/bda/cube`).then(r => r.json());
     assert.strictEqual(res.success, true, 'Response success must be true');
   });
 
   await test('GATEWAY-2: POST /api/recommendations/sequential returns HTTP 200', async () => {
-    const res = await fetch(`${BASE_URL}/api/recommendations/sequential`, {
+    const res = await fetch(`${effectiveBaseUrl}/api/recommendations/sequential`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sequence: [1, 2, 4] })
@@ -152,7 +163,7 @@ async function runTests() {
   });
 
   await test('GATEWAY-3: GET /api/pricing/bandit-promo returns HTTP 200', async () => {
-    const res = await fetch(`${BASE_URL}/api/pricing/bandit-promo`).then(r => r.json());
+    const res = await fetch(`${effectiveBaseUrl}/api/pricing/bandit-promo`).then(r => r.json());
     assert.strictEqual(res.success, true, 'Bandit promo API should succeed');
   });
 
@@ -183,6 +194,10 @@ async function runTests() {
       aiClient.setMockOffline(false);
     }
   });
+
+  if (testServer) {
+    await testServer.close();
+  }
 
   console.log('\n----------------------------------------------------------------');
   console.log(`🏁 TEST EXECUTION COMPLETE: ${passed}/${total} PASSED (100% Success)`);

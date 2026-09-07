@@ -2,7 +2,7 @@
 
 **Project Title:** AI-Driven Intelligent Grocery Retail System Using Machine Learning  
 **Evaluation Framework:** Final-Year Major Capstone (B.Tech CSE-AIML, Mumbai University)  
-**Audit & Execution Date:** `2026-08-26 11:38:38`  
+**Audit & Execution Date:** `2026-09-07 09:17:45`  
 **Random Seed:** `42` (Fixed for strict reproducibility)  
 **Environment:** Python 3.12, Scikit-Learn 1.9, Statsmodels 0.14, Pandas, NumPy, Matplotlib  
 
@@ -13,10 +13,10 @@
 This report details the rigorous offline machine learning experimentation, leak-free benchmarking, and mathematical optimization for FreshCart AI. All reported numbers reflect actual empirical computations from verified holdout sets without data leakage.
 
 ### Key Empirical Findings
-1. **Personalized Recommendation:** `Hybrid Ensemble (CF + CB)` achieved Top-10 ranking F1-Score of **0.5027** (Precision@10: 0.9760, Recall@10: 0.3412, NDCG@10: 0.9790) on a strict chronological interaction split.
-2. **Demand Forecasting:** `SARIMAX(1,1,1)x(1,0,1)_7` achieved an out-of-sample 30-day forecast RMSE of **5.83 units** (MAPE: **2.50%**), outperforming the recursive Moving Average baseline.
+1. **Personalized Recommendation:** `Hybrid Ensemble (CF + CB)` achieved Top-10 ranking F1-Score of **0.0981** (Precision@10: 0.0670, Recall@10: 0.2156, NDCG@10: 0.1944) on a strict chronological interaction split.
+2. **Demand Forecasting:** `SARIMAX(1,1,1)x(1,0,1)_7` achieved an out-of-sample 30-day forecast RMSE of **1922.64 units** (MAPE: **17.83%**), outperforming the recursive Moving Average baseline.
 3. **Dynamic Price Elasticity:** Econometric Log-Log OLS estimation validated category price elasticities with statistically significant coefficients ($p < 0.001$). Monte Carlo simulation under CED demonstrated a model-based **+22.21% Daily Revenue Lift** within $\pm 25\%$ business safety guardrails.
-4. **Transaction Fraud Detection:** `Random Forest Classifier` achieved an F1-Score of **0.1365** (ROC-AUC: **0.6087**, Recall: **0.3864**) on realistic noisy transactions without target leakage.
+4. **Transaction Fraud Detection:** `Random Forest Classifier` achieved an F1-Score of **0.1416** (ROC-AUC: **0.6309**, Recall: **0.5021**) on realistic noisy transactions without target leakage.
 
 ---
 
@@ -44,13 +44,13 @@ The experiments utilize structured datasets extracted from `db/freshcart.db` and
 
 | Model Architecture | P@5 | R@5 | F1@5 | P@10 | R@10 | F1@10 | HitRate@10 | NDCG@10 |
 |---|---|---|---|---|---|---|---|---|
-| **Popularity Baseline** | 0.9400 | 0.1618 | 0.2752 | 0.9300 | 0.3183 | 0.4725 | 1.0000 | 0.9276 |
-| **Content-Based (TF-IDF)** | 0.9680 | 0.1684 | 0.2858 | 0.9640 | 0.3346 | 0.4943 | 1.0000 | 0.9667 |
-| **Collaborative Filtering (User-User)** | 0.9920 | 0.1747 | 0.2957 | 0.9760 | 0.3406 | 0.5022 | 1.0000 | 0.9813 |
-| **Matrix Factorization (SVD)** | 0.9840 | 0.1722 | 0.2919 | 0.9740 | 0.3403 | 0.5015 | 1.0000 | 0.9756 |
-| **Hybrid Ensemble (CF + CB)** | 0.9760 | 0.1706 | 0.2893 | 0.9760 | 0.3412 | 0.5027 | 1.0000 | 0.9790 |
+| **Popularity Baseline** | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| **Content-Based (TF-IDF)** | 0.0060 | 0.0078 | 0.0067 | 0.0050 | 0.0128 | 0.0071 | 0.0400 | 0.0077 |
+| **Collaborative Filtering (User-User)** | 0.1020 | 0.1695 | 0.1206 | 0.0600 | 0.1950 | 0.0882 | 0.3000 | 0.1879 |
+| **Matrix Factorization (SVD)** | 0.0020 | 0.0033 | 0.0025 | 0.0030 | 0.0073 | 0.0042 | 0.0300 | 0.0042 |
+| **Hybrid Ensemble (CF + CB)** | 0.1200 | 0.1872 | 0.1381 | 0.0670 | 0.2156 | 0.0981 | 0.3100 | 0.1944 |
 
-**Best Performing Model:** `Hybrid Ensemble (CF + CB)` with **F1@10 = 0.5027** and **NDCG@10 = 0.9790**.
+**Best Performing Model:** `Hybrid Ensemble (CF + CB)` with **F1@10 = 0.0981** and **NDCG@10 = 0.1944**.
 
 ---
 
@@ -64,14 +64,14 @@ The experiments utilize structured datasets extracted from `db/freshcart.db` and
 
 | Model Architecture | MAE (units) | RMSE (units) | MAPE (%) |
 |---|---|---|---|
-| **7-Day Moving Average (Baseline)** | 40.45 | 48.70 | 19.77% |
-| **OLS Linear Regression** | 8.79 | 10.56 | 4.56% |
-| **Ridge Regression (L2)** | 8.52 | 10.50 | 4.47% |
-| **Random Forest Regressor** | 4.66 | 5.99 | 2.40% |
-| **Gradient Boosting (GBR)** | 10.41 | 12.65 | 5.35% |
-| **SARIMAX(1,1,1)x(1,0,1)_7** | 4.87 | 5.83 | 2.50% |
+| **7-Day Moving Average (Baseline)** | 1883.35 | 2207.99 | 26.54% |
+| **OLS Linear Regression** | 2231.73 | 2397.04 | 31.45% |
+| **Ridge Regression (L2)** | 2210.82 | 2375.81 | 31.20% |
+| **Random Forest Regressor** | 1805.60 | 2063.34 | 25.63% |
+| **Gradient Boosting (GBR)** | 1743.62 | 2002.54 | 24.66% |
+| **SARIMAX(1,1,1)x(1,0,1)_7** | 1544.89 | 1922.64 | 17.83% |
 
-**Best Performing Model:** `SARIMAX(1,1,1)x(1,0,1)_7` with **RMSE = 5.83 units** and **MAPE = 2.50%**.
+**Best Performing Model:** `SARIMAX(1,1,1)x(1,0,1)_7` with **RMSE = 1922.64 units** and **MAPE = 17.83%**.
 
 ---
 
@@ -111,12 +111,12 @@ $$\ln(Q_i) = \beta_0 + \beta_1 \ln(P_i) + \varepsilon_i$$
 
 | Model Architecture | Precision | Recall | F1-Score | ROC-AUC |
 |---|---|---|---|
-| **Rule-Based / Z-Score Baseline** | 0.1034 | 0.0682 | 0.0822 | 0.5554 |
-| **Logistic Regression (Balanced)** | 0.0580 | 0.5909 | 0.1057 | 0.6080 |
-| **Random Forest Classifier** | 0.0829 | 0.3864 | 0.1365 | 0.6087 |
-| **Isolation Forest (Unsupervised)** | 0.0000 | 0.0000 | 0.0000 | 0.5258 |
+| **Rule-Based / Z-Score Baseline** | 0.1455 | 0.1117 | 0.1264 | 0.5528 |
+| **Logistic Regression (Balanced)** | 0.0600 | 0.5983 | 0.1091 | 0.6195 |
+| **Random Forest Classifier** | 0.0824 | 0.5021 | 0.1416 | 0.6309 |
+| **Isolation Forest (Unsupervised)** | 0.0552 | 0.0509 | 0.0530 | 0.5337 |
 
-**Best Performing Model:** `Random Forest Classifier` with **F1-Score = 0.1365** and **ROC-AUC = 0.6087**.
+**Best Performing Model:** `Random Forest Classifier` with **F1-Score = 0.1416** and **ROC-AUC = 0.6309**.
 
 ---
 
